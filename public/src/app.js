@@ -255,24 +255,29 @@ saveDetailBtn.addEventListener("click", () => {
 });
 
 // 削除
-deleteDetailBtn.addEventListener("click", () => {
-  if (!currentEditingId) return;
+if (deleteDetailBtn) {
+  deleteDetailBtn.addEventListener("click", () => {
+    if (!currentEditingId) return;
 
-  if (!confirm("このライブを削除しますか？")) return;
+    if (!confirm("このライブを削除しますか？")) return;
 
-  const tx = db.transaction("lives", "readwrite");
-  const store = tx.objectStore("lives");
+    const tx = db.transaction("lives", "readwrite");
+    const store = tx.objectStore("lives");
 
-  store.delete(currentEditingId);
+    store.delete(currentEditingId);
 
-  tx.oncomplete = () => {
-    modal.classList.add("hidden");
-    currentEditingId = null;
-    renderHistory();
-  };
+    tx.oncomplete = () => {
+      modal.classList.add("hidden");
+      currentEditingId = null;
+      renderHistory();
+    };
 
-  tx.onerror = () => {
-    alert("削除に失敗しました");
-  };
-});
+    tx.onerror = () => {
+      alert("削除に失敗しました");
+    };
+  });
+} else {
+  console.log("deleteDetailBtn が見つかりません");
+}
+
 
