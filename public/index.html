@@ -7,6 +7,28 @@
   <link rel="stylesheet" href="./css/style.css">
 </head>
 
+<body>
+  <h1>Live Diary</h1>
+  
+<nav>
+  <button id="showRegister">登録</button>
+  <button id="showHistory">履歴</button>
+</nav>
+
+  <section id="register">
+    <h2>ライブ登録</h2>
+    　<input type="text" id="artist" placeholder="アーティスト名">
+    　<input type="date" id="date">
+    　<input type="text" id="venue" placeholder="会場">
+    　<textarea id="memo" placeholder="メモ（任意）" rows="3"></textarea>
+    　<button id="saveBtn">保存</button>
+  </section>
+
+  <section id="history">
+    <h2>履歴</h2>
+    <div id="historyList"></div>
+  </section>
+
 <!-- 詳細編集モーダル -->
 <div id="detailModal" class="modal hidden">
   <div class="modal-content">
@@ -36,28 +58,6 @@
     <button id="closeDetailBtn">閉じる</button>
   </div>
 </div>
-
-<body>
-  <h1>Live Diary</h1>
-  
-<nav>
-  <button id="showRegister">登録</button>
-  <button id="showHistory">履歴</button>
-</nav>
-
-  <section id="register">
-    <h2>ライブ登録</h2>
-    　<input type="text" id="artist" placeholder="アーティスト名">
-    　<input type="date" id="date">
-    　<input type="text" id="venue" placeholder="会場">
-    　<textarea id="memo" placeholder="メモ（任意）" rows="3"></textarea>
-    　<button id="saveBtn">保存</button>
-  </section>
-
-  <section id="history">
-    <h2>履歴</h2>
-    <div id="historyList"></div>
-  </section>
 
   <!-- ここが重要 -->
   <script src="./src/app.js"></script>
