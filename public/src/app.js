@@ -137,3 +137,13 @@ function renderHistory() {
   };
 }
 
+document.getElementById("showRegister").onclick = () => {
+  document.getElementById("register").style.display = "block";
+  document.getElementById("history").style.display = "none";
+};
+
+document.getElementById("showHistory").onclick = () => {
+  document.getElementById("register").style.display = "none";
+  document.getElementById("history").style.display = "block";
+};
+
