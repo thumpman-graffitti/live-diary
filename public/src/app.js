@@ -168,3 +168,31 @@ btnHistory.onclick = () => {
   btnRegister.classList.remove("active");
 };
 
+// ===== タブ切り替え処理 =====
+
+const showRegisterBtn = document.getElementById("showRegister");
+const showHistoryBtn = document.getElementById("showHistory");
+
+const registerSection = document.getElementById("register");
+const historySection = document.getElementById("history");
+
+// 初期状態：登録だけ表示
+registerSection.style.display = "block";
+historySection.style.display = "none";
+showRegisterBtn.classList.add("active");
+
+showRegisterBtn.addEventListener("click", () => {
+  registerSection.style.display = "block";
+  historySection.style.display = "none";
+
+  showRegisterBtn.classList.add("active");
+  showHistoryBtn.classList.remove("active");
+});
+
+showHistoryBtn.addEventListener("click", () => {
+  registerSection.style.display = "none";
+  historySection.style.display = "block";
+
+  showHistoryBtn.classList.add("active");
+  showRegisterBtn.classList.remove("active");
+});
