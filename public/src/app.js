@@ -141,6 +141,9 @@ function renderHistory() {
       group.lives.forEach(item => {
         const li = document.createElement("li");
         li.className = "history-item";
+        
+        li.addEventListener("click", () => {openDetailModal(item);
+        });
 
         const dateDiv = document.createElement("div");
         dateDiv.className = "history-date";
