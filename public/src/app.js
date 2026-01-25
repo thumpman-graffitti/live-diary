@@ -88,6 +88,7 @@ function saveLive() {
     document.getElementById("artist").value = "";
     document.getElementById("date").value = "";
     document.getElementById("venue").value = "";
+    document.getElementById("memo").value = "";
     renderHistory();
   };
 
