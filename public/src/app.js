@@ -147,3 +147,24 @@ document.getElementById("showHistory").onclick = () => {
   document.getElementById("history").style.display = "block";
 };
 
+// ===== タブ切り替え処理 =====
+
+const btnRegister = document.getElementById("showRegister");
+const btnHistory = document.getElementById("showHistory");
+
+btnRegister.onclick = () => {
+  document.getElementById("register").style.display = "block";
+  document.getElementById("history").style.display = "none";
+
+  btnRegister.classList.add("active");
+  btnHistory.classList.remove("active");
+};
+
+btnHistory.onclick = () => {
+  document.getElementById("register").style.display = "none";
+  document.getElementById("history").style.display = "block";
+
+  btnHistory.classList.add("active");
+  btnRegister.classList.remove("active");
+};
+
