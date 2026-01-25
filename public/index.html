@@ -6,6 +6,37 @@
   <title>Live Diary</title>
   <link rel="stylesheet" href="./css/style.css">
 </head>
+
+<!-- 詳細編集モーダル -->
+<div id="detailModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>ライブ詳細</h3>
+
+    <div>
+      <label>日付</label>
+      <div id="detailDate"></div>
+    </div>
+
+    <div>
+      <label>アーティスト</label>
+      <div id="detailArtist"></div>
+    </div>
+
+    <div>
+      <label>会場</label>
+      <div id="detailVenue"></div>
+    </div>
+
+    <div>
+      <label>メモ</label>
+      <textarea id="detailMemo" rows="5"></textarea>
+    </div>
+
+    <button id="saveDetailBtn">保存</button>
+    <button id="closeDetailBtn">閉じる</button>
+  </div>
+</div>
+
 <body>
   <h1>Live Diary</h1>
   
@@ -16,10 +47,11 @@
 
   <section id="register">
     <h2>ライブ登録</h2>
-    <input type="text" id="artist" placeholder="アーティスト名">
-    <input type="date" id="date">
-    <input type="text" id="venue" placeholder="会場">
-    <button id="saveBtn">保存</button>
+    　<input type="text" id="artist" placeholder="アーティスト名">
+    　<input type="date" id="date">
+    　<input type="text" id="venue" placeholder="会場">
+    　<textarea id="memo" placeholder="メモ（任意）" rows="3"></textarea>
+    　<button id="saveBtn">保存</button>
   </section>
 
   <section id="history">
