@@ -200,3 +200,54 @@ showHistoryBtn.addEventListener("click", () => {
   showHistoryBtn.classList.add("active");
   showRegisterBtn.classList.remove("active");
 });
+
+// ===== 詳細モーダル処理 =====
+
+let currentEditingId = null;
+
+const modal = document.getElementById("detailModal");
+const closeBtn = document.getElementById("closeDetailBtn");
+const saveDetailBtn = document.getElementById("saveDetailBtn");
+
+function openDetailModal(item) {
+  currentEditingId = item.id;
+
+  document.getElementById("detailDate").textContent = item.date;
+  document.getElementById("detailArtist").textContent = item.artistName;
+  document.getElementById("detailVenue").textContent = item.venue;
+  document.getElementById("detailMemo").value = item.memo || "";
+
+  modal.classList.remove("hidden");
+}
+
+// 閉じる
+closeBtn.addEventListener("click", () => {
+  modal.classList.add("hidden");
+  currentEditingId = null;
+});
+
+// 保存
+saveDetailBtn.addEventListener("click", () => {
+  const newMemo = document.getElementById("detailMemo").value;
+
+  const tx = db.transaction("lives", "readwrite");
+  const store = tx.objectStore("lives");
+
+  const getReq = store.get(currentEditingId);
+
+  getReq.onsuccess = () => {
+    const item = getReq.result;
+    item.memo = newMemo;
+    store.put(item);
+  };
+
+  tx.oncomplete = () => {
+    modal.classList.add("hidden");
+    currentEditingId = null;
+    renderHistory();
+  };
+
+  tx.onerror = () => {
+    alert("更新に失敗しました");
+  };
+});
