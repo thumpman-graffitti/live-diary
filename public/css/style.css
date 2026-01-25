@@ -17,3 +17,22 @@ input, button {
   padding: 8px;
   font-size: 16px;
 }
+
+.history-item {
+  border-bottom: 1px solid #ddd;
+  padding: 8px 4px;
+}
+
+.history-date {
+  font-size: 12px;
+  color: #666;
+}
+
+.history-artist {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.history-venue {
+  font-size: 14px;
+}
