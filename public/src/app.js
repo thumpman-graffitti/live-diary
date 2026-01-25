@@ -95,7 +95,7 @@ function saveLive() {
   };
 }
 
-// ===== 履歴表示 =====
+// ===== 履歴表示（アーティスト別グループ） =====
 function renderHistory() {
   const list = document.getElementById("historyList");
   list.innerHTML = "";
@@ -103,36 +103,66 @@ function renderHistory() {
   const tx = db.transaction("lives", "readonly");
   const store = tx.objectStore("lives");
 
-  // createdAt の新しい順に表示したいので、全部取ってから並び替え
   const req = store.getAll();
 
   req.onsuccess = () => {
     const items = req.result;
 
-    // 新しい順に並び替え
+    // ① 新しい順に並び替え
     items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
+    // ② artistId ごとにグループ化
+    const groups = {};
+
     items.forEach(item => {
-      const li = document.createElement("li");
-      li.className = "history-item";
+      if (!groups[item.artistId]) {
+        groups[item.artistId] = {
+          artistName: item.artistName,
+          lives: []
+        };
+      }
+      groups[item.artistId].lives.push(item);
+    });
 
-      const dateDiv = document.createElement("div");
-      dateDiv.className = "history-date";
-      dateDiv.textContent = item.date;
+    // ③ グループごとに描画
+    Object.values(groups).forEach(group => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "artist-group";
 
-      const artistDiv = document.createElement("div");
-      artistDiv.className = "history-artist";
-      artistDiv.textContent = item.artistName;
+      const header = document.createElement("div");
+      header.className = "artist-header";
+      header.textContent = `${group.artistName} (${group.lives.length})`;
 
-      const venueDiv = document.createElement("div");
-      venueDiv.className = "history-venue";
-      venueDiv.textContent = item.venue;
+      const ul = document.createElement("ul");
+      ul.style.display = "none"; // 最初は閉じる
 
-      li.appendChild(dateDiv);
-      li.appendChild(artistDiv);
-      li.appendChild(venueDiv);
+      group.lives.forEach(item => {
+        const li = document.createElement("li");
+        li.className = "history-item";
 
-      list.appendChild(li);
+        const dateDiv = document.createElement("div");
+        dateDiv.className = "history-date";
+        dateDiv.textContent = item.date;
+
+        const venueDiv = document.createElement("div");
+        venueDiv.className = "history-venue";
+        venueDiv.textContent = item.venue;
+
+        li.appendChild(dateDiv);
+        li.appendChild(venueDiv);
+
+        ul.appendChild(li);
+      });
+
+      // ④ 開閉処理
+      header.addEventListener("click", () => {
+        const isOpen = ul.style.display === "block";
+        ul.style.display = isOpen ? "none" : "block";
+      });
+
+      wrapper.appendChild(header);
+      wrapper.appendChild(ul);
+      list.appendChild(wrapper);
     });
   };
 }
