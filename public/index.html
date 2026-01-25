@@ -1,1 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- iOS PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+
+  <title>Live Diary</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="../css/style.css" />
+</head>
+<body>
+
+<h1>🎵 Live Diary</h1>
+
+<!-- 登録画面 -->
+<section id="register">
+  <h2>登録</h2>
+
+  <input id="artist" type="text" placeholder="アーティスト名" />
+  <input id="title" type="text" placeholder="ライブタイトル" />
+  <input id="venue" type="text" placeholder="会場" />
+  <input id="date" type="date" />
+
+  <button id="saveBtn">保存</button>
+</section>
+
+<hr />
+
+<!-- 履歴画面 -->
+<section id="history">
+  <h2>履歴</h2>
+  <ul id="list"></ul>
+</section>
+
+<!-- JS 読み込み順が超重要 -->
+<script src="../src/db.js"></script>
+<script src="../src/ui-register.js"></script>
+<script src="../src/ui-history.js"></script>
+<script src="../src/app.js"></script>
+
+</body>
+</html>
