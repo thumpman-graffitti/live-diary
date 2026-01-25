@@ -66,3 +66,31 @@ nav button.active {
   font-weight: bold;
 }
 
+.artist-group {
+  border: 1px solid #ddd;
+  margin-bottom: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.artist-header {
+  background: #f0f0f0;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.artist-header:hover {
+  background: #e0e0e0;
+}
+
+.artist-group ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.artist-group li {
+  border-top: 1px solid #eee;
+  padding: 8px 10px;
+}
