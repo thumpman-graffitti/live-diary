@@ -208,6 +208,7 @@ let currentEditingId = null;
 const modal = document.getElementById("detailModal");
 const closeBtn = document.getElementById("closeDetailBtn");
 const saveDetailBtn = document.getElementById("saveDetailBtn");
+const deleteDetailBtn = document.getElementById("deleteDetailBtn");
 
 function openDetailModal(item) {
   currentEditingId = item.id;
@@ -216,6 +217,7 @@ function openDetailModal(item) {
   document.getElementById("detailArtist").textContent = item.artistName;
   document.getElementById("detailVenue").textContent = item.venue;
   document.getElementById("detailMemo").value = item.memo || "";
+  
 
   modal.classList.remove("hidden");
 }
@@ -251,3 +253,26 @@ saveDetailBtn.addEventListener("click", () => {
     alert("更新に失敗しました");
   };
 });
+
+// 削除
+deleteDetailBtn.addEventListener("click", () => {
+  if (!currentEditingId) return;
+
+  if (!confirm("このライブを削除しますか？")) return;
+
+  const tx = db.transaction("lives", "readwrite");
+  const store = tx.objectStore("lives");
+
+  store.delete(currentEditingId);
+
+  tx.oncomplete = () => {
+    modal.classList.add("hidden");
+    currentEditingId = null;
+    renderHistory();
+  };
+
+  tx.onerror = () => {
+    alert("削除に失敗しました");
+  };
+});
+
