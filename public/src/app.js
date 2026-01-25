@@ -40,30 +40,48 @@ request.onerror = () => {
 document.getElementById("saveBtn").addEventListener("click", saveLive);
 
 function saveLive() {
-  const artist = document.getElementById("artist").value.trim();
+  const artistName = document.getElementById("artist").value.trim();
   const date = document.getElementById("date").value;
   const venue = document.getElementById("venue").value.trim();
 
-  if (!artist || !date || !venue) {
+  if (!artistName || !date || !venue) {
     alert("すべて入力してください");
     return;
   }
 
   const tx = db.transaction(["artists", "lives"], "readwrite");
-
   const artistStore = tx.objectStore("artists");
   const liveStore = tx.objectStore("lives");
 
-  // まずアーティストを保存（重複は気にしない簡易版）
-  artistStore.add({ name: artist });
+  // まず artists から同名を探す
+  const getAllReq = artistStore.getAll();
 
-  // ライブを保存
-  liveStore.add({
-    artist,
-    date,
-    venue,
-    createdAt: new Date().toISOString()
-  });
+  getAllReq.onsuccess = () => {
+    const artists = getAllReq.result;
+    let artist = artists.find(a => a.name === artistName);
+
+    if (!artist) {
+      // なければ新規作成
+      const addReq = artistStore.add({ name: artistName });
+      addReq.onsuccess = (e) => {
+        const artistId = e.target.result;
+        addLive(artistId, artistName);
+      };
+    } else {
+      addLive(artist.id, artist.name);
+    }
+  };
+
+  function addLive(artistId, artistName) {
+    liveStore.add({
+      artistId,
+      artistName,
+      date,
+      venue,
+      memo: "",
+      createdAt: new Date().toISOString()
+    });
+  }
 
   tx.oncomplete = () => {
     document.getElementById("artist").value = "";
