@@ -43,6 +43,7 @@ function saveLive() {
   const artistName = document.getElementById("artist").value.trim();
   const date = document.getElementById("date").value;
   const venue = document.getElementById("venue").value.trim();
+  const memo = document.getElementById("memo").value.trim();
 
   if (!artistName || !date || !venue) {
     alert("すべて入力してください");
@@ -78,7 +79,7 @@ function saveLive() {
       artistName,
       date,
       venue,
-      memo: "",
+      memo: memo,
       createdAt: new Date().toISOString()
     });
   }
