@@ -96,7 +96,6 @@ function saveLive() {
 }
 
 // ===== 履歴表示 =====
-
 function renderHistory() {
   const list = document.getElementById("historyList");
   list.innerHTML = "";
@@ -104,18 +103,37 @@ function renderHistory() {
   const tx = db.transaction("lives", "readonly");
   const store = tx.objectStore("lives");
 
-  const request = store.openCursor();
+  // createdAt の新しい順に表示したいので、全部取ってから並び替え
+  const req = store.getAll();
 
-  request.onsuccess = (event) => {
-    const cursor = event.target.result;
-    if (cursor) {
+  req.onsuccess = () => {
+    const items = req.result;
+
+    // 新しい順に並び替え
+    items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+    items.forEach(item => {
       const li = document.createElement("li");
-      const item = cursor.value;
+      li.className = "history-item";
 
-      li.textContent = `${item.date} / ${item.artist} / ${item.venue}`;
+      const dateDiv = document.createElement("div");
+      dateDiv.className = "history-date";
+      dateDiv.textContent = item.date;
+
+      const artistDiv = document.createElement("div");
+      artistDiv.className = "history-artist";
+      artistDiv.textContent = item.artistName;
+
+      const venueDiv = document.createElement("div");
+      venueDiv.className = "history-venue";
+      venueDiv.textContent = item.venue;
+
+      li.appendChild(dateDiv);
+      li.appendChild(artistDiv);
+      li.appendChild(venueDiv);
 
       list.appendChild(li);
-      cursor.continue();
-    }
+    });
   };
 }
+
