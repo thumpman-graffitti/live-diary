@@ -179,114 +179,115 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
 
-  // =========================
-  // 詳細モーダル
-  // =========================
-  function openDetailModal(item) {
-    if (registerSection.style.display === "block") return;
+// =========================
+// 詳細モーダル処理
+// =========================
 
-    currentEditingId = item.id;
+function openDetailModal(item) {
+  // 登録タブ表示中ならモーダルを開かない
+  if (registerSection.style.display === "block") return;
 
-    updateModalView(item);
-    viewArea.style.display = "block";
+  currentEditingId = item.id;
+
+  // 参照表示に反映
+  document.getElementById("detailDate").textContent = item.date;
+  document.getElementById("detailArtist").textContent = item.artistName;
+  document.getElementById("detailVenue").textContent = item.venue;
+  document.getElementById("detailTour").textContent = item.tourTitle || "";
+
+  const setlistView = document.getElementById("detailSetlistView");
+  const songCountDiv = document.getElementById("detailSongCount");
+
+  if (Array.isArray(item.setlist)) {
+    songCountDiv.textContent = item.setlist.length + " 曲";
+    setlistView.innerHTML = "";
+    item.setlist.forEach((song, index) => {
+      const div = document.createElement("div");
+      div.textContent = `${index + 1}. ${song}`;
+      setlistView.appendChild(div);
+    });
+  } else {
+    songCountDiv.textContent = "0 曲";
+    setlistView.textContent = "（未登録）";
+  }
+
+  document.getElementById("detailMemoView").textContent = item.memo || "";
+  document.getElementById("detailMemo").value = item.memo || "";
+  document.getElementById("detailSetlist").value = Array.isArray(item.setlist) ? item.setlist.join("\n") : "";
+
+  // 初期は参照モード
+  viewArea.style.display = "block";
+  editArea.style.display = "none";
+  modal.classList.remove("hidden");
+}
+
+// --- 閉じる ---
+closeBtn.onclick = () => {
+  modal.classList.add("hidden");
+  currentEditingId = null;
+};
+
+// --- 編集 ---
+editBtn.onclick = () => {
+  viewArea.style.display = "none";
+  editArea.style.display = "block";
+};
+
+// --- キャンセル ---
+cancelEditBtn.onclick = () => {
+  if (!confirm("編集内容を破棄しますか？")) return;
+  editArea.style.display = "none";
+  viewArea.style.display = "block";
+};
+
+// --- 保存 ---
+saveDetailBtn.onclick = () => {
+  if (!currentEditingId) return;
+
+  const newMemo = document.getElementById("detailMemo").value;
+  const setlistText = document.getElementById("detailSetlist").value;
+  const newSetlist = setlistText.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
+
+  const tx = db.transaction("lives", "readwrite");
+  const store = tx.objectStore("lives");
+
+  store.get(currentEditingId).onsuccess = (e) => {
+    const item = e.target.result;
+    item.memo = newMemo;
+    item.setlist = newSetlist;
+    store.put(item);
+  };
+
+  tx.oncomplete = () => {
+    renderHistory(); // 履歴を更新
     editArea.style.display = "none";
-    modal.classList.remove("hidden");
-  }
-
-  // モーダルの表示内容を更新
-  function updateModalView(item) {
-    document.getElementById("detailDate").textContent = item.date;
-    document.getElementById("detailArtist").textContent = item.artistName;
-    document.getElementById("detailVenue").textContent = item.venue;
-    document.getElementById("detailTour").textContent = item.tourTitle || "";
-
-    const setlistView = document.getElementById("detailSetlistView");
-    const songCountDiv = document.getElementById("detailSongCount");
-
-    if (Array.isArray(item.setlist)) {
-      songCountDiv.textContent = item.setlist.length + " 曲";
-      setlistView.innerHTML = "";
-      item.setlist.forEach((s, i) => {
-        const div = document.createElement("div");
-        div.textContent = `${i + 1}. ${s}`;
-        setlistView.appendChild(div);
-      });
-    } else {
-      songCountDiv.textContent = "0 曲";
-      setlistView.textContent = "（未登録）";
-    }
-
-    document.getElementById("detailMemoView").textContent = item.memo || "";
-    document.getElementById("detailMemo").value = item.memo || "";
-    document.getElementById("detailSetlist").value = Array.isArray(item.setlist) ? item.setlist.join("\n") : "";
-  }
-
-  // --- 閉じる ---
-  closeBtn.addEventListener("click", () => {
+    viewArea.style.display = "block";
     modal.classList.add("hidden");
     currentEditingId = null;
-  });
+  };
 
-  // --- 編集 ---
-  editBtn.addEventListener("click", () => {
-    viewArea.style.display = "none";
-    editArea.style.display = "block";
-  });
+  tx.onerror = () => {
+    alert("更新に失敗しました");
+  };
+};
 
-  // --- キャンセル ---
-  cancelEditBtn.addEventListener("click", () => {
-    if (!confirm("編集内容を破棄しますか？")) return;
-    editArea.style.display = "none";
+// --- 削除 ---
+deleteDetailBtn.onclick = () => {
+  if (!currentEditingId) return;
+  if (!confirm("このライブを削除しますか？")) return;
 
-    // DBから再取得して表示
-    if (currentEditingId) {
-      const tx = db.transaction("lives", "readonly");
-      const store = tx.objectStore("lives");
-      store.get(currentEditingId).onsuccess = (e) => {
-        const item = e.target.result;
-        updateModalView(item);
-        viewArea.style.display = "block";
-      };
-    }
-  });
+  const tx = db.transaction("lives", "readwrite");
+  const store = tx.objectStore("lives");
 
-  // --- 保存 ---
-  saveDetailBtn.addEventListener("click", () => {
-    if (!currentEditingId) return;
+  store.delete(currentEditingId);
 
-    const newMemo = document.getElementById("detailMemo").value;
-    const setlistText = document.getElementById("detailSetlist").value;
-    const newSetlist = setlistText.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
+  tx.oncomplete = () => {
+    renderHistory(); // 履歴を更新
+    modal.classList.add("hidden");
+    currentEditingId = null;
+  };
 
-    const tx = db.transaction("lives", "readwrite");
-    const store = tx.objectStore("lives");
-
-    store.get(currentEditingId).onsuccess = (e) => {
-      const item = e.target.result;
-      item.memo = newMemo;
-      item.setlist = newSetlist;
-      store.put(item).onsuccess = () => {
-        renderHistory();
-        updateModalView(item); // モーダル内も更新
-        editArea.style.display = "none";
-        viewArea.style.display = "block";
-      };
-    };
-  });
-
-  // --- 削除 ---
-  deleteDetailBtn.addEventListener("click", () => {
-    if (!currentEditingId) return;
-    if (!confirm("このライブを削除しますか？")) return;
-
-    const tx = db.transaction("lives", "readwrite");
-    const store = tx.objectStore("lives");
-
-    store.delete(currentEditingId).onsuccess = () => {
-      renderHistory();
-      modal.classList.add("hidden");
-      currentEditingId = null;
-    };
-  });
-
-});
+  tx.onerror = () => {
+    alert("削除に失敗しました");
+  };
+};
