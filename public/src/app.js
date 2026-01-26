@@ -31,13 +31,16 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // タブ切替
   // =========================
+// =========================
+// タブ切替
+// =========================
 showRegisterBtn.addEventListener("click", () => {
   registerSection.style.display = "block";
   historySection.style.display = "none";
   showRegisterBtn.classList.add("active");
   showHistoryBtn.classList.remove("active");
 
-  // モーダルを閉じる処理
+  // モーダルを閉じる
   modal.classList.add("hidden");
   currentEditingId = null;
 });
@@ -48,10 +51,11 @@ showHistoryBtn.addEventListener("click", () => {
   showHistoryBtn.classList.add("active");
   showRegisterBtn.classList.remove("active");
 
-  // モーダルを閉じる処理
+  // モーダルを閉じる
   modal.classList.add("hidden");
   currentEditingId = null;
 });
+
 
 
   // =========================
@@ -189,9 +193,11 @@ showHistoryBtn.addEventListener("click", () => {
 // =========================
 // 詳細モーダル処理
 // =========================
-
+// =========================
+// 詳細モーダル処理
+// =========================
 function openDetailModal(item) {
-  // 登録タブ表示中ならモーダルを開かない
+  // 登録タブ表示中なら開かない
   if (registerSection.style.display === "block") return;
 
   currentEditingId = item.id;
@@ -229,26 +235,26 @@ function openDetailModal(item) {
 }
 
 // --- 閉じる ---
-closeBtn.onclick = () => {
+closeBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
   currentEditingId = null;
-};
+});
 
 // --- 編集 ---
-editBtn.onclick = () => {
+editBtn.addEventListener("click", () => {
   viewArea.style.display = "none";
   editArea.style.display = "block";
-};
+});
 
 // --- キャンセル ---
-cancelEditBtn.onclick = () => {
+cancelEditBtn.addEventListener("click", () => {
   if (!confirm("編集内容を破棄しますか？")) return;
   editArea.style.display = "none";
   viewArea.style.display = "block";
-};
+});
 
 // --- 保存 ---
-saveDetailBtn.onclick = () => {
+saveDetailBtn.addEventListener("click", () => {
   if (!currentEditingId) return;
 
   const newMemo = document.getElementById("detailMemo").value;
@@ -276,10 +282,10 @@ saveDetailBtn.onclick = () => {
   tx.onerror = () => {
     alert("更新に失敗しました");
   };
-};
+});
 
 // --- 削除 ---
-deleteDetailBtn.onclick = () => {
+deleteDetailBtn.addEventListener("click", () => {
   if (!currentEditingId) return;
   if (!confirm("このライブを削除しますか？")) return;
 
@@ -297,4 +303,5 @@ deleteDetailBtn.onclick = () => {
   tx.onerror = () => {
     alert("削除に失敗しました");
   };
-};
+});
+
