@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const showHistoryBtn = document.getElementById("showHistory");
   const registerSection = document.getElementById("register");
   const historySection = document.getElementById("history");
-
   const saveBtn = document.getElementById("saveBtn");
 
   const closeBtn = document.getElementById("closeDetailBtn");
@@ -24,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentEditingId = null;
   let db;
 
-  // 初期状態
+  // ===== 初期状態 =====
   registerSection.style.display = "block";
   historySection.style.display = "none";
   showRegisterBtn.classList.add("active");
@@ -72,9 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
   };
 
-  request.onerror = () => {
-    alert("DBの初期化に失敗しました");
-  };
+  request.onerror = () => alert("DBの初期化に失敗しました");
 
   // =========================
   // 登録処理
@@ -139,9 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderHistory();
     };
 
-    tx.onerror = () => {
-      alert("保存に失敗しました");
-    };
+    tx.onerror = () => alert("保存に失敗しました");
   }
 
   // =========================
@@ -157,10 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
     store.getAll().onsuccess = (e) => {
       const items = e.target.result;
 
-      // 新しい順に並び替え
       items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-      // artistIdごとにグループ化
       const groups = {};
       items.forEach(item => {
         if (!groups[item.artistId]) groups[item.artistId] = { artistName: item.artistName, lives: [] };
@@ -216,116 +209,109 @@ document.addEventListener("DOMContentLoaded", () => {
     };
   }
 
+  // =========================
+  // 詳細モーダル処理
+  // =========================
+  function openDetailModal(item) {
+    if (registerSection.style.display === "block") return;
 
-// =========================
-// 詳細モーダル処理
-// =========================
+    currentEditingId = item.id;
 
-function openDetailModal(item) {
-  // 登録タブ表示中なら開かない
-  if (registerSection.style.display === "block") return;
+    document.getElementById("detailDate").textContent = item.date;
+    document.getElementById("detailArtist").textContent = item.artistName;
+    document.getElementById("detailVenue").textContent = item.venue;
+    document.getElementById("detailTour").textContent = item.tourTitle || "";
 
-  currentEditingId = item.id;
+    const setlistView = document.getElementById("detailSetlistView");
+    const songCountDiv = document.getElementById("detailSongCount");
 
-  // 参照表示
-  document.getElementById("detailDate").textContent = item.date;
-  document.getElementById("detailArtist").textContent = item.artistName;
-  document.getElementById("detailVenue").textContent = item.venue;
-  document.getElementById("detailTour").textContent = item.tourTitle || "";
+    if (Array.isArray(item.setlist)) {
+      const songs = item.setlist;
+      songCountDiv.textContent = songs.length + " 曲";
+      setlistView.innerHTML = "";
+      songs.forEach((song, index) => {
+        const div = document.createElement("div");
+        div.textContent = `${index + 1}. ${song}`;
+        setlistView.appendChild(div);
+      });
+    } else {
+      songCountDiv.textContent = "0 曲";
+      setlistView.textContent = "（未登録）";
+    }
 
-  const setlistView = document.getElementById("detailSetlistView");
-  const songCountDiv = document.getElementById("detailSongCount");
+    document.getElementById("detailMemoView").textContent = item.memo || "";
+    document.getElementById("detailMemo").value = item.memo || "";
+    document.getElementById("detailSetlist").value = Array.isArray(item.setlist) ? item.setlist.join("\n") : "";
 
-  if (Array.isArray(item.setlist)) {
-    const songs = item.setlist;
-    songCountDiv.textContent = songs.length + " 曲";
-    setlistView.innerHTML = "";
-    songs.forEach((song, index) => {
-      const div = document.createElement("div");
-      div.textContent = `${index + 1}. ${song}`;
-      setlistView.appendChild(div);
-    });
-  } else {
-    songCountDiv.textContent = "0 曲";
-    setlistView.textContent = "（未登録）";
+    viewArea.style.display = "block";
+    editArea.style.display = "none";
+    modal.classList.remove("hidden");
   }
 
-  document.getElementById("detailMemoView").textContent = item.memo || "";
-  document.getElementById("detailMemo").value = item.memo || "";
-  document.getElementById("detailSetlist").value = Array.isArray(item.setlist) ? item.setlist.join("\n") : "";
+  // --- 閉じる ---
+  closeBtn.addEventListener("click", () => {
+    modal.classList.add("hidden");
+    currentEditingId = null;
+  });
 
-  viewArea.style.display = "block";
-  editArea.style.display = "none";
-  modal.classList.remove("hidden");
-}
+  // --- 編集 ---
+  editBtn.addEventListener("click", () => {
+    viewArea.style.display = "none";
+    editArea.style.display = "block";
+  });
 
-// --- 閉じる ---
-closeBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-  currentEditingId = null;
-});
-
-// --- 編集 ---
-editBtn.addEventListener("click", () => {
-  viewArea.style.display = "none";
-  editArea.style.display = "block";
-});
-
-// --- キャンセル ---
-cancelEditBtn.addEventListener("click", () => {
-  if (!confirm("編集内容を破棄しますか？")) return;
-  editArea.style.display = "none";
-  viewArea.style.display = "block";
-});
-
-// --- 保存 ---
-saveDetailBtn.addEventListener("click", () => {
-  if (!currentEditingId) return;
-
-  const newMemo = document.getElementById("detailMemo").value;
-  const setlistText = document.getElementById("detailSetlist").value;
-  const newSetlist = setlistText.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
-
-  const tx = db.transaction("lives", "readwrite");
-  const store = tx.objectStore("lives");
-
-  store.get(currentEditingId).onsuccess = (e) => {
-    const item = e.target.result;
-    item.memo = newMemo;
-    item.setlist = newSetlist;
-    store.put(item);
-  };
-
-  tx.oncomplete = () => {
+  // --- キャンセル ---
+  cancelEditBtn.addEventListener("click", () => {
+    if (!confirm("編集内容を破棄しますか？")) return;
     editArea.style.display = "none";
     viewArea.style.display = "block";
-    modal.classList.add("hidden");
-    currentEditingId = null;
-    renderHistory();
-  };
+  });
 
-  tx.onerror = () => {
-    alert("更新に失敗しました");
-  };
+  // --- 保存 ---
+  saveDetailBtn.addEventListener("click", () => {
+    if (!currentEditingId) return;
+
+    const newMemo = document.getElementById("detailMemo").value;
+    const newSetlist = document.getElementById("detailSetlist").value
+      .split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
+
+    const tx = db.transaction("lives", "readwrite");
+    const store = tx.objectStore("lives");
+
+    store.get(currentEditingId).onsuccess = (e) => {
+      const item = e.target.result;
+      item.memo = newMemo;
+      item.setlist = newSetlist;
+      store.put(item);
+    };
+
+    tx.oncomplete = () => {
+      editArea.style.display = "none";
+      viewArea.style.display = "block";
+      modal.classList.add("hidden");
+      currentEditingId = null;
+      renderHistory();
+    };
+
+    tx.onerror = () => alert("更新に失敗しました");
+  });
+
+  // --- 削除 ---
+  deleteDetailBtn.addEventListener("click", () => {
+    if (!currentEditingId) return;
+    if (!confirm("このライブを削除しますか？")) return;
+
+    const tx = db.transaction("lives", "readwrite");
+    const store = tx.objectStore("lives");
+    store.delete(currentEditingId);
+
+    tx.oncomplete = () => {
+      modal.classList.add("hidden");
+      currentEditingId = null;
+      renderHistory();
+    };
+
+    tx.onerror = () => alert("削除に失敗しました");
+  });
+
 });
-
-// --- 削除 ---
-deleteDetailBtn.addEventListener("click", () => {
-  if (!currentEditingId) return;
-  if (!confirm("このライブを削除しますか？")) return;
-
-  const tx = db.transaction("lives", "readwrite");
-  const store = tx.objectStore("lives");
-  store.delete(currentEditingId);
-
-  tx.oncomplete = () => {
-    modal.classList.add("hidden");
-    currentEditingId = null;
-    renderHistory();
-  };
-
-  tx.onerror = () => {
-    alert("削除に失敗しました");
-  };
-});
-
