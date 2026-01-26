@@ -1,3 +1,13 @@
+window.onerror = function(message, source, lineno, colno, error) {
+  alert(
+    "JSエラー:\n" +
+    message + "\n" +
+    "line: " + lineno
+  );
+};
+
+
+
 // ===== DB 初期化 =====
 
 let db;
