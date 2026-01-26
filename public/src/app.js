@@ -51,17 +51,16 @@ function saveLive() {
     alert("すべて入力してください");
     return;
   }
-  
+
   const setlist = setlistText
-  .split(/\r?\n/)
-  .map(s => s.trim())
-  .filter(s => s !== "");
+    .split(/\r?\n/)
+    .map(s => s.trim())
+    .filter(s => s !== "");
 
   const tx = db.transaction(["artists", "lives"], "readwrite");
   const artistStore = tx.objectStore("artists");
   const liveStore = tx.objectStore("lives");
 
-  // まず artists から同名を探す
   const getAllReq = artistStore.getAll();
 
   getAllReq.onsuccess = () => {
@@ -69,17 +68,46 @@ function saveLive() {
     let artist = artists.find(a => a.name === artistName);
 
     if (!artist) {
-      // なければ新規作成
+      // 新規アーティスト
       const addReq = artistStore.add({ name: artistName });
       addReq.onsuccess = (e) => {
         const artistId = e.target.result;
-        addLive(artistId, artistName, tourTitle);
+        addLive(artistId);
       };
     } else {
-      const artistId = artist.id;
-      addLive(artistId, artistName, tourTitle);
+      const artistId = artist.id;   // ★ここが重要
+      addLive(artistId);
     }
   };
+
+  function addLive(artistId) {
+    liveStore.add({
+      artistId,
+      artistName,
+      tourTitle,
+      date,
+      venue,
+      memo: memo,
+      setlist: setlist,
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  tx.oncomplete = () => {
+    document.getElementById("artist").value = "";
+    document.getElementById("date").value = "";
+    document.getElementById("tourTitle").value = "";
+    document.getElementById("venue").value = "";
+    document.getElementById("memo").value = "";
+    document.getElementById("setlist").value = "";
+    renderHistory();
+  };
+
+  tx.onerror = () => {
+    alert("保存に失敗しました");
+  };
+}
+
 
 function addLive(artistId, artistName, tourTitle) {
   const setlistArray = setlistText
