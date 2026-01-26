@@ -239,8 +239,26 @@ function openDetailModal(item) {
   document.getElementById("detailVenue").textContent = item.venue;
   document.getElementById("detailMemo").value = item.memo || "";
   
-  const setlistText = (item.setlist || []).join("\n");
-  document.getElementById("detailSetlist").value = setlistText;
+    // ★ツアータイトル表示
+  document.getElementById("detailTour").textContent = item.tourTitle || "";
+
+  // ★セットリスト表示
+  const setlistView = document.getElementById("detailSetlistView");
+
+  if (item.setlist) {
+    const songs = item.setlist.split("\n").filter(s => s.trim() !== "");
+    document.getElementById("detailSongCount").textContent = songs.length + " 曲";
+
+    setlistView.innerHTML = "";
+    songs.forEach((song, index) => {
+      const div = document.createElement("div");
+      div.textContent = `${index + 1}. ${song}`;
+      setlistView.appendChild(div);
+    });
+  } else {
+    document.getElementById("detailSongCount").textContent = "0 曲";
+    setlistView.textContent = "（未登録）";
+  }
 
   modal.classList.remove("hidden");
 }
