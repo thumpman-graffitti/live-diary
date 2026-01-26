@@ -79,17 +79,22 @@ function saveLive() {
     }
   };
 
-  function addLive(artistId, artistName) {
-    liveStore.add({
-      artistId,
-      artistName,
-      date,
-      venue,
-      memo: memo,
-      setlist: setlist,
-      createdAt: new Date().toISOString()
-    });
-  }
+function addLive(artistId, artistName) {
+  const setlistArray = setlistText
+    .split(/\r?\n/)
+    .map(s => s.trim())
+    .filter(s => s !== "");
+
+  liveStore.add({
+    artistId,
+    artistName,
+    date,
+    venue,
+    memo: memo,
+    setlist: setlistArray,   // ★ここが重要
+    createdAt: new Date().toISOString()
+  });
+}
 
   tx.oncomplete = () => {
     document.getElementById("artist").value = "";
