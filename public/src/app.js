@@ -1,4 +1,5 @@
 alert("app.js が読み込まれました");
+alert("1. DB初期化の前までOK");
 
 
 
