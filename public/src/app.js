@@ -42,11 +42,12 @@ document.getElementById("saveBtn").addEventListener("click", saveLive);
 function saveLive() {
   const artistName = document.getElementById("artist").value.trim();
   const date = document.getElementById("date").value;
+  const tourTitle = document.getElementById("tourTitle").value.trim();
   const venue = document.getElementById("venue").value.trim();
   const memo = document.getElementById("memo").value.trim();
   const setlistText = document.getElementById("setlist").value;
 
-  if (!artistName || !date || !venue) {
+  if (!artistName || !date || !venue || !tourTitle) {
     alert("すべて入力してください");
     return;
   }
@@ -89,6 +90,7 @@ function addLive(artistId, artistName) {
     artistId,
     artistName,
     date,
+    setlist: setlistText,
     venue,
     memo: memo,
     setlist: setlistArray,   // ★ここが重要
@@ -99,6 +101,7 @@ function addLive(artistId, artistName) {
   tx.oncomplete = () => {
     document.getElementById("artist").value = "";
     document.getElementById("date").value = "";
+    document.getElementById("tourTitle").value = "";
     document.getElementById("venue").value = "";
     document.getElementById("memo").value = "";
     document.getElementById("setlist").value = "";
@@ -158,16 +161,21 @@ function renderHistory() {
         li.addEventListener("click", () => {openDetailModal(item);
         });
 
-        const dateDiv = document.createElement("div");
-        dateDiv.className = "history-date";
-        dateDiv.textContent = item.date;
+const dateDiv = document.createElement("div");
+dateDiv.className = "history-date";
+dateDiv.textContent = item.date;
 
-        const venueDiv = document.createElement("div");
-        venueDiv.className = "history-venue";
-        venueDiv.textContent = item.venue;
+const tourDiv = document.createElement("div");          // ★追加
+tourDiv.className = "history-tour";
+tourDiv.textContent = item.tourTitle || "";
 
-        li.appendChild(dateDiv);
-        li.appendChild(venueDiv);
+const venueDiv = document.createElement("div");
+venueDiv.className = "history-venue";
+venueDiv.textContent = item.venue;
+
+li.appendChild(dateDiv);
+li.appendChild(tourDiv);    // ★追加
+li.appendChild(venueDiv);
 
         ul.appendChild(li);
       });
