@@ -28,33 +28,41 @@ document.addEventListener("DOMContentLoaded", () => {
   showRegisterBtn.classList.add("active");
   modal.classList.add("hidden");
 
-  // =========================
-  // タブ切替
-  // =========================
+
+// =========================
+// タブ切替
+// =========================
 // =========================
 // タブ切替
 // =========================
 showRegisterBtn.addEventListener("click", () => {
   registerSection.style.display = "block";
   historySection.style.display = "none";
+
   showRegisterBtn.classList.add("active");
   showHistoryBtn.classList.remove("active");
 
   // モーダルを閉じる
   modal.classList.add("hidden");
+  editArea.style.display = "none";
+  viewArea.style.display = "block";
   currentEditingId = null;
 });
 
 showHistoryBtn.addEventListener("click", () => {
   registerSection.style.display = "none";
   historySection.style.display = "block";
+
   showHistoryBtn.classList.add("active");
   showRegisterBtn.classList.remove("active");
 
   // モーダルを閉じる
   modal.classList.add("hidden");
+  editArea.style.display = "none";
+  viewArea.style.display = "block";
   currentEditingId = null;
 });
+
 
 
 
