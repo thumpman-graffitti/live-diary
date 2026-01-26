@@ -228,6 +228,11 @@ const closeBtn = document.getElementById("closeDetailBtn");
 const saveDetailBtn = document.getElementById("saveDetailBtn");
 const deleteDetailBtn = document.getElementById("deleteDetailBtn");
 
+const viewArea = document.getElementById("viewArea");
+const editArea = document.getElementById("editArea");
+const editBtn = document.getElementById("editBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+
 function openDetailModal(item) {
   currentEditingId = item.id;
 
