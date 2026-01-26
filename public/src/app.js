@@ -226,6 +226,8 @@ function openDetailModal(item) {
   document.getElementById("detailVenue").textContent = item.venue;
   document.getElementById("detailMemo").value = item.memo || "";
   
+  const setlistText = (item.setlist || []).join("\n");
+  document.getElementById("detailSetlist").value = setlistText;
 
   modal.classList.remove("hidden");
 }
@@ -239,6 +241,12 @@ closeBtn.addEventListener("click", () => {
 // 保存
 saveDetailBtn.addEventListener("click", () => {
   const newMemo = document.getElementById("detailMemo").value;
+  const setlistText = document.getElementById("detailSetlist").value;
+
+  const newSetlist = setlistText
+    .split(/\r?\n/)
+    .map(s => s.trim())
+    .filter(s => s !== "");
 
   const tx = db.transaction("lives", "readwrite");
   const store = tx.objectStore("lives");
@@ -248,6 +256,7 @@ saveDetailBtn.addEventListener("click", () => {
   getReq.onsuccess = () => {
     const item = getReq.result;
     item.memo = newMemo;
+    item.setlist = newSetlist;   // ★ここが追加
     store.put(item);
   };
 
