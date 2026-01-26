@@ -111,18 +111,7 @@ function saveLive() {
   };
 }
 
-  function addLive(artistId) {
-    liveStore.add({
-      artistId,
-      artistName,
-      tourTitle,
-      date,
-      venue,
-      memo,
-      setlist,
-      createdAt: new Date().toISOString()
-    });
-  }
+
 
   tx.oncomplete = () => {
     document.getElementById("artist").value = "";
