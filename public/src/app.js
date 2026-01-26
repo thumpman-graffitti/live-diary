@@ -29,6 +29,10 @@ request.onupgradeneeded = (event) => {
 request.onsuccess = (event) => {
   db = event.target.result;
   renderHistory();
+  
+  // ★ 追加：起動時は必ずモーダルを閉じる
+  modal.classList.add("hidden");
+  
 };
 
 request.onerror = () => {
