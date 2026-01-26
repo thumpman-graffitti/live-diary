@@ -68,15 +68,13 @@ function saveLive() {
     let artist = artists.find(a => a.name === artistName);
 
     if (!artist) {
-      // 新規アーティスト
       const addReq = artistStore.add({ name: artistName });
       addReq.onsuccess = (e) => {
         const artistId = e.target.result;
         addLive(artistId);
       };
     } else {
-      const artistId = artist.id;   // ★ここが重要
-      addLive(artistId);
+      addLive(artist.id);
     }
   };
 
@@ -87,8 +85,8 @@ function saveLive() {
       tourTitle,
       date,
       venue,
-      memo: memo,
-      setlist: setlist,
+      memo,
+      setlist,
       createdAt: new Date().toISOString()
     });
   }
