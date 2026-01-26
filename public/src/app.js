@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const showHistoryBtn = document.getElementById("showHistory");
   const registerSection = document.getElementById("register");
   const historySection = document.getElementById("history");
+
   const saveBtn = document.getElementById("saveBtn");
 
   const closeBtn = document.getElementById("closeDetailBtn");
@@ -23,7 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentEditingId = null;
   let db;
 
-  // ===== 初期状態 =====
+  // 初期状態
   registerSection.style.display = "block";
   historySection.style.display = "none";
   showRegisterBtn.classList.add("active");
@@ -71,10 +72,12 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
   };
 
-  request.onerror = () => alert("DBの初期化に失敗しました");
+  request.onerror = () => {
+    alert("DBの初期化に失敗しました");
+  };
 
   // =========================
-  // 登録処理
+  // ライブ登録
   // =========================
   saveBtn.addEventListener("click", saveLive);
 
@@ -91,10 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const setlist = setlistText
-      .split(/\r?\n/)
-      .map(s => s.trim())
-      .filter(s => s !== "");
+    const setlist = setlistText.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
 
     const tx = db.transaction(["artists", "lives"], "readwrite");
     const artistStore = tx.objectStore("artists");
@@ -122,7 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
           memo,
           setlist,
           createdAt: new Date().toISOString()
-        });
+        }).onsuccess = () => {
+          renderHistory();
+        };
       }
     };
 
@@ -133,10 +135,11 @@ document.addEventListener("DOMContentLoaded", () => {
       document.getElementById("venue").value = "";
       document.getElementById("memo").value = "";
       document.getElementById("setlist").value = "";
-      renderHistory();
     };
 
-    tx.onerror = () => alert("保存に失敗しました");
+    tx.onerror = () => {
+      alert("保存に失敗しました");
+    };
   }
 
   // =========================
@@ -210,13 +213,21 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // =========================
-  // 詳細モーダル処理
+  // 詳細モーダル
   // =========================
   function openDetailModal(item) {
     if (registerSection.style.display === "block") return;
 
     currentEditingId = item.id;
 
+    updateModalView(item);
+    viewArea.style.display = "block";
+    editArea.style.display = "none";
+    modal.classList.remove("hidden");
+  }
+
+  // モーダルの表示内容を更新
+  function updateModalView(item) {
     document.getElementById("detailDate").textContent = item.date;
     document.getElementById("detailArtist").textContent = item.artistName;
     document.getElementById("detailVenue").textContent = item.venue;
@@ -226,12 +237,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const songCountDiv = document.getElementById("detailSongCount");
 
     if (Array.isArray(item.setlist)) {
-      const songs = item.setlist;
-      songCountDiv.textContent = songs.length + " 曲";
+      songCountDiv.textContent = item.setlist.length + " 曲";
       setlistView.innerHTML = "";
-      songs.forEach((song, index) => {
+      item.setlist.forEach((s, i) => {
         const div = document.createElement("div");
-        div.textContent = `${index + 1}. ${song}`;
+        div.textContent = `${i + 1}. ${s}`;
         setlistView.appendChild(div);
       });
     } else {
@@ -242,10 +252,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("detailMemoView").textContent = item.memo || "";
     document.getElementById("detailMemo").value = item.memo || "";
     document.getElementById("detailSetlist").value = Array.isArray(item.setlist) ? item.setlist.join("\n") : "";
-
-    viewArea.style.display = "block";
-    editArea.style.display = "none";
-    modal.classList.remove("hidden");
   }
 
   // --- 閉じる ---
@@ -264,7 +270,17 @@ document.addEventListener("DOMContentLoaded", () => {
   cancelEditBtn.addEventListener("click", () => {
     if (!confirm("編集内容を破棄しますか？")) return;
     editArea.style.display = "none";
-    viewArea.style.display = "block";
+
+    // DBから再取得して表示
+    if (currentEditingId) {
+      const tx = db.transaction("lives", "readonly");
+      const store = tx.objectStore("lives");
+      store.get(currentEditingId).onsuccess = (e) => {
+        const item = e.target.result;
+        updateModalView(item);
+        viewArea.style.display = "block";
+      };
+    }
   });
 
   // --- 保存 ---
@@ -272,8 +288,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!currentEditingId) return;
 
     const newMemo = document.getElementById("detailMemo").value;
-    const newSetlist = document.getElementById("detailSetlist").value
-      .split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
+    const setlistText = document.getElementById("detailSetlist").value;
+    const newSetlist = setlistText.split(/\r?\n/).map(s => s.trim()).filter(s => s !== "");
 
     const tx = db.transaction("lives", "readwrite");
     const store = tx.objectStore("lives");
@@ -282,18 +298,13 @@ document.addEventListener("DOMContentLoaded", () => {
       const item = e.target.result;
       item.memo = newMemo;
       item.setlist = newSetlist;
-      store.put(item);
+      store.put(item).onsuccess = () => {
+        renderHistory();
+        updateModalView(item); // モーダル内も更新
+        editArea.style.display = "none";
+        viewArea.style.display = "block";
+      };
     };
-
-    tx.oncomplete = () => {
-      editArea.style.display = "none";
-      viewArea.style.display = "block";
-      modal.classList.add("hidden");
-      currentEditingId = null;
-      renderHistory();
-    };
-
-    tx.onerror = () => alert("更新に失敗しました");
   });
 
   // --- 削除 ---
@@ -303,15 +314,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const tx = db.transaction("lives", "readwrite");
     const store = tx.objectStore("lives");
-    store.delete(currentEditingId);
 
-    tx.oncomplete = () => {
+    store.delete(currentEditingId).onsuccess = () => {
+      renderHistory();
       modal.classList.add("hidden");
       currentEditingId = null;
-      renderHistory();
     };
-
-    tx.onerror = () => alert("削除に失敗しました");
   });
 
 });
