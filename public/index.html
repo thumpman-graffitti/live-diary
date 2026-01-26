@@ -33,75 +33,75 @@
   </section>
 
 
-<!-- 詳細編集モーダル -->
-<div id="detailModal" class="modal hidden">
-  <div class="modal-content">
+<!-- 詳細モーダル全体 -->
+<div id="detailModal" class="hidden">
 
-    <h3>ライブ詳細</h3>
+  <h2 id="modalTitle">ライブ詳細（参照）</h2>
 
-    <!-- ===== 参照表示エリア ===== -->
-    <div id="viewArea">
+  <!-- 参照表示エリア -->
+  <div id="viewArea">
 
-      <div>
-        <label>日付</label>
-        <div id="detailDate"></div>
-      </div>
-
-      <div>
-        <label>アーティスト</label>
-        <div id="detailArtist"></div>
-      </div>
-
-      <div>
-        <label>ツアータイトル</label>
-        <div id="detailTour"></div>
-      </div>
-
-      <div>
-        <label>会場</label>
-        <div id="detailVenue"></div>
-      </div>
-
-      <div>
-        <label>セットリスト曲数</label>
-        <div id="detailSongCount"></div>
-      </div>
-
-      <div>
-        <label>セットリスト</label>
-        <div id="detailSetlistView"></div>
-      </div>
-
-      <div>
-        <label>メモ</label>
-        <div id="detailMemoView"></div>
-      </div>
-
-      <button id="editBtn">編集</button>
+    <div>
+      <label>日付</label>
+      <div id="detailDate"></div>
     </div>
 
-    <!-- ===== 編集エリア（最初は非表示） ===== -->
-    <div id="editArea" style="display:none;">
-
-      <div>
-        <label>メモ</label>
-        <textarea id="detailMemo" rows="5"></textarea>
-      </div>
-
-      <div>
-        <label>セットリスト（1行1曲）</label>
-        <textarea id="detailSetlist" rows="8"></textarea>
-      </div>
-
-      <button id="saveDetailBtn">保存</button>
-      <button id="cancelEditBtn">キャンセル</button>
-      <button id="deleteDetailBtn" style="margin-top:12px; color:red;">削除</button>
+    <div>
+      <label>アーティスト</label>
+      <div id="detailArtist"></div>
     </div>
 
-    <button id="closeDetailBtn">閉じる</button>
+    <div>
+      <label>ツアータイトル</label>
+      <div id="detailTour"></div>
+    </div>
 
+    <div>
+      <label>会場</label>
+      <div id="detailVenue"></div>
+    </div>
+
+    <div>
+      <label>セットリスト曲数</label>
+      <div id="detailSongCount"></div>
+    </div>
+
+    <div>
+      <label>セットリスト</label>
+      <div id="detailSetlistView"></div>
+    </div>
+
+    <div>
+      <label>メモ</label>
+      <div id="detailMemoView"></div>
+    </div>
+
+    <button id="editBtn">編集</button>
   </div>
+
+  <!-- 編集エリア -->
+  <div id="editArea" style="display:none;">
+
+    <div>
+      <label>メモ</label>
+      <textarea id="detailMemo" rows="5"></textarea>
+    </div>
+
+    <div>
+      <label>セットリスト（1行1曲）</label>
+      <textarea id="detailSetlist" rows="8"></textarea>
+    </div>
+
+    <button id="saveDetailBtn">保存</button>
+    <button id="cancelEditBtn">キャンセル</button>
+    <button id="deleteDetailBtn" style="margin-top:12px; color:red;">削除</button>
+  </div>
+
+  <button id="closeDetailBtn">閉じる</button>
+
 </div>
+
+
 
 
   <!-- ここが重要 -->
