@@ -275,6 +275,8 @@ function openDetailModal(item) {
   viewArea.style.display = "block";
   editArea.style.display = "none";
 
+　document.getElementById("modalTitle").textContent = "ライブ詳細（参照）";
+
   modal.classList.remove("hidden");
 }
 
@@ -293,6 +295,9 @@ editBtn.addEventListener("click", () => {
 
 // キャンセル
 cancelEditBtn.addEventListener("click", () => {
+  
+  if (!confirm("編集内容を破棄しますか？")) return;
+  
   editArea.style.display = "none";
   viewArea.style.display = "block";
 });
