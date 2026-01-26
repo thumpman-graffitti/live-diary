@@ -213,6 +213,10 @@ showRegisterBtn.addEventListener("click", () => {
 
   showRegisterBtn.classList.add("active");
   showHistoryBtn.classList.remove("active");
+  
+    // ★ 追加：登録タブでは必ず詳細を閉じる
+  modal.classList.add("hidden");
+  
 });
 
 showHistoryBtn.addEventListener("click", () => {
@@ -221,6 +225,10 @@ showHistoryBtn.addEventListener("click", () => {
 
   showHistoryBtn.classList.add("active");
   showRegisterBtn.classList.remove("active");
+  
+    // ★ 追加：タブ切り替え時は詳細を閉じる
+  modal.classList.add("hidden");
+  
 });
 
 // ===== 詳細モーダル処理 =====
