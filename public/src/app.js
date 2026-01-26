@@ -159,8 +159,12 @@ function renderHistory() {
         const li = document.createElement("li");
         li.className = "history-item";
         
-        li.addEventListener("click", () => {openDetailModal(item);
-        });
+        
+        li.addEventListener("click", (e) => {
+        e.stopPropagation();        // ★これが重要
+        openDetailModal(item);
+　　　　　});
+        
 
 const dateDiv = document.createElement("div");
 dateDiv.className = "history-date";
