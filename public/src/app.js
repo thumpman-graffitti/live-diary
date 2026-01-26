@@ -1,10 +1,4 @@
-window.onerror = function(message, source, lineno, colno, error) {
-  alert(
-    "JSエラー:\n" +
-    message + "\n" +
-    "line: " + lineno
-  );
-};
+alert("app.js が読み込まれました");
 
 
 
