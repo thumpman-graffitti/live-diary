@@ -231,25 +231,20 @@ const deleteDetailBtn = document.getElementById("deleteDetailBtn");
 function openDetailModal(item) {
   currentEditingId = item.id;
 
+  // 参照表示
   document.getElementById("detailDate").textContent = item.date;
   document.getElementById("detailArtist").textContent = item.artistName;
   document.getElementById("detailVenue").textContent = item.venue;
-  document.getElementById("detailMemo").value = item.memo || "";
-
-  // ツアータイトル
   document.getElementById("detailTour").textContent = item.tourTitle || "";
 
   const setlistView = document.getElementById("detailSetlistView");
-  const setlistTextarea = document.getElementById("detailSetlist");
   const songCountDiv = document.getElementById("detailSongCount");
 
   if (Array.isArray(item.setlist)) {
     const songs = item.setlist;
 
-    // 曲数
     songCountDiv.textContent = songs.length + " 曲";
 
-    // 読み取り専用表示
     setlistView.innerHTML = "";
     songs.forEach((song, index) => {
       const div = document.createElement("div");
@@ -257,23 +252,46 @@ function openDetailModal(item) {
       setlistView.appendChild(div);
     });
 
-    // 編集用 textarea
-    setlistTextarea.value = songs.join("\n");
-
   } else {
     songCountDiv.textContent = "0 曲";
     setlistView.textContent = "（未登録）";
-    setlistTextarea.value = "";
   }
+
+  // メモ（参照用）
+  document.getElementById("detailMemoView").textContent = item.memo || "";
+
+  // 編集用にも値をセット（まだ表示しない）
+  document.getElementById("detailMemo").value = item.memo || "";
+  document.getElementById("detailSetlist").value = Array.isArray(item.setlist)
+    ? item.setlist.join("\n")
+    : "";
+
+  // ★ 初期は参照モード
+  viewArea.style.display = "block";
+  editArea.style.display = "none";
 
   modal.classList.remove("hidden");
 }
+
 
 // 閉じる
 closeBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
   currentEditingId = null;
 });
+
+// 編集
+editBtn.addEventListener("click", () => {
+  viewArea.style.display = "none";
+  editArea.style.display = "block";
+});
+
+// キャンセル
+cancelEditBtn.addEventListener("click", () => {
+  editArea.style.display = "none";
+  viewArea.style.display = "block";
+});
+
 
 // 保存
 saveDetailBtn.addEventListener("click", () => {
@@ -297,11 +315,13 @@ saveDetailBtn.addEventListener("click", () => {
     store.put(item);
   };
 
-  tx.oncomplete = () => {
-    modal.classList.add("hidden");
-    currentEditingId = null;
-    renderHistory();
-  };
+tx.oncomplete = () => {
+  editArea.style.display = "none";
+  viewArea.style.display = "block";
+  currentEditingId = null;
+  modal.classList.add("hidden");
+  renderHistory();
+};
 
   tx.onerror = () => {
     alert("更新に失敗しました");
