@@ -32,38 +32,33 @@ document.addEventListener("DOMContentLoaded", () => {
 // =========================
 // タブ切替
 // =========================
-// =========================
-// タブ切替
-// =========================
+// 登録タブクリック
 showRegisterBtn.addEventListener("click", () => {
   registerSection.style.display = "block";
   historySection.style.display = "none";
-
   showRegisterBtn.classList.add("active");
   showHistoryBtn.classList.remove("active");
 
-  // モーダルを閉じる
+  // モーダル閉じる & 編集モードリセット
   modal.classList.add("hidden");
-  editArea.style.display = "none";
-  viewArea.style.display = "block";
   currentEditingId = null;
+  viewArea.style.display = "block";
+  editArea.style.display = "none";
 });
 
+// 履歴タブクリック
 showHistoryBtn.addEventListener("click", () => {
   registerSection.style.display = "none";
   historySection.style.display = "block";
-
   showHistoryBtn.classList.add("active");
   showRegisterBtn.classList.remove("active");
 
-  // モーダルを閉じる
+  // モーダル閉じる & 編集モードリセット
   modal.classList.add("hidden");
-  editArea.style.display = "none";
-  viewArea.style.display = "block";
   currentEditingId = null;
+  viewArea.style.display = "block";
+  editArea.style.display = "none";
 });
-
-
 
 
   // =========================
