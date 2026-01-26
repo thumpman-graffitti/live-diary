@@ -245,7 +245,18 @@ const editArea = document.getElementById("editArea");
 const editBtn = document.getElementById("editBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
+// 登録・履歴タブの参照
+const registerSection = document.getElementById("register");
+const historySection = document.getElementById("history");
+
+/**
+ * ライブ詳細モーダルを開く
+ * 履歴タブでのみ開く
+ */
 function openDetailModal(item) {
+  // 登録タブ表示中ならモーダルを開かない
+  if (registerSection.style.display === "block") return;
+
   currentEditingId = item.id;
 
   // 参照表示
@@ -259,22 +270,18 @@ function openDetailModal(item) {
 
   if (Array.isArray(item.setlist)) {
     const songs = item.setlist;
-
     songCountDiv.textContent = songs.length + " 曲";
-
     setlistView.innerHTML = "";
     songs.forEach((song, index) => {
       const div = document.createElement("div");
       div.textContent = `${index + 1}. ${song}`;
       setlistView.appendChild(div);
     });
-
   } else {
     songCountDiv.textContent = "0 曲";
     setlistView.textContent = "（未登録）";
   }
 
-  // メモ（参照用）
   document.getElementById("detailMemoView").textContent = item.memo || "";
 
   // 編集用にも値をセット（まだ表示しない）
@@ -283,40 +290,36 @@ function openDetailModal(item) {
     ? item.setlist.join("\n")
     : "";
 
-  // ★ 初期は参照モード
+  // 初期は参照モード
   viewArea.style.display = "block";
   editArea.style.display = "none";
-
-document.getElementById("modalTitle").textContent = "ライブ詳細（参照）";
 
   modal.classList.remove("hidden");
 }
 
-
-// 閉じる
+// モーダルを閉じる
 closeBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
   currentEditingId = null;
 });
 
-// 編集
+// 編集ボタン
 editBtn.addEventListener("click", () => {
   viewArea.style.display = "none";
   editArea.style.display = "block";
 });
 
-// キャンセル
+// 編集キャンセル
 cancelEditBtn.addEventListener("click", () => {
-  
   if (!confirm("編集内容を破棄しますか？")) return;
-  
   editArea.style.display = "none";
   viewArea.style.display = "block";
 });
 
-
-// 保存
+// 編集内容保存
 saveDetailBtn.addEventListener("click", () => {
+  if (!currentEditingId) return;
+
   const newMemo = document.getElementById("detailMemo").value;
   const setlistText = document.getElementById("detailSetlist").value;
 
@@ -333,22 +336,45 @@ saveDetailBtn.addEventListener("click", () => {
   getReq.onsuccess = () => {
     const item = getReq.result;
     item.memo = newMemo;
-    item.setlist = newSetlist;   // ★ここが追加
+    item.setlist = newSetlist;
     store.put(item);
   };
 
-tx.oncomplete = () => {
-  editArea.style.display = "none";
-  viewArea.style.display = "block";
-  currentEditingId = null;
-  modal.classList.add("hidden");
-  renderHistory();
-};
+  tx.oncomplete = () => {
+    editArea.style.display = "none";
+    viewArea.style.display = "block";
+    modal.classList.add("hidden");
+    currentEditingId = null;
+    renderHistory();
+  };
 
   tx.onerror = () => {
     alert("更新に失敗しました");
   };
 });
+
+// 削除ボタン
+deleteDetailBtn.addEventListener("click", () => {
+  if (!currentEditingId) return;
+  if (!confirm("このライブを削除しますか？")) return;
+
+  const tx = db.transaction("lives", "readwrite");
+  const store = tx.objectStore("lives");
+
+  store.delete(currentEditingId);
+
+  tx.oncomplete = () => {
+    modal.classList.add("hidden");
+    currentEditingId = null;
+    renderHistory();
+  };
+
+  tx.onerror = () => {
+    alert("削除に失敗しました");
+  };
+});
+
+
 
 // 削除
 if (deleteDetailBtn) {
