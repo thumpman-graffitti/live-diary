@@ -158,7 +158,7 @@ function renderHistory() {
         
         
         li.addEventListener("click", (e) => {
-        e.stopPropagation();        // ★これが重要
+        e.stopPropagation();//★これが重要
         openDetailModal(item);
 　　　　　});
         
