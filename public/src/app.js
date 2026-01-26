@@ -73,14 +73,14 @@ function saveLive() {
       const addReq = artistStore.add({ name: artistName });
       addReq.onsuccess = (e) => {
         const artistId = e.target.result;
-        addLive(artistId, artistName);
+        addLive(artistId, artistName, tourTitle);
       };
     } else {
-      addLive(artist.id, artist.name);
+      addLive(artistId, artistName, tourTitle);
     }
   };
 
-function addLive(artistId, artistName) {
+function addLive(artistId, artistName, tourTitle) {
   const setlistArray = setlistText
     .split(/\r?\n/)
     .map(s => s.trim())
