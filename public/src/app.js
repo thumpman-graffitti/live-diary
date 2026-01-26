@@ -41,7 +41,6 @@ request.onerror = () => {
 };
 
 // ===== 登録処理 =====
-
 document.getElementById("saveBtn").addEventListener("click", saveLive);
 
 function saveLive() {
@@ -75,8 +74,7 @@ function saveLive() {
     if (!artist) {
       const addReq = artistStore.add({ name: artistName });
       addReq.onsuccess = (e) => {
-        const artistId = e.target.result;
-        addLive(artistId);
+        addLive(e.target.result);
       };
     } else {
       addLive(artist.id);
@@ -95,22 +93,6 @@ function saveLive() {
       createdAt: new Date().toISOString()
     });
   }
-
-  tx.oncomplete = () => {
-    document.getElementById("artist").value = "";
-    document.getElementById("date").value = "";
-    document.getElementById("tourTitle").value = "";
-    document.getElementById("venue").value = "";
-    document.getElementById("memo").value = "";
-    document.getElementById("setlist").value = "";
-    renderHistory();
-  };
-
-  tx.onerror = () => {
-    alert("保存に失敗しました");
-  };
-}
-
 
 
   tx.oncomplete = () => {
