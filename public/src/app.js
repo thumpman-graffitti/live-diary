@@ -111,40 +111,6 @@ function saveLive() {
 }
 
 
-function addLive(artistId, artistName, tourTitle) {
-  const setlistArray = setlistText
-    .split(/\r?\n/)
-    .map(s => s.trim())
-    .filter(s => s !== "");
-
-liveStore.add({
-  artistId,
-  artistName,
-  tourTitle,          // ★追加
-  date,
-  venue,
-  memo: memo,
-  setlist: setlistArray,   // 配列として保存
-  createdAt: new Date().toISOString()
-});
-
-}
-
-  tx.oncomplete = () => {
-    document.getElementById("artist").value = "";
-    document.getElementById("date").value = "";
-    document.getElementById("tourTitle").value = "";
-    document.getElementById("venue").value = "";
-    document.getElementById("memo").value = "";
-    document.getElementById("setlist").value = "";
-    renderHistory();
-  };
-
-  tx.onerror = () => {
-    alert("保存に失敗しました");
-  };
-}
-
 // ===== 履歴表示（アーティスト別グループ） =====
 function renderHistory() {
   const list = document.getElementById("historyList");
