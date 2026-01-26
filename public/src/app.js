@@ -3,14 +3,12 @@
 // =========================
 
 document.addEventListener("DOMContentLoaded", () => {
-
   // ===== DOM 要素取得 =====
   const modal = document.getElementById("detailModal");
   const showRegisterBtn = document.getElementById("showRegister");
   const showHistoryBtn = document.getElementById("showHistory");
   const registerSection = document.getElementById("register");
   const historySection = document.getElementById("history");
-
   const saveBtn = document.getElementById("saveBtn");
 
   const closeBtn = document.getElementById("closeDetailBtn");
@@ -24,7 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentEditingId = null;
   let db;
 
-  // 初期状態
+  // ===== 初期状態 =====
   registerSection.style.display = "block";
   historySection.style.display = "none";
   showRegisterBtn.classList.add("active");
@@ -38,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     historySection.style.display = "none";
     showRegisterBtn.classList.add("active");
     showHistoryBtn.classList.remove("active");
-    modal.classList.add("hidden");
+    closeModal();
   });
 
   showHistoryBtn.addEventListener("click", () => {
@@ -46,7 +44,7 @@ document.addEventListener("DOMContentLoaded", () => {
     historySection.style.display = "block";
     showHistoryBtn.classList.add("active");
     showRegisterBtn.classList.remove("active");
-    modal.classList.add("hidden");
+    closeModal();
   });
 
   // =========================
@@ -56,7 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   request.onupgradeneeded = (event) => {
     db = event.target.result;
-
     if (!db.objectStoreNames.contains("artists")) {
       db.createObjectStore("artists", { keyPath: "id", autoIncrement: true });
     }
@@ -72,12 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
     renderHistory();
   };
 
-  request.onerror = () => {
-    alert("DBの初期化に失敗しました");
-  };
+  request.onerror = () => alert("DBの初期化に失敗しました");
 
   // =========================
-  // ライブ登録
+  // 登録処理
   // =========================
   saveBtn.addEventListener("click", saveLive);
 
@@ -104,14 +99,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const artists = e.target.result;
       let artist = artists.find(a => a.name === artistName);
 
-      if (!artist) {
-        artistStore.add({ name: artistName }).onsuccess = (e) => {
-          addLive(e.target.result);
-        };
-      } else {
-        addLive(artist.id);
-      }
-
       function addLive(artistId) {
         liveStore.add({
           artistId,
@@ -122,24 +109,21 @@ document.addEventListener("DOMContentLoaded", () => {
           memo,
           setlist,
           createdAt: new Date().toISOString()
-        }).onsuccess = () => {
-          renderHistory();
-        };
+        });
+      }
+
+      if (!artist) {
+        artistStore.add({ name: artistName }).onsuccess = (e) => addLive(e.target.result);
+      } else {
+        addLive(artist.id);
       }
     };
 
     tx.oncomplete = () => {
-      document.getElementById("artist").value = "";
-      document.getElementById("date").value = "";
-      document.getElementById("tourTitle").value = "";
-      document.getElementById("venue").value = "";
-      document.getElementById("memo").value = "";
-      document.getElementById("setlist").value = "";
+      ["artist","date","tourTitle","venue","memo","setlist"].forEach(id => document.getElementById(id).value = "");
+      renderHistory();
     };
-
-    tx.onerror = () => {
-      alert("保存に失敗しました");
-    };
+    tx.onerror = () => alert("保存に失敗しました");
   }
 
   // =========================
@@ -154,8 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     store.getAll().onsuccess = (e) => {
       const items = e.target.result;
-
-      items.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      items.sort((a,b) => new Date(b.createdAt)-new Date(a.createdAt));
 
       const groups = {};
       items.forEach(item => {
@@ -177,40 +160,24 @@ document.addEventListener("DOMContentLoaded", () => {
         group.lives.forEach(item => {
           const li = document.createElement("li");
           li.className = "history-item";
+          li.addEventListener("click", (ev)=>{ ev.stopPropagation(); openDetailModal(item); });
 
-          li.addEventListener("click", (ev) => {
-            ev.stopPropagation();
-            openDetailModal(item);
-          });
+          const dateDiv = document.createElement("div"); dateDiv.className="history-date"; dateDiv.textContent=item.date;
+          const tourDiv = document.createElement("div"); tourDiv.className="history-tour"; tourDiv.textContent=item.tourTitle||"";
+          const venueDiv = document.createElement("div"); venueDiv.className="history-venue"; venueDiv.textContent=item.venue;
 
-          const dateDiv = document.createElement("div");
-          dateDiv.className = "history-date";
-          dateDiv.textContent = item.date;
-
-          const tourDiv = document.createElement("div");
-          tourDiv.className = "history-tour";
-          tourDiv.textContent = item.tourTitle || "";
-
-          const venueDiv = document.createElement("div");
-          venueDiv.className = "history-venue";
-          venueDiv.textContent = item.venue;
-
-          li.appendChild(dateDiv);
-          li.appendChild(tourDiv);
-          li.appendChild(venueDiv);
+          li.append(dateDiv,tourDiv,venueDiv);
           ul.appendChild(li);
         });
 
-        header.addEventListener("click", () => {
-          ul.style.display = ul.style.display === "block" ? "none" : "block";
-        });
+        header.addEventListener("click", ()=>{ ul.style.display = ul.style.display==="block" ? "none" : "block"; });
 
-        wrapper.appendChild(header);
-        wrapper.appendChild(ul);
+        wrapper.append(header,ul);
         list.appendChild(wrapper);
       });
     };
   }
+
 
   // =========================
   // 詳細モーダル
