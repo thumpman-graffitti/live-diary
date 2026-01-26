@@ -86,16 +86,17 @@ function addLive(artistId, artistName) {
     .map(s => s.trim())
     .filter(s => s !== "");
 
-  liveStore.add({
-    artistId,
-    artistName,
-    date,
-    setlist: setlistText,
-    venue,
-    memo: memo,
-    setlist: setlistArray,   // ★ここが重要
-    createdAt: new Date().toISOString()
-  });
+liveStore.add({
+  artistId,
+  artistName,
+  tourTitle,          // ★追加
+  date,
+  venue,
+  memo: memo,
+  setlist: setlistArray,   // 配列として保存
+  createdAt: new Date().toISOString()
+});
+
 }
 
   tx.oncomplete = () => {
@@ -242,23 +243,41 @@ function openDetailModal(item) {
     // ★ツアータイトル表示
   document.getElementById("detailTour").textContent = item.tourTitle || "";
 
-  // ★セットリスト表示
-  const setlistView = document.getElementById("detailSetlistView");
+// ★セットリスト表示
+const setlistView = document.getElementById("detailSetlistView");
 
-  if (item.setlist) {
-    const songs = item.setlist.split("\n").filter(s => s.trim() !== "");
-    document.getElementById("detailSongCount").textContent = songs.length + " 曲";
+if (Array.isArray(item.setlist)) {
+  const songs = item.setlist;
 
-    setlistView.innerHTML = "";
-    songs.forEach((song, index) => {
-      const div = document.createElement("div");
-      div.textContent = `${index + 1}. ${song}`;
-      setlistView.appendChild(div);
-    });
-  } else {
-    document.getElementById("detailSongCount").textContent = "0 曲";
-    setlistView.textContent = "（未登録）";
-  }
+  // 曲数表示
+  document.getElementById("detailSongCount").textContent = songs.length + " 曲";
+
+  // 読み取り専用表示
+  setlistView.innerHTML = "";
+  songs.forEach((song, index) => {
+    const div = document.createElement("div");
+    div.textContent = `${index + 1}. ${song}`;
+    setlistView.appendChild(div);
+  });
+
+  // ★ここが対策3の本体（編集用 textarea に初期値を入れる）
+  document.getElementById("detailSetlist").value = songs.join("\n");
+
+} else {
+  document.getElementById("detailSongCount").textContent = "0 曲";
+  setlistView.textContent = "（未登録）";
+  document.getElementById("detailSetlist").value = "";
+}
+
+
+  // 編集用 textarea にも反映
+  document.getElementById("detailSetlist").value = songs.join("\n");
+
+} else {
+  document.getElementById("detailSongCount").textContent = "0 曲";
+  setlistView.textContent = "（未登録）";
+  document.getElementById("detailSetlist").value = "";
+}
 
   modal.classList.remove("hidden");
 }
