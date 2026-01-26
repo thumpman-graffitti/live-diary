@@ -44,11 +44,17 @@ function saveLive() {
   const date = document.getElementById("date").value;
   const venue = document.getElementById("venue").value.trim();
   const memo = document.getElementById("memo").value.trim();
+  const setlistText = document.getElementById("setlist").value;
 
   if (!artistName || !date || !venue) {
     alert("すべて入力してください");
     return;
   }
+  
+  const setlist = setlistText
+  .split(/\r?\n/)
+  .map(s => s.trim())
+  .filter(s => s !== "");
 
   const tx = db.transaction(["artists", "lives"], "readwrite");
   const artistStore = tx.objectStore("artists");
@@ -80,6 +86,7 @@ function saveLive() {
       date,
       venue,
       memo: memo,
+      setlist: setlist,
       createdAt: new Date().toISOString()
     });
   }
@@ -89,6 +96,7 @@ function saveLive() {
     document.getElementById("date").value = "";
     document.getElementById("venue").value = "";
     document.getElementById("memo").value = "";
+    document.getElementById("setlist").value = "";
     renderHistory();
   };
 
