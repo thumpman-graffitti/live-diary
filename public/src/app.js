@@ -31,21 +31,28 @@ document.addEventListener("DOMContentLoaded", () => {
   // =========================
   // タブ切替
   // =========================
-  showRegisterBtn.addEventListener("click", () => {
-    registerSection.style.display = "block";
-    historySection.style.display = "none";
-    showRegisterBtn.classList.add("active");
-    showHistoryBtn.classList.remove("active");
-    closeModal();
-  });
+showRegisterBtn.addEventListener("click", () => {
+  registerSection.style.display = "block";
+  historySection.style.display = "none";
+  showRegisterBtn.classList.add("active");
+  showHistoryBtn.classList.remove("active");
 
-  showHistoryBtn.addEventListener("click", () => {
-    registerSection.style.display = "none";
-    historySection.style.display = "block";
-    showHistoryBtn.classList.add("active");
-    showRegisterBtn.classList.remove("active");
-    closeModal();
-  });
+  // モーダルを閉じる処理
+  modal.classList.add("hidden");
+  currentEditingId = null;
+});
+
+showHistoryBtn.addEventListener("click", () => {
+  registerSection.style.display = "none";
+  historySection.style.display = "block";
+  showHistoryBtn.classList.add("active");
+  showRegisterBtn.classList.remove("active");
+
+  // モーダルを閉じる処理
+  modal.classList.add("hidden");
+  currentEditingId = null;
+});
+
 
   // =========================
   // DB 初期化
