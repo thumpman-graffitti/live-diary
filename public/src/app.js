@@ -245,9 +245,6 @@ const editArea = document.getElementById("editArea");
 const editBtn = document.getElementById("editBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
-// 登録・履歴タブの参照
-const registerSection = document.getElementById("register");
-const historySection = document.getElementById("history");
 
 /**
  * ライブ詳細モーダルを開く
