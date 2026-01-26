@@ -275,7 +275,7 @@ function openDetailModal(item) {
   viewArea.style.display = "block";
   editArea.style.display = "none";
 
-　document.getElementById("modalTitle").textContent = "ライブ詳細（参照）";
+document.getElementById("modalTitle").textContent = "ライブ詳細（参照）";
 
   modal.classList.remove("hidden");
 }
