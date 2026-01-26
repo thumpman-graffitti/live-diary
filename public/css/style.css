@@ -95,29 +95,6 @@ nav button.active {
   padding: 8px 10px;
 }
 
-// ===== 詳細モーダル処理 =====
-
-let currentEditingId = null;
-
-const modal = document.getElementById("detailModal");
-const closeBtn = document.getElementById("closeDetailBtn");
-const saveDetailBtn = document.getElementById("saveDetailBtn");
-
-function openDetailModal(item) {
-  currentEditingId = item.id;
-
-  document.getElementById("detailDate").textContent = item.date;
-  document.getElementById("detailArtist").textContent = item.artistName;
-  document.getElementById("detailVenue").textContent = item.venue;
-  document.getElementById("detailMemo").value = item.memo || "";
-
-  modal.classList.remove("hidden");
-}
-
-closeBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
-  currentEditingId = null;
-});
 
 saveDetailBtn.addEventListener("click", () => {
   const newMemo = document.getElementById("detailMemo").value;
