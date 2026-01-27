@@ -67,14 +67,14 @@ function saveLive() {
   const artistSelect = document.getElementById("artistSelect");
   const artistId = Number(artistSelect.value);
   const artistName = artistSelect.options[artistSelect.selectedIndex].text;
-  
+
   const date = document.getElementById("date").value;
   const tourTitle = document.getElementById("tourTitle").value.trim();
   const venue = document.getElementById("venue").value.trim();
   const memo = document.getElementById("memo").value.trim();
   const setlistText = document.getElementById("setlist").value;
 
-  if (!artistName || !date || !venue || !tourTitle) {
+  if (!artistId || !date || !venue || !tourTitle) {
     alert("すべて入力してください");
     return;
   }
@@ -84,28 +84,22 @@ function saveLive() {
     .map(s => s.trim())
     .filter(s => s !== "");
 
-  const tx = db.transaction(["artists", "lives"], "readwrite");
-  const artistStore = tx.objectStore("artists");
+  const tx = db.transaction("lives", "readwrite");
   const liveStore = tx.objectStore("lives");
 
-
-  function addLive(artistId) {
-    liveStore.add({
-      artistId,
-      artistName,
-      tourTitle,
-      date,
-      venue,
-      memo,
-      setlist,
-      createdAt: new Date().toISOString()
-    });
-  }
-  
-  addLive(artistId);
+  liveStore.add({
+    artistId,
+    artistName,
+    tourTitle,
+    date,
+    venue,
+    memo,
+    setlist,
+    createdAt: new Date().toISOString()
+  });
 
   tx.oncomplete = () => {
-    document.getElementById("artist").value = "";
+    document.getElementById("artistSelect").value = "";
     document.getElementById("date").value = "";
     document.getElementById("tourTitle").value = "";
     document.getElementById("venue").value = "";
