@@ -13,6 +13,7 @@
 <nav>
   <button id="showRegister">登録</button>
   <button id="showHistory">履歴</button>
+  <button id="showArtists">アーティスト</button>
 </nav>
 
   <section id="register">
@@ -33,6 +34,16 @@
     <h2>履歴</h2>
     <div id="historyList"></div>
   </section>
+  
+  <section id="artists">
+  <h2>アーティスト管理</h2>
+
+  <input type="text" id="newArtistName" placeholder="アーティスト名を入力">
+  <button id="addArtistBtn">追加</button>
+
+  <ul id="artistList"></ul>
+  </section>
+  
 
 <!-- 詳細モーダル（最初は必ず非表示） -->
 <div id="detailModal" class="modal hidden">
