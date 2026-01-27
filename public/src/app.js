@@ -2,9 +2,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ===== 詳細モーダル処理 =====
 
+const modal = document.getElementById("detailModal");
+
 let currentEditingId = null;
 
-const modal = document.getElementById("detailModal");
 const closeBtn = document.getElementById("closeDetailBtn");
 const saveDetailBtn = document.getElementById("saveDetailBtn");
 const deleteDetailBtn = document.getElementById("deleteDetailBtn");
