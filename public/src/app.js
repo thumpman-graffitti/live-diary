@@ -12,7 +12,7 @@ const editArea = document.getElementById("editArea");
 const editBtn = document.getElementById("editBtn");
 const cancelEditBtn = document.getElementById("cancelEditBtn");
 
-function openDetailModal(item) {
+
 
 
 // ===== DB 初期化 =====
@@ -251,7 +251,7 @@ showHistoryBtn.addEventListener("click", () => {
   
 });
 
-
+function openDetailModal(item) {
   currentEditingId = item.id;
 
   // 参照表示
