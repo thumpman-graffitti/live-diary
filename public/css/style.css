@@ -156,3 +156,11 @@ nav button.active {
   pointer-events: auto;
 }
 
+#artistList li {
+  margin: 6px 0;
+}
+
+#artistList button {
+  font-size: 12px;
+  padding: 2px 6px;
+}
