@@ -381,3 +381,5 @@ if (deleteDetailBtn) {
   console.log("deleteDetailBtn が見つかりません");
   
 }
+
+});
