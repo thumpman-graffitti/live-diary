@@ -203,18 +203,23 @@ li.appendChild(venueDiv);
 
 const showRegisterBtn = document.getElementById("showRegister");
 const showHistoryBtn = document.getElementById("showHistory");
+const showArtistsBtn = document.getElementById("showArtists");
 
 const registerSection = document.getElementById("register");
 const historySection = document.getElementById("history");
+const artistsSection = document.getElementById("artists");
 
 // 初期状態：登録だけ表示
 registerSection.style.display = "block";
 historySection.style.display = "none";
+artistsSection.style.display = "none";
+
 showRegisterBtn.classList.add("active");
 
 showRegisterBtn.addEventListener("click", () => {
   registerSection.style.display = "block";
   historySection.style.display = "none";
+  artistsSection.style.display = "none";
 
   showRegisterBtn.classList.add("active");
   showHistoryBtn.classList.remove("active");
@@ -235,6 +240,20 @@ showHistoryBtn.addEventListener("click", () => {
   modal.classList.add("hidden");
   
 });
+
+// ===== アーティストタブ切り替え =====
+showArtistsBtn.addEventListener("click", () => {
+  registerSection.style.display = "none";
+  historySection.style.display = "none";
+  artistsSection.style.display = "block";
+
+  showArtistsBtn.classList.add("active");
+  showRegisterBtn.classList.remove("active");
+  showHistoryBtn.classList.remove("active");
+
+  modal.classList.add("hidden");
+});
+
 
 function openDetailModal(item) {
   currentEditingId = item.id;
@@ -388,5 +407,45 @@ function loadArtistsToSelect() {
     });
   };
 }
+
+function renderArtistList() {
+  const ul = document.getElementById("artistList");
+  ul.innerHTML = "";
+
+  const tx = db.transaction("artists", "readonly");
+  const store = tx.objectStore("artists");
+  const req = store.getAll();
+
+  req.onsuccess = () => {
+    const artists = req.result;
+
+    artists.forEach(artist => {
+      const li = document.createElement("li");
+      li.textContent = artist.name + " ";
+
+      const delBtn = document.createElement("button");
+      delBtn.textContent = "削除";
+      delBtn.style.marginLeft = "10px";
+
+      delBtn.addEventListener("click", () => {
+        if (!confirm(`${artist.name} を削除しますか？`)) return;
+
+        const tx2 = db.transaction("artists", "readwrite");
+        const store2 = tx2.objectStore("artists");
+
+        store2.delete(artist.id);
+
+        tx2.oncomplete = () => {
+          renderArtistList();
+          loadArtistsToSelect(); // プルダウンも更新
+        };
+      });
+
+      li.appendChild(delBtn);
+      ul.appendChild(li);
+    });
+  };
+}
+
 
 });
