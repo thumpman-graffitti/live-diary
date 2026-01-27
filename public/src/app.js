@@ -48,6 +48,7 @@ request.onupgradeneeded = (event) => {
 
 request.onsuccess = (event) => {
   db = event.target.result;
+  loadArtistsToSelect();
   renderHistory();
   
   // ★ 追加：起動時は必ずモーダルを閉じる
@@ -63,7 +64,10 @@ request.onerror = () => {
 document.getElementById("saveBtn").addEventListener("click", saveLive);
 
 function saveLive() {
-  const artistName = document.getElementById("artist").value.trim();
+  const artistSelect = document.getElementById("artistSelect");
+  const artistId = Number(artistSelect.value);
+  const artistName = artistSelect.options[artistSelect.selectedIndex].text;
+  
   const date = document.getElementById("date").value;
   const tourTitle = document.getElementById("tourTitle").value.trim();
   const venue = document.getElementById("venue").value.trim();
@@ -84,21 +88,6 @@ function saveLive() {
   const artistStore = tx.objectStore("artists");
   const liveStore = tx.objectStore("lives");
 
-  const getAllReq = artistStore.getAll();
-
-  getAllReq.onsuccess = () => {
-    const artists = getAllReq.result;
-    let artist = artists.find(a => a.name === artistName);
-
-    if (!artist) {
-      const addReq = artistStore.add({ name: artistName });
-      addReq.onsuccess = (e) => {
-        addLive(e.target.result);
-      };
-    } else {
-      addLive(artist.id);
-    }
-  };
 
   function addLive(artistId) {
     liveStore.add({
@@ -112,7 +101,8 @@ function saveLive() {
       createdAt: new Date().toISOString()
     });
   }
-
+  
+  addLive(artistId);
 
   tx.oncomplete = () => {
     document.getElementById("artist").value = "";
@@ -381,6 +371,28 @@ if (deleteDetailBtn) {
 } else {
   console.log("deleteDetailBtn が見つかりません");
   
+}
+
+function loadArtistsToSelect() {
+  const select = document.getElementById("artistSelect");
+  if (!select) return;
+
+  select.innerHTML = '<option value="">アーティストを選択</option>';
+
+  const tx = db.transaction("artists", "readonly");
+  const store = tx.objectStore("artists");
+  const req = store.getAll();
+
+  req.onsuccess = () => {
+    const artists = req.result;
+
+    artists.forEach(artist => {
+      const option = document.createElement("option");
+      option.value = artist.id;
+      option.textContent = artist.name;
+      select.appendChild(option);
+    });
+  };
 }
 
 });
