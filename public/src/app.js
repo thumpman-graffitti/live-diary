@@ -1,3 +1,20 @@
+// ===== 詳細モーダル処理 =====
+
+let currentEditingId = null;
+
+const modal = document.getElementById("detailModal");
+const closeBtn = document.getElementById("closeDetailBtn");
+const saveDetailBtn = document.getElementById("saveDetailBtn");
+const deleteDetailBtn = document.getElementById("deleteDetailBtn");
+
+const viewArea = document.getElementById("viewArea");
+const editArea = document.getElementById("editArea");
+const editBtn = document.getElementById("editBtn");
+const cancelEditBtn = document.getElementById("cancelEditBtn");
+
+function openDetailModal(item) {
+
+
 // ===== DB 初期化 =====
 
 let db;
@@ -234,21 +251,7 @@ showHistoryBtn.addEventListener("click", () => {
   
 });
 
-// ===== 詳細モーダル処理 =====
 
-let currentEditingId = null;
-
-const modal = document.getElementById("detailModal");
-const closeBtn = document.getElementById("closeDetailBtn");
-const saveDetailBtn = document.getElementById("saveDetailBtn");
-const deleteDetailBtn = document.getElementById("deleteDetailBtn");
-
-const viewArea = document.getElementById("viewArea");
-const editArea = document.getElementById("editArea");
-const editBtn = document.getElementById("editBtn");
-const cancelEditBtn = document.getElementById("cancelEditBtn");
-
-function openDetailModal(item) {
   currentEditingId = item.id;
 
   // 参照表示
