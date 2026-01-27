@@ -209,50 +209,46 @@ const registerSection = document.getElementById("register");
 const historySection = document.getElementById("history");
 const artistsSection = document.getElementById("artists");
 
-// 初期状態：登録だけ表示
-registerSection.style.display = "block";
-historySection.style.display = "none";
-artistsSection.style.display = "none";
+function resetTabs() {
+  // active を全部外す
+  showRegisterBtn.classList.remove("active");
+  showHistoryBtn.classList.remove("active");
+  showArtistsBtn.classList.remove("active");
 
+  // section を全部隠す
+  registerSection.style.display = "none";
+  historySection.style.display = "none";
+  artistsSection.style.display = "none";
+}
+
+// 初期状態：登録だけ表示
+resetTabs();
+registerSection.style.display = "block";
 showRegisterBtn.classList.add("active");
 
 showRegisterBtn.addEventListener("click", () => {
+  resetTabs();
   registerSection.style.display = "block";
-  historySection.style.display = "none";
-  artistsSection.style.display = "none";
-
   showRegisterBtn.classList.add("active");
-  showHistoryBtn.classList.remove("active");
-  
-    // ★ 追加：登録タブでは必ず詳細を閉じる
   modal.classList.add("hidden");
-  
 });
+
+
 
 showHistoryBtn.addEventListener("click", () => {
-  registerSection.style.display = "none";
+  resetTabs();
   historySection.style.display = "block";
-
   showHistoryBtn.classList.add("active");
-  showRegisterBtn.classList.remove("active");
-  
-    // ★ 追加：タブ切り替え時は詳細を閉じる
   modal.classList.add("hidden");
-  
 });
 
-// ===== アーティストタブ切り替え =====
 showArtistsBtn.addEventListener("click", () => {
-  registerSection.style.display = "none";
-  historySection.style.display = "none";
+  resetTabs();
   artistsSection.style.display = "block";
-
   showArtistsBtn.classList.add("active");
-  showRegisterBtn.classList.remove("active");
-  showHistoryBtn.classList.remove("active");
-
   modal.classList.add("hidden");
 });
+
 
 
 function openDetailModal(item) {
