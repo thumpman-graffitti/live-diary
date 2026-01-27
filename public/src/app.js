@@ -1,3 +1,5 @@
+document.addEventListener("DOMContentLoaded", () => {
+
 // ===== 詳細モーダル処理 =====
 
 let currentEditingId = null;
@@ -380,4 +382,6 @@ if (deleteDetailBtn) {
   });
 } else {
   console.log("deleteDetailBtn が見つかりません");
+  
+  });
 }
