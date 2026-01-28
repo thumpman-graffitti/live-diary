@@ -200,42 +200,6 @@ li.appendChild(venueDiv);
   };
 }
 
-// ===== タブ切り替え処理 =====
-
-const showRegisterBtn = document.getElementById("showRegister");
-const showHistoryBtn = document.getElementById("showHistory");
-const showArtistsBtn = document.getElementById("showArtists");
-
-const registerSection = document.getElementById("register");
-const historySection = document.getElementById("history");
-const artistsSection = document.getElementById("artists");
-
-function resetTabs() {
-  // active を全部外す
-  showRegisterBtn.classList.remove("active");
-  showHistoryBtn.classList.remove("active");
-  showArtistsBtn.classList.remove("active");
-
-  // section を全部隠す
-  registerSection.style.display = "none";
-  historySection.style.display = "none";
-  artistsSection.style.display = "none";
-}
-
-// 初期状態：登録だけ表示
-resetTabs();
-registerSection.style.display = "block";
-showRegisterBtn.classList.add("active");
-
-showRegisterBtn.addEventListener("click", () => {
-  resetTabs();
-  registerSection.style.display = "block";
-  showRegisterBtn.classList.add("active");
-  modal.classList.add("hidden");
-});
-
-
-
 showHistoryBtn.addEventListener("click", () => {
   resetTabs();
   historySection.style.display = "block";
@@ -541,5 +505,28 @@ tx.oncomplete = () => {
 resetTabs();
 registerSection.style.display = "block";
 showRegisterBtn.classList.add("active");
+
+// ===== 画面切り替え（URLハッシュ方式） =====
+function showByHash() {
+  const hash = location.hash || "#register";
+
+  ["register", "history", "artists"].forEach(id => {
+    const section = document.getElementById(id);
+    if (!section) return;
+
+    section.style.display =
+      hash === "#" + id ? "block" : "none";
+  });
+
+  // 画面切り替え時はモーダルを必ず閉じる
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+}
+
+// 初期表示 & 切り替え監視
+window.addEventListener("hashchange", showByHash);
+showByHash();
+
 
 });
