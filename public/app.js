@@ -3,9 +3,10 @@ alert("JS OK");
 document.addEventListener("DOMContentLoaded", () => {
 
 // ===== 詳細モーダル処理 =====
-
 const modal = document.getElementById("detailModal");
-modal.classList.add("hidden");
+if (modal) {
+  modal.classList.add("hidden");
+}
 
 let currentEditingId = null;
 
@@ -55,7 +56,10 @@ request.onsuccess = (event) => {
   renderHistory();
   
   // ★ 追加：起動時は必ずモーダルを閉じる
+if (modal) {
   modal.classList.add("hidden");
+}
+
   
 };
 
@@ -245,8 +249,10 @@ function openDetailModal(item) {
   viewArea.style.display = "block";
   editArea.style.display = "none";
 
-
+if (modal) {
   modal.classList.remove("hidden");
+}
+  
 }
 
 
@@ -488,6 +494,29 @@ tx.oncomplete = () => {
 // ===== 画面切り替え（URLハッシュ方式） =====
 // ===== 画面切り替え（最終安定版） =====
 
+// ===== 画面切り替え（確定版） =====
+const buttons = document.querySelectorAll("nav button");
+const sections = document.querySelectorAll("section");
 
+function showSection(id) {
+  sections.forEach(sec => {
+    sec.style.display = sec.id === id ? "block" : "none";
+  });
+
+  if (modal) {
+    modal.classList.add("hidden");
+  }
+}
+
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+    console.log("切り替え:", target);
+    showSection(target);
+  });
+});
+
+// ★ 初期表示（これが無いと全部消える）
+showSection("register");
 
 });
