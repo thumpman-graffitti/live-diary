@@ -483,7 +483,6 @@ tx.oncomplete = () => {
   li.appendChild(delBtn);
   ul.appendChild(li);
 });
-});
 
 
 // ===== 画面切り替え（URLハッシュ方式） =====
