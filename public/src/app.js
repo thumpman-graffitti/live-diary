@@ -164,7 +164,7 @@ function renderHistory() {
         e.stopPropagation();//★これが重要
         console.log("クリックされたライブ:",item);
         openDetailModal(item);
-　　　　　});
+});
         
 
 const dateDiv = document.createElement("div");
