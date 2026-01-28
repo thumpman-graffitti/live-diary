@@ -200,25 +200,6 @@ li.appendChild(venueDiv);
   };
 }
 
-showHistoryBtn.addEventListener("click", () => {
-  resetTabs();
-  historySection.style.display = "block";
-  showHistoryBtn.classList.add("active");
-  modal.classList.add("hidden");
-});
-
-showArtistsBtn.addEventListener("click", () => {
-  resetTabs();
-  artistsSection.style.display = "block";
-  showArtistsBtn.classList.add("active");
-  modal.classList.add("hidden");
-  
-  if (db) {
-  renderArtistList();
-  }
-});
-
-
 
 function openDetailModal(item) {
   currentEditingId = item.id;
@@ -502,9 +483,6 @@ tx.oncomplete = () => {
 });
 });
 
-resetTabs();
-registerSection.style.display = "block";
-showRegisterBtn.classList.add("active");
 
 // ===== 画面切り替え（URLハッシュ方式） =====
 function showByHash() {
