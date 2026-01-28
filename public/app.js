@@ -487,22 +487,13 @@ tx.oncomplete = () => {
 
 
 // ===== 画面切り替え（URLハッシュ方式） =====
-function showByHash() {
+// ===== 画面切り替え（最終安定版） =====
+const buttons = document.querySelectorAll("nav button");
+const sections = document.querySelectorAll("section");
 
-  // ★ 追加：初回起動時は必ず register にする
-  if (!location.hash) {
-    location.hash = "#register";
-    return;
-  }
-
-  const hash = location.hash;
-
-  ["register", "history", "artists"].forEach(id => {
-    const section = document.getElementById(id);
-    if (!section) return;
-
-    section.style.display =
-      hash === "#" + id ? "block" : "none";
+function showSection(id) {
+  sections.forEach(sec => {
+    sec.style.display = sec.id === id ? "block" : "none";
   });
 
   if (modal) {
@@ -510,9 +501,16 @@ function showByHash() {
   }
 }
 
+// ボタンにイベント付与
+buttons.forEach(btn => {
+  btn.addEventListener("click", () => {
+    const target = btn.dataset.target;
+    showSection(target);
+  });
+});
 
-// 初期表示 & 切り替え監視
-window.addEventListener("hashchange", showByHash);
-showByHash();
+// 初期表示
+showSection("register");
+
 
 });
