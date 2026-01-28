@@ -54,6 +54,7 @@ request.onsuccess = (event) => {
   db = event.target.result;
   loadArtistsToSelect();
   renderHistory();
+  renderArtistList();
   
   // ★ 追加：起動時は必ずモーダルを閉じる
 if (modal) {
@@ -258,7 +259,7 @@ if (modal) {
 
 // 閉じる
 closeBtn.addEventListener("click", () => {
-  modal.classList.add("hidden");
+  if (modal) modal.classList.add("hidden");
   currentEditingId = null;
 });
 
@@ -304,7 +305,7 @@ tx.oncomplete = () => {
   editArea.style.display = "none";
   viewArea.style.display = "block";
   currentEditingId = null;
-  modal.classList.add("hidden");
+  if (modal) modal.classList.add("hidden");
   renderHistory();
 };
 
@@ -326,7 +327,7 @@ if (deleteDetailBtn) {
     store.delete(currentEditingId);
 
     tx.oncomplete = () => {
-      modal.classList.add("hidden");
+      if (modal) modal.classList.add("hidden");
       currentEditingId = null;
       renderHistory();
     };
@@ -490,33 +491,24 @@ tx.oncomplete = () => {
   ul.appendChild(li);
 });
 
-
-// ===== 画面切り替え（URLハッシュ方式） =====
-// ===== 画面切り替え（最終安定版） =====
-
-// ===== 画面切り替え（確定版） =====
-const buttons = document.querySelectorAll("nav button");
+// ===== 画面切り替え（hash方式・確定版） =====
 const sections = document.querySelectorAll("section");
 
-function showSection(id) {
+function showSectionByHash() {
+  const hash = location.hash.replace("#", "") || "register";
+
   sections.forEach(sec => {
-    sec.style.display = sec.id === id ? "block" : "none";
+    sec.style.display = sec.id === hash ? "block" : "none";
   });
 
-  if (modal) {
-    modal.classList.add("hidden");
-  }
+  if (modal) modal.classList.add("hidden");
 }
 
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const target = btn.dataset.target;
-    console.log("切り替え:", target);
-    showSection(target);
-  });
-});
+// hash変更時
+window.addEventListener("hashchange", showSectionByHash);
 
-// ★ 初期表示（これが無いと全部消える）
-showSection("register");
+// 初期表示
+showSectionByHash();
+
 
 });
