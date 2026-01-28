@@ -496,7 +496,7 @@ tx.oncomplete = () => {
   renderHistory();       // 履歴の表示名も更新
   alert("更新しました");
 };
-
+});
 
   const delBtn = document.createElement("button");
   delBtn.textContent = "削除";
