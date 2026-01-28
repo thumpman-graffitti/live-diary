@@ -485,9 +485,15 @@ tx.oncomplete = () => {
 
 
 // ===== 画面切り替え（URLハッシュ方式） =====
-
 function showByHash() {
-  const hash = location.hash || "#register";
+
+  // ★ 追加：初回起動時は必ず register にする
+  if (!location.hash) {
+    location.hash = "#register";
+    return;
+  }
+
+  const hash = location.hash;
 
   ["register", "history", "artists"].forEach(id => {
     const section = document.getElementById(id);
@@ -497,16 +503,14 @@ function showByHash() {
       hash === "#" + id ? "block" : "none";
   });
 
-  // ★ 修正ポイント
-  const modal = document.getElementById("detailModal");
   if (modal) {
     modal.classList.add("hidden");
   }
 }
 
+
 // 初期表示 & 切り替え監視
 window.addEventListener("hashchange", showByHash);
 showByHash();
-
 
 });
