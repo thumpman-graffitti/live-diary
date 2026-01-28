@@ -3,6 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // ===== 詳細モーダル処理 =====
 
 const modal = document.getElementById("detailModal");
+modal.classList.add("hidden");
 
 let currentEditingId = null;
 
