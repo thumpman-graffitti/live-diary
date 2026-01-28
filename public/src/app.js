@@ -538,4 +538,8 @@ tx.oncomplete = () => {
 });
 });
 
+resetTabs();
+registerSection.style.display = "block";
+showRegisterBtn.classList.add("active");
+
 });
