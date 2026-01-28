@@ -247,6 +247,8 @@ showArtistsBtn.addEventListener("click", () => {
   artistsSection.style.display = "block";
   showArtistsBtn.classList.add("active");
   modal.classList.add("hidden");
+  
+  renderArtistList();
 });
 
 
@@ -404,6 +406,33 @@ function loadArtistsToSelect() {
   };
 }
 
+// ===== アーティスト追加（登録タブ用） =====
+document.getElementById("addArtistBtn").addEventListener("click", () => {
+  const input = document.getElementById("newArtistName");
+  const name = input.value.trim();
+
+  if (!name) {
+    alert("アーティスト名を入力してください");
+    return;
+  }
+
+  const tx = db.transaction("artists", "readwrite");
+  const store = tx.objectStore("artists");
+
+  store.add({ name });
+
+  tx.oncomplete = () => {
+    input.value = "";
+    loadArtistsToSelect(); // プルダウン更新
+    alert("アーティストを追加しました");
+  };
+
+  tx.onerror = () => {
+    alert("追加に失敗しました");
+  };
+});
+
+
 function renderArtistList() {
   const ul = document.getElementById("artistList");
   ul.innerHTML = "";
@@ -415,33 +444,74 @@ function renderArtistList() {
   req.onsuccess = () => {
     const artists = req.result;
 
-    artists.forEach(artist => {
-      const li = document.createElement("li");
-      li.textContent = artist.name + " ";
+artists.forEach(artist => {
+  const li = document.createElement("li");
 
-      const delBtn = document.createElement("button");
-      delBtn.textContent = "削除";
-      delBtn.style.marginLeft = "10px";
+  const input = document.createElement("input");
+  input.type = "text";
+  input.value = artist.name;
 
-      delBtn.addEventListener("click", () => {
-        if (!confirm(`${artist.name} を削除しますか？`)) return;
+  const saveBtn = document.createElement("button");
+  saveBtn.textContent = "保存";
+  saveBtn.style.marginLeft = "6px";
 
-        const tx2 = db.transaction("artists", "readwrite");
-        const store2 = tx2.objectStore("artists");
+  saveBtn.addEventListener("click", () => {
+    const newName = input.value.trim();
+    if (!newName) {
+      alert("名前は空にできません");
+      return;
+    }
 
-        store2.delete(artist.id);
+    const tx = db.transaction("artists", "readwrite");
+    const store = tx.objectStore("artists");
 
-        tx2.oncomplete = () => {
-          renderArtistList();
-          loadArtistsToSelect(); // プルダウンも更新
-        };
-      });
-
-      li.appendChild(delBtn);
-      ul.appendChild(li);
+    store.put({
+      id: artist.id,
+      name: newName
     });
-  };
-}
+
+    tx.oncomplete = () => {
+      loadArtistsToSelect(); // 登録タブにも反映
+      renderHistory();       // 履歴の表示名も更新
+      alert("更新しました");
+    };
+  });
+
+  const delBtn = document.createElement("button");
+  delBtn.textContent = "削除";
+  delBtn.style.marginLeft = "6px";
+
+  delBtn.addEventListener("click", () => {
+    // 使用中チェック
+    const txCheck = db.transaction("lives", "readonly");
+    const liveStore = txCheck.objectStore("lives");
+    const index = liveStore.index("artistId");
+
+    const req = index.get(artist.id);
+
+    req.onsuccess = () => {
+      if (req.result) {
+        alert("このアーティストはライブ履歴で使用中のため削除できません");
+        return;
+      }
+
+      if (!confirm(`${artist.name} を削除しますか？`)) return;
+
+      const txDel = db.transaction("artists", "readwrite");
+      txDel.objectStore("artists").delete(artist.id);
+
+      txDel.oncomplete = () => {
+        renderArtistList();
+        loadArtistsToSelect();
+      };
+    };
+  });
+
+  li.appendChild(input);
+  li.appendChild(saveBtn);
+  li.appendChild(delBtn);
+  ul.appendChild(li);
+});
 
 
 });
