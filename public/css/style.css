@@ -96,7 +96,6 @@ nav button.active {
 }
 
 /* ===== モーダル用 ===== */
-
 .modal {
   position: fixed;
   top: 0;
@@ -104,11 +103,16 @@ nav button.active {
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.5);
-  display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  display: none; /* ← 初期は絶対表示しない */
 }
+
+.modal.show {
+  display: flex;
+}
+
 
 .modal.hidden {
   display: none;
