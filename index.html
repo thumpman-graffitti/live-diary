@@ -6,83 +6,171 @@
     <title>LIVE LOG</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-    <meta name="description" content="アーティストのライブ参戦記録を保存・分析するアプリ。都道府県別の統計も可能。">
+    <style>
+        /* 追加のデザイン：アコーディオン用 */
+        .hidden { display: none; }
+        .accordion-header { 
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 15px; background: #fff; border-bottom: 1px solid #eee; font-weight: bold;
+        }
+        .live-item-detail {
+            padding: 10px 20px; background: #fafafa; border-bottom: 1px dotted #ccc;
+        }
+        .tab-content { display: none; }
+        .active { display: block; }
+    </style>
 </head>
 <body>
 
     <header>
-        <h1>🎸 LIVE LOG</h1>
+        <h1 id="view-title">🏠 ホーム</h1>
     </header>
 
     <main id="app">
-        <section class="card">
-            <h2>ライブを記録する</h2>
-            <div class="form-group">
-                <input type="text" id="artist" placeholder="アーティスト名">
-                <input type="date" id="date">
-                <input type="text" id="liveName" placeholder="ライブ名（ツアー名）">
-                <input type="text" id="venue" placeholder="会場名">
-                <select id="pref">
-                    <option value="">都道府県を選択</option>
-                    <option value="北海道">北海道</option>
-                    <option value="東京都">東京都</option>
-                    <option value="大阪府">大阪府</option>
-                    <option value="福岡県">福岡県</option>
-                    </select>
-                <button onclick="addLive()">登録する</button>
-            </div>
-        </section>
-
-        <section>
-            <h2>最近の参戦記録</h2>
-            <div id="liveList">
+        <div id="page-home" class="tab-content active">
+            <section class="card">
+                <h2>1. アーティストを登録</h2>
+                <div class="form-group">
+                    <input type="text" id="new-artist-name" placeholder="アーティスト名を入力">
+                    <button onclick="addArtist()">アーティスト追加</button>
                 </div>
-        </section>
+            </section>
+
+            <section class="card">
+                <h2>2. ライブを記録</h2>
+                <div class="form-group">
+                    <select id="live-artist-select">
+                        <option value="">アーティストを選択</option>
+                    </select>
+                    <input type="date" id="live-date">
+                    <input type="text" id="live-name" placeholder="ライブ名（ツアー名）">
+                    <input type="text" id="live-venue" placeholder="会場名">
+                    <select id="live-pref">
+                        <option value="">都道府県を選択</option>
+                        <option value="北海道">北海道</option><option value="東京都">東京都</option>
+                        <option value="大阪府">大阪府</option><option value="福岡県">福岡県</option>
+                        </select>
+                    <button onclick="addLive()" style="background-color: #34c759;">ライブ登録</button>
+                </div>
+            </section>
+        </div>
+
+        <div id="page-history" class="tab-content">
+            <div id="history-list">
+                </div>
+        </div>
+
+        <div id="page-stats" class="tab-content">
+            <section class="card">
+                <h2>統計情報</h2>
+                <p>準備中...</p>
+            </section>
+        </div>
     </main>
 
     <nav class="tab-bar">
         <button onclick="showPage('home')">🏠ホーム</button>
+        <button onclick="showPage('history')">📜履歴</button>
         <button onclick="showPage('stats')">📊統計</button>
-        <button onclick="showPage('settings')">⚙️管理</button>
     </nav>
 
     <script>
-        // データ保存用の配列
-        let liveData = JSON.parse(localStorage.getItem('my_live_logs') || '[]');
+        // データの初期化
+        let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
 
+        // ページ切り替え
+        function showPage(pageId) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + pageId).classList.add('active');
+            const titles = {home: '🏠 ホーム', history: '📜 参戦履歴', stats: '📊 統計'};
+            document.getElementById('view-title').innerText = titles[pageId];
+            if(pageId === 'history') renderHistory();
+            updateArtistSelect();
+        }
+
+        // アーティスト登録
+        function addArtist() {
+            const name = document.getElementById('new-artist-name').value;
+            if(!name) return;
+            if(db.artists.includes(name)) return alert('登録済みです');
+            db.artists.push(name);
+            save();
+            document.getElementById('new-artist-name').value = '';
+            updateArtistSelect();
+            alert('アーティストを登録しました');
+        }
+
+        // セレクトボックス更新
+        function updateArtistSelect() {
+            const select = document.getElementById('live-artist-select');
+            select.innerHTML = '<option value="">アーティストを選択</option>' + 
+                db.artists.map(a => `<option value="${a}">${a}</option>`).join('');
+        }
+
+        // ライブ登録
         function addLive() {
-            const entry = {
+            const live = {
                 id: Date.now(),
-                artist: document.getElementById('artist').value,
-                date: document.getElementById('date').value,
-                liveName: document.getElementById('liveName').value,
-                venue: document.getElementById('venue').value,
-                pref: document.getElementById('pref').value,
+                artist: document.getElementById('live-artist-select').value,
+                date: document.getElementById('live-date').value,
+                name: document.getElementById('live-name').value,
+                venue: document.getElementById('live-venue').value,
+                pref: document.getElementById('live-pref').value,
                 setlist: []
             };
-
-            if(!entry.artist || !entry.date) return alert('アーティスト名と日付は必須です');
-
-            liveData.push(entry);
-            localStorage.setItem('my_live_logs', JSON.stringify(liveData));
-            alert('登録しました！');
-            renderList();
+            if(!live.artist || !live.date) return alert('入力が不足しています');
+            db.lives.push(live);
+            save();
+            alert('ライブを記録しました');
+            showPage('history');
         }
 
-        function renderList() {
-            const listDiv = document.getElementById('liveList');
-            listDiv.innerHTML = liveData.map(log => `
-                <div class="card live-item">
-                    <strong>${log.date}</strong><br>
-                    ${log.artist} / ${log.liveName}<br>
-                    <small>📍 ${log.venue} (${log.pref})</small>
-                </div>
-            `).join('');
+        // 履歴表示（アコーディオン）
+        function renderHistory() {
+            const container = document.getElementById('history-list');
+            container.innerHTML = '';
+            
+            db.artists.forEach(artist => {
+                const artistLives = db.lives.filter(l => l.artist === artist)
+                    .sort((a,b) => new Date(b.date) - new Date(a.date));
+                
+                if(artistLives.length === 0) return;
+
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <div class="accordion-header" onclick="toggleAccordion('${artist}')">
+                        <span>${artist}</span>
+                        <span>${artistLives.length} 公演 ▽</span>
+                    </div>
+                    <div id="list-${artist}" class="hidden">
+                        ${artistLives.map(l => `
+                            <div class="live-item-detail" onclick="editLive(${l.id})">
+                                <strong>${l.date}</strong><br>
+                                ${l.name} @ ${l.venue}
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
         }
 
-        // ページ読み込み時に表示
-        renderList();
+        function toggleAccordion(artist) {
+            const el = document.getElementById('list-' + artist);
+            el.classList.toggle('hidden');
+        }
+
+        function save() {
+            localStorage.setItem('live_app_db', JSON.stringify(db));
+        }
+
+        function editLive(liveId) {
+            // 次のステップで詳細編集・セトリ機能を実装します
+            alert('ID: ' + liveId + ' の編集画面を開きます（次回実装）');
+        }
+
+        // 初期表示
+        updateArtistSelect();
     </script>
 </body>
 </html>
-
