@@ -1,1 +1,88 @@
-<link rel="manifest" href="manifest.json">
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LIVE LOG</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="stylesheet" href="style.css">
+    <meta name="description" content="アーティストのライブ参戦記録を保存・分析するアプリ。都道府県別の統計も可能。">
+</head>
+<body>
+
+    <header>
+        <h1>🎸 LIVE LOG</h1>
+    </header>
+
+    <main id="app">
+        <section class="card">
+            <h2>ライブを記録する</h2>
+            <div class="form-group">
+                <input type="text" id="artist" placeholder="アーティスト名">
+                <input type="date" id="date">
+                <input type="text" id="liveName" placeholder="ライブ名（ツアー名）">
+                <input type="text" id="venue" placeholder="会場名">
+                <select id="pref">
+                    <option value="">都道府県を選択</option>
+                    <option value="北海道">北海道</option>
+                    <option value="東京都">東京都</option>
+                    <option value="大阪府">大阪府</option>
+                    <option value="福岡県">福岡県</option>
+                    </select>
+                <button onclick="addLive()">登録する</button>
+            </div>
+        </section>
+
+        <section>
+            <h2>最近の参戦記録</h2>
+            <div id="liveList">
+                </div>
+        </section>
+    </main>
+
+    <nav class="tab-bar">
+        <button onclick="showPage('home')">🏠ホーム</button>
+        <button onclick="showPage('stats')">📊統計</button>
+        <button onclick="showPage('settings')">⚙️管理</button>
+    </nav>
+
+    <script>
+        // データ保存用の配列
+        let liveData = JSON.parse(localStorage.getItem('my_live_logs') || '[]');
+
+        function addLive() {
+            const entry = {
+                id: Date.now(),
+                artist: document.getElementById('artist').value,
+                date: document.getElementById('date').value,
+                liveName: document.getElementById('liveName').value,
+                venue: document.getElementById('venue').value,
+                pref: document.getElementById('pref').value,
+                setlist: []
+            };
+
+            if(!entry.artist || !entry.date) return alert('アーティスト名と日付は必須です');
+
+            liveData.push(entry);
+            localStorage.setItem('my_live_logs', JSON.stringify(liveData));
+            alert('登録しました！');
+            renderList();
+        }
+
+        function renderList() {
+            const listDiv = document.getElementById('liveList');
+            listDiv.innerHTML = liveData.map(log => `
+                <div class="card live-item">
+                    <strong>${log.date}</strong><br>
+                    ${log.artist} / ${log.liveName}<br>
+                    <small>📍 ${log.venue} (${log.pref})</small>
+                </div>
+            `).join('');
+        }
+
+        // ページ読み込み時に表示
+        renderList();
+    </script>
+</body>
+</html>
+
