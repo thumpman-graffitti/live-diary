@@ -407,30 +407,34 @@ function loadArtistsToSelect() {
 }
 
 // ===== アーティスト追加（登録タブ用） =====
-document.getElementById("addArtistBtn").addEventListener("click", () => {
-  const input = document.getElementById("newArtistName");
-  const name = input.value.trim();
+const addArtistBtn = document.getElementById("addArtistBtn");
 
-  if (!name) {
-    alert("アーティスト名を入力してください");
-    return;
-  }
+if (addArtistBtn) {
+  addArtistBtn.addEventListener("click", () => {
+    const input = document.getElementById("newArtistName");
+    const name = input.value.trim();
 
-  const tx = db.transaction("artists", "readwrite");
-  const store = tx.objectStore("artists");
+    if (!name) {
+      alert("アーティスト名を入力してください");
+      return;
+    }
 
-  store.add({ name });
+    const tx = db.transaction("artists", "readwrite");
+    const store = tx.objectStore("artists");
 
-  tx.oncomplete = () => {
-    input.value = "";
-    loadArtistsToSelect(); // プルダウン更新
-    alert("アーティストを追加しました");
-  };
+    store.add({ name });
 
-  tx.onerror = () => {
-    alert("追加に失敗しました");
-  };
-});
+    tx.oncomplete = () => {
+      input.value = "";
+      loadArtistsToSelect(); // 登録タブ更新
+      alert("アーティストを追加しました");
+    };
+
+    tx.onerror = () => {
+      alert("追加に失敗しました");
+    };
+  });
+}
 
 
 function renderArtistList() {
