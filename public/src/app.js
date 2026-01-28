@@ -485,6 +485,7 @@ tx.oncomplete = () => {
 
 
 // ===== 画面切り替え（URLハッシュ方式） =====
+
 function showByHash() {
   const hash = location.hash || "#register";
 
@@ -496,7 +497,8 @@ function showByHash() {
       hash === "#" + id ? "block" : "none";
   });
 
-  // 画面切り替え時はモーダルを必ず閉じる
+  // ★ 修正ポイント
+  const modal = document.getElementById("detailModal");
   if (modal) {
     modal.classList.add("hidden");
   }
