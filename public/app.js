@@ -487,29 +487,7 @@ tx.oncomplete = () => {
 
 // ===== 画面切り替え（URLハッシュ方式） =====
 // ===== 画面切り替え（最終安定版） =====
-const buttons = document.querySelectorAll("nav button");
-const sections = document.querySelectorAll("section");
 
-function showSection(id) {
-  sections.forEach(sec => {
-    sec.style.display = sec.id === id ? "block" : "none";
-  });
-
-  if (modal) {
-    modal.classList.add("hidden");
-  }
-}
-
-// ボタンにイベント付与
-buttons.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const target = btn.dataset.target;
-    showSection(target);
-  });
-});
-
-// 初期表示
-showSection("register");
 
 
 });
