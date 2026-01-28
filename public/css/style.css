@@ -8,6 +8,11 @@ h1 {
 }
 
 section {
+  display: none;
+}
+
+
+section {
   margin-top: 20px;
 }
 
