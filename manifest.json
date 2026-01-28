@@ -1,0 +1,23 @@
+{
+  "short_name": "ライブレポ",
+  "name": "アーティストLIVE参戦記録",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "theme_color": "#007aff",
+  "background_color": "#ffffff",
+  "lang": "ja",
+  "scope": "/",
+  "description": "ライブのセトリや都道府県別の参戦実績を記録するアプリ"
+}
