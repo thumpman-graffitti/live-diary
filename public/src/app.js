@@ -474,12 +474,29 @@ artists.forEach(artist => {
       name: newName
     });
 
-    tx.oncomplete = () => {
-      loadArtistsToSelect(); // 登録タブにも反映
-      renderHistory();       // 履歴の表示名も更新
-      alert("更新しました");
-    };
-  });
+tx.oncomplete = () => {
+
+  // ===== ライブ履歴側の artistName も更新 =====
+  const tx2 = db.transaction("lives", "readwrite");
+  const liveStore = tx2.objectStore("lives");
+  const index = liveStore.index("artistId");
+
+  const req2 = index.getAll(artist.id);
+
+  req2.onsuccess = () => {
+    req2.result.forEach(live => {
+      live.artistName = newName;
+      liveStore.put(live);
+    });
+  };
+
+  // =========================================
+
+  loadArtistsToSelect(); // 登録タブにも反映
+  renderHistory();       // 履歴の表示名も更新
+  alert("更新しました");
+};
+
 
   const delBtn = document.createElement("button");
   delBtn.textContent = "削除";
