@@ -533,6 +533,6 @@ tx.oncomplete = () => {
   li.appendChild(delBtn);
   ul.appendChild(li);
 });
-
+});
 
 });
