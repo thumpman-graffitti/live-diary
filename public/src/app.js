@@ -248,7 +248,9 @@ showArtistsBtn.addEventListener("click", () => {
   showArtistsBtn.classList.add("active");
   modal.classList.add("hidden");
   
+  if (db) {
   renderArtistList();
+  }
 });
 
 
