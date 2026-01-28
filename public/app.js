@@ -1,2 +1,2 @@
-alert("JS ファイルは読み込まれています");
+alert("app.js 読み込まれました");
 console.log("JS OK");
