@@ -140,7 +140,7 @@ nav button.active {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 .modal > div {
