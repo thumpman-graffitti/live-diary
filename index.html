@@ -15,7 +15,7 @@
 <body>
 
     <header>
-        <h1 id="view-title">LIVE DIARY🍊</h1>
+        <h1 id="view-title">LIVE DIARY🍊2</h1>
     </header>
 
     <main id="app">
@@ -74,6 +74,11 @@
             ※機種変更時は、古い端末でエクスポートしたファイルをこのボタンから読み込んでください。
         </p>
     </section>
+    <section class="card">
+    <h2>🎨 アーティスト管理</h2>
+    <div id="artist-manager-list" style="margin-top: 10px;">
+        </div>
+   </section>
 </div>
 
 
@@ -165,6 +170,13 @@ function showPage(pageId) {
     //document.getElementById('view-title').innerText = titles[pageId] || 'LIVE LOG';
     
     if(pageId === 'history') renderHistory();
+
+    // ★ここを追加！★
+    if(pageId === 'settings') renderArtistManager(); // 管理タブを開いた時に描画
+    if(pageId === 'stats') renderStats();           // 統計タブを開いた時に描画
+
+    updateArtistSelect();
+
 }
 
 // 4. アーティスト登録
@@ -354,6 +366,81 @@ function importData(event) {
     
     // 同じファイルを連続で選んでも反応するようにリセット
     event.target.value = '';
+}
+
+// --- アーティスト管理機能 ---
+
+// 管理画面のアーティスト一覧を描画する
+function renderArtistManager() {
+    const container = document.getElementById('artist-manager-list');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (db.artists.length === 0) {
+        container.innerHTML = '<p style="color:#999; text-align:center;">登録されたアーティストはいません</p>';
+        return;
+    }
+
+    db.artists.sort().forEach(artist => {
+        const div = document.createElement('div');
+        div.style.cssText = 'display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid #eee;';
+        div.innerHTML = `
+            <span style="font-weight:bold;">${artist}</span>
+            <div>
+                <button onclick="editArtistName('${artist}')" style="width:auto; padding:5px 12px; font-size:0.8rem; background:#8e8e93; border-radius:15px; display:inline-block; margin-right:5px; box-shadow:none;">編集</button>
+                <button onclick="deleteArtist('${artist}')" style="width:auto; padding:5px 12px; font-size:0.8rem; background:#ff3b30; border-radius:15px; display:inline-block; box-shadow:none;">削除</button>
+            </div>
+        `;
+        container.appendChild(div);
+    });
+}
+
+// 名前を編集する
+function editArtistName(oldName) {
+    const newName = prompt(`「${oldName}」の新しい名前を入力してください：`, oldName);
+    if (!newName || newName === oldName) return;
+
+    if (db.artists.includes(newName)) {
+        alert('その名前は既に登録されています。');
+        return;
+    }
+
+    // 1. アーティストリストの名前を更新
+    const index = db.artists.indexOf(oldName);
+    if (index !== -1) db.artists[index] = newName;
+
+    // 2. 過去のライブ記録のアーティスト名もすべて書き換える（重要！）
+    db.lives.forEach(live => {
+        if (live.artist === oldName) {
+            live.artist = newName;
+        }
+    });
+
+    save();
+    updateArtistSelect();
+    renderArtistManager();
+    if(document.getElementById('page-history').classList.contains('active')) renderHistory();
+    alert('名前を更新しました。');
+}
+
+// アーティストを削除する
+function deleteArtist(name) {
+    const liveCount = db.lives.filter(l => l.artist === name).length;
+    const msg = liveCount > 0 
+        ? `「${name}」を削除しますか？\n関連する ${liveCount} 件のライブ記録もすべて削除されます！`
+        : `「${name}」を削除しますか？`;
+
+    if (!confirm(msg)) return;
+
+    // 1. アーティストリストから削除
+    db.artists = db.artists.filter(a => a !== name);
+    // 2. 関連するライブ記録を削除
+    db.lives = db.lives.filter(l => l.artist !== name);
+
+    save();
+    updateArtistSelect();
+    renderArtistManager();
+    alert('削除しました。');
 }
 
     </script>
