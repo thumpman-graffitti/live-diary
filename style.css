@@ -1,58 +1,136 @@
-/* 全体設定：間伸びを防ぐ */
+:root {
+    --primary-color: #007130; /* JRAグリーンの復活 */
+    --primary-light: #e6f4ea;
+    --bg-color: #f2f2f7;
+    --card-bg: #ffffff;
+    --text-main: #1c1c1e;
+    --text-sub: #666666;
+    --border-color: #e0e0e0;
+}
+
+/* 全体設定：間伸びを防ぎ、フォントをJRA風に */
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     margin: 0;
-    padding: 0 0 100px 0; /* 下部タブに被らないよう余白を確保 */
-    background-color: #f2f2f7;
-    color: #1c1c1e;
-    line-height: 1.4; /* 行間を少し詰め、情報を凝縮 */
+    padding: 0 0 100px 0;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    line-height: 1.4;
+    overflow-x: hidden; /* 横揺れ完全防止 */
 }
 
 header {
-    padding: 8px; /* ヘッダーをスリムに */
+    background: var(--primary-color);
+    color: #fff;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-/* カード：白枠からはみ出さない設定 */
+h1 { margin: 0; font-size: 1.1rem; letter-spacing: 0.05em; }
+
+h2 {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    border-left: 4px solid var(--primary-color);
+    padding: 0 0 0 10px;
+    margin: 0 0 12px 0;
+}
+
+/* カード：はみ出しを物理的に封じ込める */
 .card {
-    background: #fff;
-    margin: 8px 12px; /* 上下余白を半分に */
-    padding: 12px 16px; /* 内部余白も少し詰める */
-    border-radius: 12px;
+    background: var(--card-bg);
+    margin: 8px 12px;
+    padding: 16px;
+    border-radius: 8px; /* JRA風に少しシャープに */
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    box-sizing: border-box; /* 枠線やパディングを内側に含める */
-    overflow: hidden; /* 子要素のはみ出しを物理的にカット */
+    box-sizing: border-box; /* これが100%幅の肝 */
+    width: calc(100% - 24px); /* 画面幅から左右マージン分を引く */
+    overflow: hidden; 
 }
 
-/* フォーム項目：上下の間隔を狭める */
-.form-group label {
-    font-size: 0.8rem;
-    margin-bottom: 2px;
-}
-
+/* フォーム項目：100%を超えないように強制 */
 .form-group input, 
 .form-group select {
     display: block;
-    width: 100%; /* これで横幅いっぱい */
-    height: 40px; /* 高さを48pxから40pxへスリム化 */
+    width: 100% !important; /* 強制的に枠内に固定 */
+    max-width: 100%;
+    height: 40px;
     padding: 8px 12px;
-    margin-bottom: 8px; /* 項目間の隙間を削減 */
-    border: 1px solid #efeff4;
-    border-radius: 8px;
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
     font-size: 16px;
-    box-sizing: border-box; /* これが「はみ出し」防止の決定打 */
+    font-family: inherit;
+    box-sizing: border-box; /* 絶対に外に出さない */
     background-color: #f9f9f9;
+    color: var(--text-main);
+    -webkit-appearance: none; /* Safariの余計なデザインをリセット */
 }
 
-/* ボタン：高さを少し抑える */
+/* 日付入力欄（iOS用特別対策） */
+input[type="date"] {
+    min-width: 0; /* 幅計算をゼロからにリセット */
+    flex: 1;
+}
+
+/* ボタン：JRAらしい力強いグリーン */
 button {
     width: 100%;
     padding: 12px;
-    border-radius: 22px; /* カプセル型を維持しつつスリムに */
-    font-size: 0.95rem;
-    margin-top: 4px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 25px; /* ここだけ少し丸みを持たせて垢抜け */
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 3px 0 #004d21;
 }
 
-/* 登録ボタンが隠れないようにするための調整 */
-#page-home {
-    padding-bottom: 20px; /* コンテンツ自体の末尾に余裕を持たせる */
+button:active {
+    transform: translateY(2px);
+    box-shadow: none;
+}
+
+/* 下部タブバー（JRA風の区切り線） */
+.tab-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 65px;
+    background: #ffffff;
+    display: flex;
+    border-top: 1px solid var(--border-color);
+    padding-bottom: env(safe-area-inset-bottom);
+    z-index: 1000;
+}
+
+.tab-bar button {
+    flex: 1;
+    background: none;
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    padding: 8px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: var(--text-sub);
+    position: relative;
+}
+
+/* 縦の区切り線 */
+.tab-bar button:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 25%;
+    height: 50%;
+    width: 1px;
+    background-color: var(--border-color);
+}
+
+.tab-bar button.active {
+    color: var(--primary-color);
 }
