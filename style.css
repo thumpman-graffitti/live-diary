@@ -191,3 +191,24 @@ textarea:focus {
 .hidden { display: none; }
 hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
 
+
+/* アコーディオンの中身（ライブ詳細一覧）をしっかり表示させる */
+.live-item-detail {
+    padding: 15px;
+    background: #fff;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    display: block; /* 確実に表示 */
+}
+
+.live-item-detail:active {
+    background-color: #f2f2f7;
+}
+
+/* 履歴画面のリスト全体の余白 */
+#history-list {
+    padding-top: 10px;
+}
+
+
+
