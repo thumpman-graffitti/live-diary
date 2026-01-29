@@ -50,22 +50,32 @@ h2 {
 }
 
 /* フォーム要素 */
-/* フォーム要素：はみ出しを物理的に封じ込める */
+/* --- フォーム要素（はみ出し防止・決定版） --- */
+/* 全要素の計算方式を固定 */
+* {
+    box-sizing: border-box !important;
+}
+
 .form-group input, 
 .form-group select, 
 textarea {
     display: block !important;
-    width: 100% !important; /* 常に親要素の幅いっぱいに */
-    max-width: 100% !important;
+    width: 100% !important; /* 親要素（カード）の幅に合わせる */
+    max-width: 100% !important; /* 絶対に外に出さない */
     height: 44px; /* 指で押しやすい高さ */
     padding: 8px 12px !important;
-    margin-bottom: 12px;
+    margin: 0 0 12px 0 !important; /* 下にだけ隙間を作る */
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-size: 16px; /* iOSでフォーカス時に画面がズームするのを防ぐサイズ */
-    box-sizing: border-box !important; /* これが100%幅の肝（枠線を含めて計算） */
+    font-size: 16px; /* iPhoneでのズーム防止 */
     background-color: #f9f9f9;
     color: var(--text-main);
+}
+
+/* テキストエリアだけは高さ自由 */
+textarea {
+    height: auto !important;
+    min-height: 80px;
 }
 
 
