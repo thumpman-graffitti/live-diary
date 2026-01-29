@@ -224,6 +224,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     cursor: pointer;
 }
 
+/* 統計画面：ランキングの1行分 */
+.stats-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    margin-bottom: 8px; /* 行と行の間の隙間 */
+    border-radius: 6px;
+    overflow: hidden;
+    border: 1px solid #eee;
+    height: 48px;
+}
+
+/* グラフと連動する色の棒 */
+.stats-color-bar {
+    width: 6px;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+/* 中のテキストレイアウト */
+.stats-info {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 12px;
+}
+
+.stats-rank {
+    font-size: 0.8rem;
+    color: #888;
+    width: 35px;
+}
+
+.stats-name {
+    flex-grow: 1;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.stats-count {
+    font-size: 0.9rem;
+    color: #333;
+}
 
 
 
