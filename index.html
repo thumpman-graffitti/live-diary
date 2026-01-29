@@ -37,11 +37,38 @@
                     <input type="date" id="live-date">
                     <input type="text" id="live-name" placeholder="ライブ名（ツアー名）">
                     <input type="text" id="live-venue" placeholder="会場名">
-                    <select id="live-pref">
-                        <option value="">都道府県を選択</option>
-                        <option value="北海道">北海道</option><option value="東京都">東京都</option>
-                        <option value="大阪府">大阪府</option><option value="福岡県">福岡県</option>
-                    </select>
+                        <div class="form-group">
+    <label>場所（都道府県）</label>
+    <select id="live-pref">
+        <option value="">選択してください</option>
+        <option value="北海道">北海道</option><option value="青森県">青森県</option>
+        <option value="岩手県">岩手県</option><option value="宮城県">宮城県</option>
+        <option value="秋田県">秋田県</option><option value="山形県">山形県</option>
+        <option value="福島県">福島県</option><option value="茨城県">茨城県</option>
+        <option value="栃木県">栃木県</option><option value="群馬県">群馬県</option>
+        <option value="埼玉県">埼玉県</option><option value="千葉県">千葉県</option>
+        <option value="東京都">東京都</option><option value="神奈川県">神奈川県</option>
+        <option value="新潟県">新潟県</option><option value="富山県">富山県</option>
+        <option value="石川県">石川県</option><option value="福井県">福井県</option>
+        <option value="山梨県">山梨県</option><option value="長野県">長野県</option>
+        <option value="岐阜県">岐阜県</option><option value="静岡県">静岡県</option>
+        <option value="愛知県">愛知県</option><option value="三重県">三重県</option>
+        <option value="滋賀県">滋賀県</option><option value="京都府">京都府</option>
+        <option value="大阪府">大阪府</option><option value="兵庫県">兵庫県</option>
+        <option value="奈良県">奈良県</option><option value="和歌山県">和歌山県</option>
+        <option value="鳥取県">鳥取県</option><option value="島根県">島根県</option>
+        <option value="岡山県">岡山県</option><option value="広島県">広島県</option>
+        <option value="山口県">山口県</option><option value="徳島県">徳島県</option>
+        <option value="香川県">香川県</option><option value="愛媛県">愛媛県</option>
+        <option value="高知県">高知県</option><option value="福岡県">福岡県</option>
+        <option value="佐賀県">佐賀県</option><option value="長崎県">長崎県</option>
+        <option value="熊本県">熊本県</option><option value="大分県">大分県</option>
+        <option value="宮崎県">宮崎県</option><option value="鹿児島県">鹿児島県</option>
+        <option value="沖縄県">沖縄県</option>
+        <option value="海外">海外</option>
+    </select>
+</div>
+
                     <textarea id="live-memo" placeholder="メモ（座席、同行者、感想など）" rows="3"></textarea>
                     <button onclick="addLive()" style="background-color: #34c759;">ライブ登録</button>
                 </div>
@@ -461,6 +488,66 @@ function deleteArtist(name) {
     updateArtistSelect();
     renderArtistManager();
     alert('削除しました。');
+}
+// --- 追加：今日の日付をデフォルトセットする機能 ---
+function setDefaultDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const dd = String(today.getDate()).padStart(2, '0');
+    const dateInput = document.getElementById('live-date');
+    if (dateInput) dateInput.value = `${yyyy}-${mm}-${dd}`;
+}
+
+// ページ読み込み時の処理を更新
+window.addEventListener('DOMContentLoaded', setDefaultDate);
+
+// --- 追加：統計機能（ランキング表示） ---
+function renderStats() {
+    const container = document.getElementById('page-stats');
+    if (!container) return;
+
+    if (db.lives.length === 0) {
+        container.innerHTML = '<section class="card"><p style="text-align:center; color:#999; padding:20px;">ライブ記録がまだありません</p></section>';
+        return;
+    }
+
+    // アーティスト別集計
+    const artistCounts = {};
+    db.lives.forEach(l => { artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1; });
+    const ranking = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]);
+
+    // 都道府県別集計
+    const prefCounts = {};
+    db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
+    const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
+
+    container.innerHTML = `
+        <section class="card">
+            <h2>🏆 アーティスト別 TOP5</h2>
+            ${ranking.slice(0, 5).map(([name, count], i) => `
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                    <span style="font-weight:bold;">${i+1}位 ${name}</span>
+                    <span style="color:var(--primary-color); font-weight:bold;">${count} 回</span>
+                </div>
+            `).join('')}
+        </section>
+        <section class="card">
+            <h2>📍 都道府県別トップ</h2>
+            ${prefRanking.slice(0, 3).map(([name, count]) => `
+                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                    <span>${name}</span>
+                    <span>${count} 公演</span>
+                </div>
+            `).join('')}
+        </section>
+        <section class="card" style="text-align:center;">
+            <h2>📊 通算参戦数</h2>
+            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-color); padding: 10px 0;">
+                ${db.lives.length} <span style="font-size: 1rem; color: #666;">公演</span>
+            </div>
+        </section>
+    `;
 }
 
     </script>
