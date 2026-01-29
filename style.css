@@ -384,3 +384,40 @@ textarea:focus {
     background-color: #d70015 !important;
 }
 
+/* 検索窓のデザイン */
+.search-box {
+    margin-bottom: 10px;
+}
+.search-box input {
+    width: 100% !important;
+    height: 36px !important;
+    background-color: #f2f2f7 !important;
+    border: none !important;
+    border-radius: 10px !important;
+    padding: 0 15px !important;
+    font-size: 0.9rem !important;
+}
+
+/* 1行に凝縮するための強制設定 */
+.artist-admin-row {
+    display: flex !important;
+    flex-direction: row !important; /* 絶対に横並び */
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0;
+    border-bottom: 1px solid #f0f0f2;
+}
+
+.artist-admin-btns {
+    display: inline-flex !important; /* ボタンを横に並べる */
+    flex-direction: row !important;
+    gap: 5px;
+    flex-shrink: 0; /* ボタンが潰れないように固定 */
+}
+
+/* ボタンの幅を強制的に小さく固定 */
+.btn-mini {
+    width: 50px !important; 
+    flex: none !important;
+}
+
