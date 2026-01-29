@@ -60,26 +60,25 @@
         </div>
 
 <div id="page-settings" class="tab-content">
+    
     <section class="card">
         <h2>データ管理</h2>
         <div style="display: flex; flex-direction: column; gap: 10px;">
             <button onclick="exportData()" style="background:#8e8e93;">データをエクスポート</button>
-            
             <button onclick="document.getElementById('import-file').click()" style="background: var(--primary-color);">バックアップから復元</button>
-            
             <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
         </div>
-        <p style="font-size:0.75rem; color:#666; margin-top:15px; line-height:1.6;">
-            ※「復元」を行うと、現在のデータはすべて上書きされます。<br>
-            ※機種変更時は、古い端末でエクスポートしたファイルをこのボタンから読み込んでください。
-        </p>
     </section>
+
     <section class="card">
-    <h2>🎨 アーティスト管理</h2>
-    <div id="artist-manager-list" style="margin-top: 10px;">
+        <h2>🎨 アーティスト管理</h2>
+        <div class="search-box">
+            <input type="text" id="artist-search-input" placeholder="🔍 アーティスト名を検索..." oninput="filterArtists()">
         </div>
-   </section>
-</div>
+        <div id="artist-manager-list" style="margin-top: 10px;">
+            </div>
+    </section>
+    </div>
 
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
@@ -172,7 +171,13 @@ function showPage(pageId) {
     if(pageId === 'history') renderHistory();
 
     // ★ここを追加！★
-    if(pageId === 'settings') renderArtistManager(); // 管理タブを開いた時に描画
+if(pageId === 'settings') {
+    // 検索窓を空にしてから、全リストを表示させる
+    const searchInput = document.getElementById('artist-search-input');
+    if(searchInput) searchInput.value = ''; 
+    renderArtistManager();
+}
+
     if(pageId === 'stats') renderStats();           // 統計タブを開いた時に描画
 
     updateArtistSelect();
