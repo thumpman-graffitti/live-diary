@@ -184,13 +184,6 @@ textarea:focus {
     width: 30px; color: var(--primary-color); font-weight: bold; font-size: 0.8rem;
 }
 
-/* 編集ボタンなど */
-.edit-main-btn {
-    margin-top: 20px; background: #555;
-}
-.hidden { display: none; }
-hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
-
 
 /* アコーディオンの中身（ライブ詳細一覧）をしっかり表示させる */
 .live-item-detail {
@@ -210,5 +203,40 @@ hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
     padding-top: 10px;
 }
 
+/* 追加：アコーディオンヘッダーのデザインをJRA風に */
+.accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background: #fff;
+    font-weight: bold;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer;
+}
+
+/* 追加：モーダルの閉じるボタン */
+.close-btn {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: var(--text-sub);
+    font-size: 1.5rem;
+    padding: 0;
+    width: auto;
+}
+
+/* 修正：詳細画面内の編集ボタンをもっと見やすく */
+.edit-main-btn {
+    margin-top: 20px;
+    background: #444 !important; /* 少し濃いめにして視認性アップ */
+    box-shadow: 0 3px 0 #222 !important;
+}
+
+/* フォーム内の各入力要素がカード内で綺麗に並ぶように調整 */
+.modal-body .form-group input, 
+.modal-body .form-group textarea {
+    margin-bottom: 15px;
+}
 
 
