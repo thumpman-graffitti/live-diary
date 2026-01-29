@@ -573,22 +573,35 @@ function renderStats() {
     db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
     const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
 
+    // --- 下部のリスト表示 (ランキング) ---
+    // グラフと同じ色の配列（順番が大事です）
+    const chartColors = ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'];
+
+    const prefCounts = {};
+    db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
+    const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
+
     container.innerHTML = `
         <section class="card">
             <h2>🏆 アーティスト別 TOP5</h2>
             ${sortedData.slice(0, 5).map(([name, count], i) => `
-                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
-                    <span style="font-weight:bold;">${i+1}位 ${name}</span>
-                    <span style="color:var(--primary-color); font-weight:bold;">${count} 回</span>
+                <div class="stats-row">
+                    <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
+                    <div class="stats-info">
+                        <span class="stats-rank">${i+1}位</span>
+                        <span class="stats-name">${name}</span>
+                        <span class="stats-count"><b>${count}</b> 回</span>
+                    </div>
                 </div>
             `).join('')}
         </section>
+
         <section class="card">
             <h2>📍 都道府県別トップ</h2>
             ${prefRanking.slice(0, 3).map(([name, count]) => `
-                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
-                    <span>${name}</span>
-                    <span>${count} 公演</span>
+                <div style="display:flex; justify-content:space-between; padding:12px 10px; border-bottom:1px solid #eee;">
+                    <span style="font-weight:bold;">${name}</span>
+                    <span style="color:#666;">${count} 公演</span>
                 </div>
             `).join('')}
         </section>
