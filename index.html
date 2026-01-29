@@ -50,6 +50,7 @@
                         <option value="北海道">北海道</option><option value="東京都">東京都</option>
                         <option value="大阪府">大阪府</option><option value="福岡県">福岡県</option>
                         </select>
+                        <textarea id="live-memo" placeholder="メモ（座席、同行者、感想など）" rows="3"></textarea>
                     <button onclick="addLive()" style="background-color: #34c759;">ライブ登録</button>
                 </div>
             </section>
@@ -118,22 +119,34 @@
         }
 
         // ライブ登録
-        function addLive() {
-            const live = {
-                id: Date.now(),
-                artist: document.getElementById('live-artist-select').value,
-                date: document.getElementById('live-date').value,
-                name: document.getElementById('live-name').value,
-                venue: document.getElementById('live-venue').value,
-                pref: document.getElementById('live-pref').value,
-                setlist: []
-            };
-            if(!live.artist || !live.date) return alert('入力が不足しています');
-            db.lives.push(live);
-            save();
-            alert('ライブを記録しました');
-            showPage('history');
-        }
+// addLive() 関数の中身を以下のように更新
+function addLive() {
+    const live = {
+        id: Date.now(),
+        artist: document.getElementById('live-artist-select').value,
+        date: document.getElementById('live-date').value,
+        name: document.getElementById('live-name').value,
+        venue: document.getElementById('live-venue').value,
+        pref: document.getElementById('live-pref').value,
+        memo: document.getElementById('live-memo').value, // ★ここを追加
+        setlist: []
+    };
+
+    if(!live.artist || !live.date) return alert('入力が不足しています');
+
+    db.lives.push(live);
+    save();
+
+    // 入力欄をクリア（メモ欄も空にする）
+    document.getElementById('live-date').value = '';
+    document.getElementById('live-name').value = '';
+    document.getElementById('live-venue').value = '';
+    document.getElementById('live-pref').value = '';
+    document.getElementById('live-memo').value = ''; // ★ここを追加
+
+    alert('ライブを記録しました');
+    showPage('history');
+}
 
         // 履歴表示（アコーディオン）
         function renderHistory() {
