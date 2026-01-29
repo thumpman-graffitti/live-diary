@@ -68,11 +68,21 @@
         </div>
     </main>
 
-    <nav class="tab-bar">
-        <button onclick="showPage('home')">🏠ホーム</button>
-        <button onclick="showPage('history')">📜履歴</button>
-        <button onclick="showPage('stats')">📊統計</button>
-    </nav>
+<nav class="tab-bar">
+    <button onclick="showPage('home')" id="tab-home" class="active">
+        <span class="icon">🏠</span><span>ホーム</span>
+    </button>
+    <button onclick="showPage('history')" id="tab-history">
+        <span class="icon">📜</span><span>履歴</span>
+    </button>
+    <button onclick="showPage('stats')" id="tab-stats">
+        <span class="icon">📊</span><span>統計</span>
+    </button>
+    <button onclick="showPage('settings')" id="tab-settings">
+        <span class="icon">⚙️</span><span>管理</span>
+    </button>
+</nav>
+
 
     <script>
         // データの初期化
