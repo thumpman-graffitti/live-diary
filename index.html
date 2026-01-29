@@ -15,7 +15,7 @@
 <body>
 
     <header>
-        <h1 id="view-title">LIVE DIARY🍊2</h1>
+        <h1 id="view-title">LIVE DIARY🍊3</h1>
     </header>
 
     <main id="app">
@@ -120,6 +120,20 @@
     </nav>
 
     <script>
+    // データの初期化（エラー回避のため空の状態を確実に作る）
+let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
+if (!db.artists) db.artists = [];
+if (!db.lives) db.lives = [];
+
+let currentEditId = null; 
+
+// 起動時に必ず実行
+window.onload = function() {
+    updateArtistSelect();
+    showPage('home');
+};
+
+    
         // データの初期化
         let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
         let currentEditId = null; // ★重要：編集中のIDを保持
