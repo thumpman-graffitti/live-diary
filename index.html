@@ -7,15 +7,7 @@
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
     <style>
-        /* 追加のデザイン：アコーディオン用 */
         .hidden { display: none; }
-        .accordion-header { 
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 15px; background: #fff; border-bottom: 1px solid #eee; font-weight: bold;
-        }
-        .live-item-detail {
-            padding: 10px 20px; background: #fafafa; border-bottom: 1px dotted #ccc;
-        }
         .tab-content { display: none; }
         .active { display: block; }
     </style>
@@ -49,16 +41,15 @@
                         <option value="">都道府県を選択</option>
                         <option value="北海道">北海道</option><option value="東京都">東京都</option>
                         <option value="大阪府">大阪府</option><option value="福岡県">福岡県</option>
-                        </select>
-                        <textarea id="live-memo" placeholder="メモ（座席、同行者、感想など）" rows="3"></textarea>
+                    </select>
+                    <textarea id="live-memo" placeholder="メモ（座席、同行者、感想など）" rows="3"></textarea>
                     <button onclick="addLive()" style="background-color: #34c759;">ライブ登録</button>
                 </div>
             </section>
         </div>
 
         <div id="page-history" class="tab-content">
-            <div id="history-list">
-                </div>
+            <div id="history-list"></div>
         </div>
 
         <div id="page-stats" class="tab-content">
@@ -67,71 +58,83 @@
                 <p>準備中...</p>
             </section>
         </div>
-    </main>
-    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
-    <div class="modal-content" onclick="event.stopPropagation()">
-        <div id="modal-view">
-            <div class="modal-header">
-                <h3 id="view-live-name">ライブ詳細</h3>
-                <button onclick="closeModal()" class="close-btn">✕</button>
-            </div>
-            <div class="modal-body">
-                <div id="live-details-info"></div>
-                <hr>
-                <h4>🎵 セットリスト</h4>
-                <div id="setlist-display"></div>
-                <button class="edit-main-btn" onclick="switchEditMode()">編集・セトリ登録</button>
-            </div>
-        </div>
 
-        <div id="modal-edit" class="hidden">
-            <div class="modal-header">
-                <h3>内容の修正</h3>
-                <button onclick="switchEditMode()" class="close-btn">戻る</button>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input type="date" id="edit-date">
-                    <input type="text" id="edit-name" placeholder="ライブ名">
-                    <input type="text" id="edit-venue" placeholder="会場">
-                    <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
-                    <h4>🎵 セットリスト (改行で区切ってください)</h4>
-                    <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
+        <div id="page-settings" class="tab-content">
+            <section class="card">
+                <h2>データ管理</h2>
+                <button onclick="exportData()" style="background:#8e8e93; margin-bottom:10px;">データをエクスポート</button>
+                <p style="font-size:0.7rem; color:#666;">※ブラウザのキャッシュを消すとデータが消えるため、こまめな保存を推奨します。</p>
+            </section>
+        </div>
+    </main>
+
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div id="modal-view">
+                <div class="modal-header">
+                    <h3 id="view-live-name">ライブ詳細</h3>
+                    <button onclick="closeModal()" class="close-btn">✕</button>
                 </div>
-                <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
-                <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
+                <div class="modal-body">
+                    <div id="live-details-info"></div>
+                    <hr>
+                    <h4>🎵 セットリスト</h4>
+                    <div id="setlist-display"></div>
+                    <button class="edit-main-btn" onclick="switchEditMode()">編集・セトリ登録</button>
+                </div>
+            </div>
+            <div id="modal-edit" class="hidden">
+                <div class="modal-header">
+                    <h3>内容の修正</h3>
+                    <button onclick="switchEditMode()" class="close-btn">戻る</button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <input type="date" id="edit-date">
+                        <input type="text" id="edit-name" placeholder="ライブ名">
+                        <input type="text" id="edit-venue" placeholder="会場">
+                        <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
+                        <h4>🎵 セットリスト (改行で区切ってください)</h4>
+                        <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
+                    </div>
+                    <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
+                    <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-
-<nav class="tab-bar">
-    <button onclick="showPage('home')" id="tab-home" class="active">
-        <span class="icon">🏠</span><span>ホーム</span>
-    </button>
-    <button onclick="showPage('history')" id="tab-history">
-        <span class="icon">📜</span><span>履歴</span>
-    </button>
-    <button onclick="showPage('stats')" id="tab-stats">
-        <span class="icon">📊</span><span>統計</span>
-    </button>
-    <button onclick="showPage('settings')" id="tab-settings">
-        <span class="icon">⚙️</span><span>管理</span>
-    </button>
-</nav>
-
+    <nav class="tab-bar">
+        <button onclick="showPage('home')" id="tab-home" class="active">
+            <span class="icon">🏠</span><span>ホーム</span>
+        </button>
+        <button onclick="showPage('history')" id="tab-history">
+            <span class="icon">📜</span><span>履歴</span>
+        </button>
+        <button onclick="showPage('stats')" id="tab-stats">
+            <span class="icon">📊</span><span>統計</span>
+        </button>
+        <button onclick="showPage('settings')" id="tab-settings">
+            <span class="icon">⚙️</span><span>管理</span>
+        </button>
+    </nav>
 
     <script>
         // データの初期化
         let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
+        let currentEditId = null; // ★重要：編集中のIDを保持
 
         // ページ切り替え
         function showPage(pageId) {
             document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+            
             document.getElementById('page-' + pageId).classList.add('active');
-            const titles = {home: '🏠 ホーム', history: '📜 参戦履歴', stats: '📊 統計'};
+            document.getElementById('tab-' + pageId).classList.add('active');
+            
+            const titles = {home: '🏠 ホーム', history: '📜 参戦履歴', stats: '📊 統計', settings: '⚙️ 管理'};
             document.getElementById('view-title').innerText = titles[pageId];
+            
             if(pageId === 'history') renderHistory();
             updateArtistSelect();
         }
@@ -148,65 +151,61 @@
             alert('アーティストを登録しました');
         }
 
-        // セレクトボックス更新
         function updateArtistSelect() {
             const select = document.getElementById('live-artist-select');
+            if(!select) return;
             select.innerHTML = '<option value="">アーティストを選択</option>' + 
-                db.artists.map(a => `<option value="${a}">${a}</option>`).join('');
+                db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('');
         }
 
         // ライブ登録
-// addLive() 関数の中身を以下のように更新
-function addLive() {
-    const live = {
-        id: Date.now(),
-        artist: document.getElementById('live-artist-select').value,
-        date: document.getElementById('live-date').value,
-        name: document.getElementById('live-name').value,
-        venue: document.getElementById('live-venue').value,
-        pref: document.getElementById('live-pref').value,
-        memo: document.getElementById('live-memo').value, // ★ここを追加
-        setlist: []
-    };
+        function addLive() {
+            const live = {
+                id: Date.now(),
+                artist: document.getElementById('live-artist-select').value,
+                date: document.getElementById('live-date').value,
+                name: document.getElementById('live-name').value,
+                venue: document.getElementById('live-venue').value,
+                pref: document.getElementById('live-pref').value,
+                memo: document.getElementById('live-memo').value,
+                setlist: []
+            };
+            if(!live.artist || !live.date) return alert('入力が不足しています');
+            db.lives.push(live);
+            save();
+            document.getElementById('live-date').value = '';
+            document.getElementById('live-name').value = '';
+            document.getElementById('live-venue').value = '';
+            document.getElementById('live-memo').value = '';
+            alert('ライブを記録しました');
+            showPage('history');
+        }
 
-    if(!live.artist || !live.date) return alert('入力が不足しています');
-
-    db.lives.push(live);
-    save();
-
-    // 入力欄をクリア（メモ欄も空にする）
-    document.getElementById('live-date').value = '';
-    document.getElementById('live-name').value = '';
-    document.getElementById('live-venue').value = '';
-    document.getElementById('live-pref').value = '';
-    document.getElementById('live-memo').value = ''; // ★ここを追加
-
-    alert('ライブを記録しました');
-    showPage('history');
-}
-
-        // 履歴表示（アコーディオン）
+        // 履歴表示（整理版）
         function renderHistory() {
             const container = document.getElementById('history-list');
             container.innerHTML = '';
-            
-            db.artists.forEach(artist => {
+            const sortedArtists = [...db.artists].sort();
+
+            sortedArtists.forEach(artist => {
                 const artistLives = db.lives.filter(l => l.artist === artist)
                     .sort((a,b) => new Date(b.date) - new Date(a.date));
-                
                 if(artistLives.length === 0) return;
 
                 const section = document.createElement('div');
+                section.className = 'card';
+                section.style.padding = '0';
                 section.innerHTML = `
                     <div class="accordion-header" onclick="toggleAccordion('${artist}')">
                         <span>${artist}</span>
-                        <span>${artistLives.length} 公演 ▽</span>
+                        <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
                     </div>
                     <div id="list-${artist}" class="hidden">
                         ${artistLives.map(l => `
-                            <div class="live-item-detail" onclick="editLive(${l.id})">
-                                <strong>${l.date}</strong><br>
-                                ${l.name} @ ${l.venue}
+                            <div class="live-item-detail" onclick="openDetail(${l.id})">
+                                <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
+                                <div style="font-weight: bold;">${l.name}</div>
+                                <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue}</div>
                             </div>
                         `).join('')}
                     </div>
@@ -220,142 +219,72 @@ function addLive() {
             el.classList.toggle('hidden');
         }
 
-        function save() {
-            localStorage.setItem('live_app_db', JSON.stringify(db));
+        function openDetail(id) {
+            currentEditId = id;
+            const live = db.lives.find(l => l.id === id);
+            if(!live) return;
+            document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
+            document.getElementById('live-details-info').innerHTML = `
+                <p><strong>📅 日付:</strong> ${live.date}</p>
+                <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
+                <p><strong>📝 メモ:</strong><br>${live.memo || 'なし'}</p>
+            `;
+            const setlistDiv = document.getElementById('setlist-display');
+            setlistDiv.innerHTML = live.setlist && live.setlist.length > 0 ? 
+                live.setlist.map((song, i) => `<div class="setlist-item"><div class="set-num">${String(i+1).padStart(2,'0')}</div><div>${song}</div></div>`).join('') : 
+                '<p style="color:#999; padding:10px;">未登録</p>';
+            document.getElementById('modal-overlay').classList.remove('hidden');
         }
 
-        function editLive(liveId) {
-            // 次のステップで詳細編集・セトリ機能を実装します
-            alert('ID: ' + liveId + ' の編集画面を開きます（次回実装）');
+        function switchEditMode() {
+            const live = db.lives.find(l => l.id === currentEditId);
+            document.getElementById('edit-date').value = live.date;
+            document.getElementById('edit-name').value = live.name;
+            document.getElementById('edit-venue').value = live.venue;
+            document.getElementById('edit-memo').value = live.memo || '';
+            document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
+            document.getElementById('modal-view').classList.toggle('hidden');
+            document.getElementById('modal-edit').classList.toggle('hidden');
         }
 
-        // 初期表示
+        function saveEdit() {
+            const live = db.lives.find(l => l.id === currentEditId);
+            live.date = document.getElementById('edit-date').value;
+            live.name = document.getElementById('edit-name').value;
+            live.venue = document.getElementById('edit-venue').value;
+            live.memo = document.getElementById('edit-memo').value;
+            live.setlist = document.getElementById('edit-setlist').value.split('\n').filter(line => line.trim() !== '');
+            save();
+            closeModal();
+            renderHistory();
+        }
+
+        function deleteLive() {
+            if(!confirm('削除しますか？')) return;
+            db.lives = db.lives.filter(l => l.id !== currentEditId);
+            save();
+            closeModal();
+            renderHistory();
+        }
+
+        function closeModal() {
+            document.getElementById('modal-overlay').classList.add('hidden');
+            document.getElementById('modal-view').classList.remove('hidden');
+            document.getElementById('modal-edit').classList.add('hidden');
+        }
+
+        function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+            const downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            downloadAnchorNode.setAttribute("download", "livelog_backup.json");
+            document.body.appendChild(downloadAnchorNode);
+            downloadAnchorNode.click();
+            downloadAnchorNode.remove();
+        }
+
         updateArtistSelect();
-        
-        // --- 履歴表示（アコーディオン） ---
-function renderHistory() {
-    const container = document.getElementById('history-list');
-    container.innerHTML = '';
-    
-    // アーティスト名を50音順などでソートしておくとJRA風に整います
-    const sortedArtists = [...db.artists].sort();
-
-    sortedArtists.forEach(artist => {
-        const artistLives = db.lives.filter(l => l.artist === artist)
-            .sort((a,b) => new Date(b.date) - new Date(a.date));
-        
-        if(artistLives.length === 0) return;
-
-        const section = document.createElement('div');
-        section.className = 'card';
-        section.style.padding = '0';
-        section.innerHTML = `
-            <div class="accordion-header" onclick="toggleAccordion('${artist}')">
-                <span>${artist}</span>
-                <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
-            </div>
-            <div id="list-${artist}" class="hidden">
-                ${artistLives.map(l => `
-                    <div class="live-item-detail" onclick="openDetail(${l.id})">
-                        <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
-                        <div style="font-weight: bold;">${l.name}</div>
-                        <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue}</div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-        container.appendChild(section);
-    });
-}
-
-// --- 詳細画面（モーダル）を開く ---
-function openDetail(id) {
-    currentEditId = id;
-    const live = db.lives.find(l => l.id === id);
-    if(!live) return;
-    
-    document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
-    document.getElementById('live-details-info').innerHTML = `
-        <div style="margin-bottom:15px; font-size: 0.95rem;">
-            <p><strong>📅 日付:</strong> ${live.date}</p>
-            <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
-            <p><strong>📝 メモ:</strong><br><span style="color:#444;">${live.memo || '（なし）'}</span></p>
-        </div>
-    `;
-
-    // セットリスト表示（01, 02... と番号を振る）
-    const setlistDiv = document.getElementById('setlist-display');
-    if (live.setlist && live.setlist.length > 0) {
-        setlistDiv.innerHTML = live.setlist.map((song, index) => `
-            <div class="setlist-item">
-                <div class="set-num">${String(index + 1).padStart(2, '0')}</div>
-                <div class="set-name">${song}</div>
-            </div>
-        `).join('');
-    } else {
-        setlistDiv.innerHTML = '<p style="color:#999; padding: 10px;">セットリストは未登録です</p>';
-    }
-
-    document.getElementById('modal-overlay').classList.remove('hidden');
-}
-
-// --- モーダルの表示モード・編集モード切り替え ---
-function switchEditMode() {
-    const live = db.lives.find(l => l.id === currentEditId);
-    
-    // 編集用入力欄に現在の値をセット
-    document.getElementById('edit-date').value = live.date;
-    document.getElementById('edit-name').value = live.name;
-    document.getElementById('edit-venue').value = live.venue;
-    document.getElementById('edit-memo').value = live.memo || '';
-    document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
-
-    document.getElementById('modal-view').classList.add('hidden');
-    document.getElementById('modal-edit').classList.remove('hidden');
-}
-
-// --- 編集内容の保存 ---
-function saveEdit() {
-    const liveIndex = db.lives.findIndex(l => l.id === currentEditId);
-    if(liveIndex === -1) return;
-
-    db.lives[liveIndex].date = document.getElementById('edit-date').value;
-    db.lives[liveIndex].name = document.getElementById('edit-name').value;
-    db.lives[liveIndex].venue = document.getElementById('edit-venue').value;
-    db.lives[liveIndex].memo = document.getElementById('edit-memo').value;
-    
-    // 改行区切りのテキストを配列に変換
-    const text = document.getElementById('edit-setlist').value;
-    db.lives[liveIndex].setlist = text.split('\n').filter(line => line.trim() !== '');
-
-    save();
-    alert('内容を更新しました');
-    closeModal();
-    renderHistory();
-}
-
-// --- 削除機能 ---
-function deleteLive() {
-    if(!confirm('このライブ記録を完全に削除しますか？')) return;
-    db.lives = db.lives.filter(l => l.id !== currentEditId);
-    save();
-    closeModal();
-    renderHistory();
-}
-
-// --- モーダルを閉じる ---
-function closeModal() {
-    document.getElementById('modal-overlay').classList.add('hidden');
-    document.getElementById('modal-view').classList.remove('hidden');
-    document.getElementById('modal-edit').classList.add('hidden');
-}
-
-function toggleAccordion(artist) {
-    const el = document.getElementById('list-' + artist);
-    el.classList.toggle('hidden');
-}
-
-        
     </script>
 </body>
 </html>
