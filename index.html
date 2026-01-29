@@ -59,14 +59,23 @@
             </section>
         </div>
 
-        <div id="page-settings" class="tab-content">
-            <section class="card">
-                <h2>データ管理</h2>
-                <button onclick="exportData()" style="background:#8e8e93; margin-bottom:10px;">データをエクスポート</button>
-                <p style="font-size:0.7rem; color:#666;">※ブラウザのキャッシュを消すとデータが消えるため、こまめな保存を推奨します。</p>
-            </section>
+<div id="page-settings" class="tab-content">
+    <section class="card">
+        <h2>データ管理</h2>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="exportData()" style="background:#8e8e93;">データをエクスポート</button>
+            
+            <button onclick="document.getElementById('import-file').click()" style="background: var(--primary-color);">バックアップから復元</button>
+            
+            <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
         </div>
-    </main>
+        <p style="font-size:0.75rem; color:#666; margin-top:15px; line-height:1.6;">
+            ※「復元」を行うと、現在のデータはすべて上書きされます。<br>
+            ※機種変更時は、古い端末でエクスポートしたファイルをこのボタンから読み込んでください。
+        </p>
+    </section>
+</div>
+
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
@@ -312,6 +321,39 @@ function exportData() {
     dlAnchor.setAttribute("href", dataStr);
     dlAnchor.setAttribute("download", "livelog_backup.json");
     dlAnchor.click();
+}
+
+// --- データのインポート（復元）機能 ---
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedDb = JSON.parse(e.target.result);
+            
+            // データの形式が正しいかチェック
+            if (!importedDb.artists || !importedDb.lives) {
+                alert('ファイル形式が正しくありません。');
+                return;
+            }
+
+            if (confirm('データを復元しますか？\n現在のデータはバックアップの内容で上書きされます。')) {
+                db = importedDb;
+                save(); // localStorageに保存
+                alert('データの復元が完了しました！');
+                location.reload(); // 画面をリフレッシュして全データを反映
+            }
+        } catch (err) {
+            alert('ファイルの読み込みに失敗しました。');
+            console.error(err);
+        }
+    };
+    reader.readAsText(file);
+    
+    // 同じファイルを連続で選んでも反応するようにリセット
+    event.target.value = '';
 }
 
     </script>
