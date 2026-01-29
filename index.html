@@ -231,6 +231,131 @@ function addLive() {
 
         // 初期表示
         updateArtistSelect();
+        
+        // --- 履歴表示（アコーディオン） ---
+function renderHistory() {
+    const container = document.getElementById('history-list');
+    container.innerHTML = '';
+    
+    // アーティスト名を50音順などでソートしておくとJRA風に整います
+    const sortedArtists = [...db.artists].sort();
+
+    sortedArtists.forEach(artist => {
+        const artistLives = db.lives.filter(l => l.artist === artist)
+            .sort((a,b) => new Date(b.date) - new Date(a.date));
+        
+        if(artistLives.length === 0) return;
+
+        const section = document.createElement('div');
+        section.className = 'card';
+        section.style.padding = '0';
+        section.innerHTML = `
+            <div class="accordion-header" onclick="toggleAccordion('${artist}')">
+                <span>${artist}</span>
+                <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
+            </div>
+            <div id="list-${artist}" class="hidden">
+                ${artistLives.map(l => `
+                    <div class="live-item-detail" onclick="openDetail(${l.id})">
+                        <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
+                        <div style="font-weight: bold;">${l.name}</div>
+                        <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(section);
+    });
+}
+
+// --- 詳細画面（モーダル）を開く ---
+function openDetail(id) {
+    currentEditId = id;
+    const live = db.lives.find(l => l.id === id);
+    if(!live) return;
+    
+    document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
+    document.getElementById('live-details-info').innerHTML = `
+        <div style="margin-bottom:15px; font-size: 0.95rem;">
+            <p><strong>📅 日付:</strong> ${live.date}</p>
+            <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
+            <p><strong>📝 メモ:</strong><br><span style="color:#444;">${live.memo || '（なし）'}</span></p>
+        </div>
+    `;
+
+    // セットリスト表示（01, 02... と番号を振る）
+    const setlistDiv = document.getElementById('setlist-display');
+    if (live.setlist && live.setlist.length > 0) {
+        setlistDiv.innerHTML = live.setlist.map((song, index) => `
+            <div class="setlist-item">
+                <div class="set-num">${String(index + 1).padStart(2, '0')}</div>
+                <div class="set-name">${song}</div>
+            </div>
+        `).join('');
+    } else {
+        setlistDiv.innerHTML = '<p style="color:#999; padding: 10px;">セットリストは未登録です</p>';
+    }
+
+    document.getElementById('modal-overlay').classList.remove('hidden');
+}
+
+// --- モーダルの表示モード・編集モード切り替え ---
+function switchEditMode() {
+    const live = db.lives.find(l => l.id === currentEditId);
+    
+    // 編集用入力欄に現在の値をセット
+    document.getElementById('edit-date').value = live.date;
+    document.getElementById('edit-name').value = live.name;
+    document.getElementById('edit-venue').value = live.venue;
+    document.getElementById('edit-memo').value = live.memo || '';
+    document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
+
+    document.getElementById('modal-view').classList.add('hidden');
+    document.getElementById('modal-edit').classList.remove('hidden');
+}
+
+// --- 編集内容の保存 ---
+function saveEdit() {
+    const liveIndex = db.lives.findIndex(l => l.id === currentEditId);
+    if(liveIndex === -1) return;
+
+    db.lives[liveIndex].date = document.getElementById('edit-date').value;
+    db.lives[liveIndex].name = document.getElementById('edit-name').value;
+    db.lives[liveIndex].venue = document.getElementById('edit-venue').value;
+    db.lives[liveIndex].memo = document.getElementById('edit-memo').value;
+    
+    // 改行区切りのテキストを配列に変換
+    const text = document.getElementById('edit-setlist').value;
+    db.lives[liveIndex].setlist = text.split('\n').filter(line => line.trim() !== '');
+
+    save();
+    alert('内容を更新しました');
+    closeModal();
+    renderHistory();
+}
+
+// --- 削除機能 ---
+function deleteLive() {
+    if(!confirm('このライブ記録を完全に削除しますか？')) return;
+    db.lives = db.lives.filter(l => l.id !== currentEditId);
+    save();
+    closeModal();
+    renderHistory();
+}
+
+// --- モーダルを閉じる ---
+function closeModal() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    document.getElementById('modal-view').classList.remove('hidden');
+    document.getElementById('modal-edit').classList.add('hidden');
+}
+
+function toggleAccordion(artist) {
+    const el = document.getElementById('list-' + artist);
+    el.classList.toggle('hidden');
+}
+
+        
     </script>
 </body>
 </html>
