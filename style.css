@@ -134,3 +134,27 @@ button:active {
 .tab-bar button.active {
     color: var(--primary-color);
 }
+
+/* style.css に追加：メモ欄のデザイン */
+textarea {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 16px;
+    font-family: inherit;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    color: var(--text-main);
+    resize: none; /* iPhoneで入力欄のサイズが勝手に変わるのを防ぐ */
+}
+
+textarea:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background-color: #fff;
+}
+
