@@ -1,124 +1,58 @@
-:root {
-    --primary-color: #007130; 
-    --primary-light: #e6f4ea; /* ボタンの背景などへの薄い緑 */
-    --bg-color: #f2f2f7;      /* iOS標準に近い少しグレーの背景 */
-    --card-bg: #ffffff;
-    --text-main: #1c1c1e;
-    --text-sub: #8e8e93;
-    --border-radius: 12px;    /* 垢抜けた印象を作る丸みの基準 */
+/* 全体設定：間伸びを防ぐ */
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin: 0;
+    padding: 0 0 100px 0; /* 下部タブに被らないよう余白を確保 */
+    background-color: #f2f2f7;
+    color: #1c1c1e;
+    line-height: 1.4; /* 行間を少し詰め、情報を凝縮 */
 }
 
-/* カードのデザインをモダンに */
+header {
+    padding: 8px; /* ヘッダーをスリムに */
+}
+
+/* カード：白枠からはみ出さない設定 */
 .card {
-    background: var(--card-bg);
-    margin: 16px;
-    padding: 24px;
-    border-radius: var(--border-radius); /* 丸みを持たせる */
-    border: none; /* 線を消して影で表現 */
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05); /* 柔らかい影 */
+    background: #fff;
+    margin: 8px 12px; /* 上下余白を半分に */
+    padding: 12px 16px; /* 内部余白も少し詰める */
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    box-sizing: border-box; /* 枠線やパディングを内側に含める */
+    overflow: hidden; /* 子要素のはみ出しを物理的にカット */
 }
 
-/* 入力エリア：角に丸みをもたせ、枠線を細く */
-.form-group input, 
-.form-group select {
-    display: block;
-    width: 100%;
-    height: 50px; /* 少し高さを出すと今風になります */
-    padding: 12px 16px;
-    margin-bottom: 16px;
-    border: 1.5px solid #efeff4;
-    border-radius: var(--border-radius);
-    font-size: 16px;
-    background-color: #f9f9f9;
-    color: var(--text-main);
-    transition: all 0.2s;
-}
-
-/* 入力中に枠線の色を変える（垢抜けポイント） */
-.form-group input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background-color: #fff;
-}
-
-/* ボタン：角を丸くし、ベタ塗りに少しグラデーション */
-button {
-    width: 100%;
-    padding: 16px;
-    background: linear-gradient(135deg, var(--primary-color), #008f3d);
-    color: white;
-    border: none;
-    border-radius: 28px; /* 丸みのあるカプセル型ボタン */
-    font-size: 1rem;
-    font-weight: bold;
-    letter-spacing: 0.03em;
-    box-shadow: 0 4px 10px rgba(0, 113, 48, 0.3); /* ボタンの色に合わせた影 */
-}
-
-/* タブバーのボタンは丸くせず、スッキリと */
-/* 下部ナビゲーション：JRA風の区切り線入りデザイン */
-.tab-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 65px;
-    background: #ffffff;
-    display: flex;
-    /* 上側に少しだけ影をつけて境界をはっきりさせる */
-    box-shadow: 0 -1px 10px rgba(0,0,0,0.05);
-    padding-bottom: env(safe-area-inset-bottom);
-    z-index: 1000;
-}
-
-.tab-bar button {
-    flex: 1;
-    background: none;
-    border: none;
-    box-shadow: none; /* 前回のボタン影をリセット */
-    border-radius: 0; /* 角丸をリセット */
-    padding: 8px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-sub);
-    position: relative; /* 縦線（擬似要素）の基準点 */
-}
-
-/* 縦線の実装：JRA風にボタンの間に薄い線を入れる */
-.tab-bar button:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 20%; /* 線を少し短くして垢抜けさせる */
-    height: 60%;
-    width: 1px;
-    background-color: #e0e0e0;
-}
-
-/* アイコン（絵文字）のサイズ */
-.tab-bar button .icon {
-    font-size: 1.4rem;
+/* フォーム項目：上下の間隔を狭める */
+.form-group label {
+    font-size: 0.8rem;
     margin-bottom: 2px;
 }
 
-/* ラベルのサイズ */
-.tab-bar button span {
-    font-size: 0.7rem;
-    font-weight: bold;
+.form-group input, 
+.form-group select {
+    display: block;
+    width: 100%; /* これで横幅いっぱい */
+    height: 40px; /* 高さを48pxから40pxへスリム化 */
+    padding: 8px 12px;
+    margin-bottom: 8px; /* 項目間の隙間を削減 */
+    border: 1px solid #efeff4;
+    border-radius: 8px;
+    font-size: 16px;
+    box-sizing: border-box; /* これが「はみ出し」防止の決定打 */
+    background-color: #f9f9f9;
 }
 
-/* アクティブ（現在選んでいる）タブの色 */
-.tab-bar button.active {
-    color: var(--primary-color);
+/* ボタン：高さを少し抑える */
+button {
+    width: 100%;
+    padding: 12px;
+    border-radius: 22px; /* カプセル型を維持しつつスリムに */
+    font-size: 0.95rem;
+    margin-top: 4px;
 }
 
-
-/* 履歴のアコーディオン部分も角を丸く */
-.accordion-header {
-    margin: 8px 16px;
-    border-radius: var(--border-radius);
-    border: none;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+/* 登録ボタンが隠れないようにするための調整 */
+#page-home {
+    padding-bottom: 20px; /* コンテンツ自体の末尾に余裕を持たせる */
 }
