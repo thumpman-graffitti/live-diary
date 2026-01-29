@@ -182,6 +182,8 @@ if (!db.artists) db.artists = [];
 if (!db.lives) db.lives = [];
 
 let currentEditId = null; 
+let artistChart = null; // ★これをつける（二重描画バグを防ぐため）
+
 
 // 2. ページ読み込み時の初期化
 window.onload = function() {
@@ -516,21 +518,57 @@ function setDefaultDate() {
 window.addEventListener('DOMContentLoaded', setDefaultDate);
 
 // --- 追加：統計機能（ランキング表示） ---
+// --- 追加・修正：グラフ対応版の統計機能 ---
 function renderStats() {
-    const container = document.getElementById('page-stats');
-    if (!container) return;
+    const container = document.getElementById('stats-ranking-list');
+    const totalDisplay = document.getElementById('total-count-display');
+    if (!container || !totalDisplay) return;
 
     if (db.lives.length === 0) {
         container.innerHTML = '<section class="card"><p style="text-align:center; color:#999; padding:20px;">ライブ記録がまだありません</p></section>';
+        totalDisplay.innerText = "0";
         return;
     }
 
-    // アーティスト別集計
+    // --- データ集計 ---
     const artistCounts = {};
     db.lives.forEach(l => { artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1; });
-    const ranking = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]);
+    const sortedData = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]);
 
-    // 都道府県別集計
+    const labels = sortedData.map(d => d[0]);
+    const counts = sortedData.map(d => d[1]);
+
+    // 通算参戦数を真ん中に表示
+    totalDisplay.innerText = db.lives.length;
+
+    // --- グラフ描画 (Chart.js) ---
+    const ctx = document.getElementById('artistChart').getContext('2d');
+    if (artistChart) artistChart.destroy(); // 既存のグラフを破棄
+
+    artistChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: counts,
+                backgroundColor: [
+                    '#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'
+                ],
+                borderWidth: 2,
+                borderColor: '#ffffff'
+            }]
+        },
+        options: {
+            cutout: '75%', // ドーナツの穴の大きさ
+            plugins: {
+                legend: { display: false } // 凡例は下のリストで出すので隠す
+            },
+            responsive: true,
+            maintainAspectRatio: true
+        }
+    });
+
+    // --- 下部のリスト表示 (ランキング) ---
     const prefCounts = {};
     db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
     const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
@@ -538,8 +576,8 @@ function renderStats() {
     container.innerHTML = `
         <section class="card">
             <h2>🏆 アーティスト別 TOP5</h2>
-            ${ranking.slice(0, 5).map(([name, count], i) => `
-                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+            ${sortedData.slice(0, 5).map(([name, count], i) => `
+                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
                     <span style="font-weight:bold;">${i+1}位 ${name}</span>
                     <span style="color:var(--primary-color); font-weight:bold;">${count} 回</span>
                 </div>
@@ -548,20 +586,15 @@ function renderStats() {
         <section class="card">
             <h2>📍 都道府県別トップ</h2>
             ${prefRanking.slice(0, 3).map(([name, count]) => `
-                <div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee;">
+                <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #eee;">
                     <span>${name}</span>
                     <span>${count} 公演</span>
                 </div>
             `).join('')}
         </section>
-        <section class="card" style="text-align:center;">
-            <h2>📊 通算参戦数</h2>
-            <div style="font-size: 2.5rem; font-weight: bold; color: var(--primary-color); padding: 10px 0;">
-                ${db.lives.length} <span style="font-size: 1rem; color: #666;">公演</span>
-            </div>
-        </section>
     `;
 }
+
 
     </script>
 </body>
