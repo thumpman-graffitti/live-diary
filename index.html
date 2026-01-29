@@ -15,7 +15,7 @@
 <body>
 
     <header>
-        <h1 id="view-title">LIVE DIARY🍊3</h1>
+        <h1 id="view-title">LIVE DIARY🍊4</h1>
     </header>
 
     <main id="app">
@@ -120,42 +120,33 @@
     </nav>
 
     <script>
-    // データの初期化（エラー回避のため空の状態を確実に作る）
+    // 1. データの初期化（宣言は一度だけにします）
 let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
 if (!db.artists) db.artists = [];
 if (!db.lives) db.lives = [];
 
 let currentEditId = null; 
 
-// 起動時に必ず実行
+// 2. ページ読み込み時の初期化
 window.onload = function() {
     updateArtistSelect();
-    showPage('home');
+    showPage('home'); // 最初にホームを表示
 };
 
-    
-        // データの初期化
-        let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
-        let currentEditId = null; // ★重要：編集中のIDを保持
-
-        // ページ切り替え
+// 3. ページ切り替え
 function showPage(pageId) {
-    // 全コンテンツを非表示
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(p => p.classList.remove('active'));
     
-    // 全タブのactiveクラスを削除
     const tabs = document.querySelectorAll('.tab-bar button');
     tabs.forEach(b => b.classList.remove('active'));
     
-    // 対象を表示
     const targetPage = document.getElementById('page-' + pageId);
     const targetTab = document.getElementById('tab-' + pageId);
     
     if (targetPage) targetPage.classList.add('active');
     if (targetTab) targetTab.classList.add('active');
     
-    // タイトルの更新（settingsが漏れているとここで止まります）
     const titles = {
         home: '🏠 ホーム', 
         history: '📜 参戦履歴', 
@@ -164,159 +155,165 @@ function showPage(pageId) {
     };
     document.getElementById('view-title').innerText = titles[pageId] || 'LIVE LOG';
     
-    // 履歴ページなら描画
-    if(pageId === 'history') {
-        renderHistory();
-    }
-    updateArtistSelect();
+    if(pageId === 'history') renderHistory();
 }
 
-        // アーティスト登録
-        function addArtist() {
-            const name = document.getElementById('new-artist-name').value;
-            if(!name) return;
-            if(db.artists.includes(name)) return alert('登録済みです');
-            db.artists.push(name);
-            save();
-            document.getElementById('new-artist-name').value = '';
-            updateArtistSelect();
-            alert('アーティストを登録しました');
-        }
+// 4. アーティスト登録
+function addArtist() {
+    const name = document.getElementById('new-artist-name').value;
+    if(!name) return;
+    if(db.artists.includes(name)) return alert('登録済みです');
+    db.artists.push(name);
+    save();
+    document.getElementById('new-artist-name').value = '';
+    updateArtistSelect();
+    alert('アーティストを登録しました');
+}
 
-        function updateArtistSelect() {
-            const select = document.getElementById('live-artist-select');
-            if(!select) return;
-            select.innerHTML = '<option value="">アーティストを選択</option>' + 
-                db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('');
-        }
+function updateArtistSelect() {
+    const select = document.getElementById('live-artist-select');
+    if(!select) return;
+    select.innerHTML = '<option value="">アーティストを選択</option>' + 
+        db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('');
+}
 
-        // ライブ登録
-        function addLive() {
-            const live = {
-                id: Date.now(),
-                artist: document.getElementById('live-artist-select').value,
-                date: document.getElementById('live-date').value,
-                name: document.getElementById('live-name').value,
-                venue: document.getElementById('live-venue').value,
-                pref: document.getElementById('live-pref').value,
-                memo: document.getElementById('live-memo').value,
-                setlist: []
-            };
-            if(!live.artist || !live.date) return alert('入力が不足しています');
-            db.lives.push(live);
-            save();
-            document.getElementById('live-date').value = '';
-            document.getElementById('live-name').value = '';
-            document.getElementById('live-venue').value = '';
-            document.getElementById('live-memo').value = '';
-            alert('ライブを記録しました');
-            showPage('history');
-        }
+// 5. ライブ登録
+function addLive() {
+    const artist = document.getElementById('live-artist-select').value;
+    const date = document.getElementById('live-date').value;
+    if(!artist || !date) return alert('入力が不足しています');
 
-        // 履歴表示（整理版）
-        function renderHistory() {
-            const container = document.getElementById('history-list');
-            container.innerHTML = '';
-            const sortedArtists = [...db.artists].sort();
+    const live = {
+        id: Date.now(),
+        artist: artist,
+        date: date,
+        name: document.getElementById('live-name').value,
+        venue: document.getElementById('live-venue').value,
+        pref: document.getElementById('live-pref').value,
+        memo: document.getElementById('live-memo').value,
+        setlist: []
+    };
+    db.lives.push(live);
+    save();
+    
+    // フォームをクリア
+    document.getElementById('live-date').value = '';
+    document.getElementById('live-name').value = '';
+    document.getElementById('live-venue').value = '';
+    document.getElementById('live-memo').value = '';
+    
+    alert('ライブを記録しました');
+    showPage('history'); // 履歴画面へ
+}
 
-            sortedArtists.forEach(artist => {
-                const artistLives = db.lives.filter(l => l.artist === artist)
-                    .sort((a,b) => new Date(b.date) - new Date(a.date));
-                if(artistLives.length === 0) return;
+// 6. 履歴表示（アコーディオン）
+function renderHistory() {
+    const container = document.getElementById('history-list');
+    container.innerHTML = '';
+    const sortedArtists = [...db.artists].sort();
 
-                const section = document.createElement('div');
-                section.className = 'card';
-                section.style.padding = '0';
-                section.innerHTML = `
-                    <div class="accordion-header" onclick="toggleAccordion('${artist}')">
-                        <span>${artist}</span>
-                        <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
+    sortedArtists.forEach(artist => {
+        const artistLives = db.lives.filter(l => l.artist === artist)
+            .sort((a,b) => new Date(b.date) - new Date(a.date));
+        if(artistLives.length === 0) return;
+
+        const section = document.createElement('div');
+        section.className = 'card';
+        section.style.padding = '0';
+        section.innerHTML = `
+            <div class="accordion-header" onclick="toggleAccordion('${artist}')">
+                <span>${artist}</span>
+                <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
+            </div>
+            <div id="list-${artist}" class="hidden">
+                ${artistLives.map(l => `
+                    <div class="live-item-detail" onclick="openDetail(${l.id})">
+                        <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
+                        <div style="font-weight: bold;">${l.name || '(無題)'}</div>
+                        <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue || '会場不明'}</div>
                     </div>
-                    <div id="list-${artist}" class="hidden">
-                        ${artistLives.map(l => `
-                            <div class="live-item-detail" onclick="openDetail(${l.id})">
-                                <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
-                                <div style="font-weight: bold;">${l.name}</div>
-                                <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-                container.appendChild(section);
-            });
-        }
+                `).join('')}
+            </div>
+        `;
+        container.appendChild(section);
+    });
+}
 
-        function toggleAccordion(artist) {
-            const el = document.getElementById('list-' + artist);
-            el.classList.toggle('hidden');
-        }
+function toggleAccordion(artist) {
+    const el = document.getElementById('list-' + artist);
+    if(el) el.classList.toggle('hidden');
+}
 
-        function openDetail(id) {
-            currentEditId = id;
-            const live = db.lives.find(l => l.id === id);
-            if(!live) return;
-            document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
-            document.getElementById('live-details-info').innerHTML = `
-                <p><strong>📅 日付:</strong> ${live.date}</p>
-                <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
-                <p><strong>📝 メモ:</strong><br>${live.memo || 'なし'}</p>
-            `;
-            const setlistDiv = document.getElementById('setlist-display');
-            setlistDiv.innerHTML = live.setlist && live.setlist.length > 0 ? 
-                live.setlist.map((song, i) => `<div class="setlist-item"><div class="set-num">${String(i+1).padStart(2,'0')}</div><div>${song}</div></div>`).join('') : 
-                '<p style="color:#999; padding:10px;">未登録</p>';
-            document.getElementById('modal-overlay').classList.remove('hidden');
-        }
+// 7. 詳細表示（モーダル）
+function openDetail(id) {
+    currentEditId = id;
+    const live = db.lives.find(l => l.id === id);
+    if(!live) return;
+    
+    document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
+    document.getElementById('live-details-info').innerHTML = `
+        <p><strong>📅 日付:</strong> ${live.date}</p>
+        <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
+        <p><strong>📝 メモ:</strong><br>${live.memo || 'なし'}</p>
+    `;
+    const setlistDiv = document.getElementById('setlist-display');
+    setlistDiv.innerHTML = live.setlist && live.setlist.length > 0 ? 
+        live.setlist.map((song, i) => `<div class="setlist-item"><div class="set-num">${String(i+1).padStart(2,'0')}</div><div>${song}</div></div>`).join('') : 
+        '<p style="color:#999; padding:10px;">未登録</p>';
+    document.getElementById('modal-overlay').classList.remove('hidden');
+}
 
-        function switchEditMode() {
-            const live = db.lives.find(l => l.id === currentEditId);
-            document.getElementById('edit-date').value = live.date;
-            document.getElementById('edit-name').value = live.name;
-            document.getElementById('edit-venue').value = live.venue;
-            document.getElementById('edit-memo').value = live.memo || '';
-            document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
-            document.getElementById('modal-view').classList.toggle('hidden');
-            document.getElementById('modal-edit').classList.toggle('hidden');
-        }
+function switchEditMode() {
+    const live = db.lives.find(l => l.id === currentEditId);
+    document.getElementById('edit-date').value = live.date;
+    document.getElementById('edit-name').value = live.name;
+    document.getElementById('edit-venue').value = live.venue;
+    document.getElementById('edit-memo').value = live.memo || '';
+    document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
+    document.getElementById('modal-view').classList.toggle('hidden');
+    document.getElementById('modal-edit').classList.toggle('hidden');
+}
 
-        function saveEdit() {
-            const live = db.lives.find(l => l.id === currentEditId);
-            live.date = document.getElementById('edit-date').value;
-            live.name = document.getElementById('edit-name').value;
-            live.venue = document.getElementById('edit-venue').value;
-            live.memo = document.getElementById('edit-memo').value;
-            live.setlist = document.getElementById('edit-setlist').value.split('\n').filter(line => line.trim() !== '');
-            save();
-            closeModal();
-            renderHistory();
-        }
+function saveEdit() {
+    const index = db.lives.findIndex(l => l.id === currentEditId);
+    if(index === -1) return;
 
-        function deleteLive() {
-            if(!confirm('削除しますか？')) return;
-            db.lives = db.lives.filter(l => l.id !== currentEditId);
-            save();
-            closeModal();
-            renderHistory();
-        }
+    db.lives[index].date = document.getElementById('edit-date').value;
+    db.lives[index].name = document.getElementById('edit-name').value;
+    db.lives[index].venue = document.getElementById('edit-venue').value;
+    db.lives[index].memo = document.getElementById('edit-memo').value;
+    db.lives[index].setlist = document.getElementById('edit-setlist').value.split('\n').filter(line => line.trim() !== '');
+    
+    save();
+    closeModal();
+    renderHistory();
+}
 
-        function closeModal() {
-            document.getElementById('modal-overlay').classList.add('hidden');
-            document.getElementById('modal-view').classList.remove('hidden');
-            document.getElementById('modal-edit').classList.add('hidden');
-        }
+function deleteLive() {
+    if(!confirm('このライブ記録を削除しますか？')) return;
+    db.lives = db.lives.filter(l => l.id !== currentEditId);
+    save();
+    closeModal();
+    renderHistory();
+}
 
-        function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
-        function exportData() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
-            const downloadAnchorNode = document.createElement('a');
-            downloadAnchorNode.setAttribute("href", dataStr);
-            downloadAnchorNode.setAttribute("download", "livelog_backup.json");
-            document.body.appendChild(downloadAnchorNode);
-            downloadAnchorNode.click();
-            downloadAnchorNode.remove();
-        }
+function closeModal() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    document.getElementById('modal-view').classList.remove('hidden');
+    document.getElementById('modal-edit').classList.add('hidden');
+}
 
-        updateArtistSelect();
+// 8. 共通処理
+function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
+
+function exportData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "livelog_backup.json");
+    dlAnchor.click();
+}
+
     </script>
 </body>
 </html>
