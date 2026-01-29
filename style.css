@@ -1,5 +1,5 @@
 :root {
-    --primary-color: #007130; /* JRAグリーンの復活 */
+    --primary-color: #007130;
     --primary-light: #e6f4ea;
     --bg-color: #f2f2f7;
     --card-bg: #ffffff;
@@ -8,7 +8,7 @@
     --border-color: #e0e0e0;
 }
 
-/* 全体設定：間伸びを防ぎ、フォントをJRA風に */
+/* 全体設定 */
 body {
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     margin: 0;
@@ -16,7 +16,7 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     line-height: 1.4;
-    overflow-x: hidden; /* 横揺れ完全防止 */
+    overflow-x: hidden;
 }
 
 header {
@@ -37,419 +37,118 @@ h2 {
     margin: 0 0 12px 0;
 }
 
-/* カード：はみ出しを物理的に封じ込める */
+/* カード設定 */
 .card {
     background: var(--card-bg);
     margin: 8px 12px;
     padding: 16px;
-    border-radius: 8px; /* JRA風に少しシャープに */
+    border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    box-sizing: border-box; /* これが100%幅の肝 */
-    width: calc(100% - 24px); /* 画面幅から左右マージン分を引く */
+    box-sizing: border-box;
+    width: calc(100% - 24px);
     overflow: hidden; 
 }
 
-/* フォーム項目：100%を超えないように強制 */
-.form-group input, 
-.form-group select {
+/* フォーム要素 */
+.form-group input, .form-group select, textarea {
     display: block;
-    width: 100% !important; /* 強制的に枠内に固定 */
-    max-width: 100%;
+    width: 100% !important;
     height: 40px;
     padding: 8px 12px;
     margin-bottom: 10px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
     font-size: 16px;
-    font-family: inherit;
-    box-sizing: border-box; /* 絶対に外に出さない */
+    box-sizing: border-box;
     background-color: #f9f9f9;
-    color: var(--text-main);
-    -webkit-appearance: none; /* Safariの余計なデザインをリセット */
 }
 
-/* 日付入力欄（iOS用特別対策） */
-input[type="date"] {
-    min-width: 0; /* 幅計算をゼロからにリセット */
-    flex: 1;
-}
+textarea { height: auto; resize: none; }
 
-/* ボタン：JRAらしい力強いグリーン */
+/* メインボタン */
 button {
     width: 100%;
     padding: 12px;
     background: var(--primary-color);
     color: white;
     border: none;
-    border-radius: 25px; /* ここだけ少し丸みを持たせて垢抜け */
+    border-radius: 25px;
     font-size: 1rem;
     font-weight: bold;
-    cursor: pointer;
     box-shadow: 0 3px 0 #004d21;
 }
 
-button:active {
-    transform: translateY(2px);
-    box-shadow: none;
-}
+button:active { transform: translateY(2px); box-shadow: none; }
 
-/* 下部タブバー（JRA風の区切り線） */
+/* 下部タブバー */
 .tab-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 65px;
-    background: #ffffff;
-    display: flex;
-    border-top: 1px solid var(--border-color);
-    padding-bottom: env(safe-area-inset-bottom);
-    z-index: 1000;
+    position: fixed; bottom: 0; width: 100%; height: 65px;
+    background: #fff; display: flex; border-top: 1px solid var(--border-color);
+    padding-bottom: env(safe-area-inset-bottom); z-index: 1000;
 }
 
 .tab-bar button {
-    flex: 1;
-    background: none;
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    padding: 8px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: var(--text-sub);
-    position: relative;
+    flex: 1; background: none; box-shadow: none; border-radius: 0;
+    color: var(--text-sub); flex-direction: column; font-size: 0.7rem;
 }
 
-/* 縦の区切り線 */
-.tab-bar button:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 25%;
-    height: 50%;
-    width: 1px;
-    background-color: var(--border-color);
-}
+.tab-bar button.active { color: var(--primary-color); }
 
-.tab-bar button.active {
-    color: var(--primary-color);
-}
-
-/* style.css に追加：メモ欄のデザイン */
-textarea {
-    display: block;
-    width: 100% !important;
-    max-width: 100%;
-    padding: 12px;
-    margin-bottom: 12px;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    font-size: 16px;
-    font-family: inherit;
-    box-sizing: border-box;
-    background-color: #f9f9f9;
-    color: var(--text-main);
-    resize: none; /* iPhoneで入力欄のサイズが勝手に変わるのを防ぐ */
-}
-
-textarea:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    background-color: #fff;
-}
-
-/* モーダル基本設定 */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.6); z-index: 2000;
-    display: flex; align-items: flex-end;
-}
-.modal-content {
-    background: #fff; width: 100%; max-height: 90%;
-    border-radius: 20px 20px 0 0; overflow-y: auto;
-    padding-bottom: env(safe-area-inset-bottom);
-}
-.modal-header {
-    padding: 15px; border-bottom: 1px solid #eee;
-    display: flex; justify-content: space-between; align-items: center;
-    position: sticky; top: 0; background: #fff;
-}
-.modal-body { padding: 20px; }
-
-/* セットリスト表示（番号付き） */
-.setlist-item {
-    display: flex; padding: 8px 0; border-bottom: 1px solid #f0f0f0;
-}
-.set-num {
-    width: 30px; color: var(--primary-color); font-weight: bold; font-size: 0.8rem;
-}
-
-
-/* アコーディオンの中身（ライブ詳細一覧）をしっかり表示させる */
-.live-item-detail {
-    padding: 15px;
-    background: #fff;
-    border-bottom: 1px solid #f0f0f0;
-    cursor: pointer;
-    display: block; /* 確実に表示 */
-}
-
-.live-item-detail:active {
-    background-color: #f2f2f7;
-}
-
-/* 履歴画面のリスト全体の余白 */
-#history-list {
-    padding-top: 10px;
-}
-
-/* 追加：アコーディオンヘッダーのデザインをJRA風に */
-.accordion-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px;
-    background: #fff;
-    font-weight: bold;
-    border-bottom: 1px solid var(--border-color);
-    cursor: pointer;
-}
-
-/* 追加：モーダルの閉じるボタン */
-.close-btn {
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: var(--text-sub);
-    font-size: 1.5rem;
-    padding: 0;
-    width: auto;
-}
-
-/* 修正：詳細画面内の編集ボタンをもっと見やすく */
-.edit-main-btn {
-    margin-top: 20px;
-    background: #444 !important; /* 少し濃いめにして視認性アップ */
-    box-shadow: 0 3px 0 #222 !important;
-}
-
-/* フォーム内の各入力要素がカード内で綺麗に並ぶように調整 */
-.modal-body .form-group input, 
-.modal-body .form-group textarea {
-    margin-bottom: 15px;
-}
-
-/* style.css の末尾などに追加 */
-#page-settings section div {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-/* --- アーティスト管理用のスリム設定 --- */
-
-/* 1行を横並びにして、高さを抑える */
-.artist-admin-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0; /* 上下の余白を狭く設定 */
-    border-bottom: 1px solid var(--border-color);
-}
-
-/* アーティスト名のテキスト設定 */
-.artist-name-text {
-    font-size: 0.95rem;
-    font-weight: bold;
-    color: var(--text-main);
-    flex: 1; /* 名前が長くてもボタンを押し出さない */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-}
-
-/* ボタンを右端に寄せる */
-.artist-admin-btns {
-    display: flex;
-    gap: 6px; /* ボタン同士の隙間 */
-}
-
-/* 管理画面専用のミニボタン */
-.btn-mini {
-    width: auto !important;     /* デフォルトの100%幅を解除 */
-    min-width: 54px !important; /* 押しやすい最低限の幅 */
-    height: 30px !important;    /* 高さを低く */
-    padding: 0 10px !important; /* 左右の余白 */
-    font-size: 0.75rem !important;
-    border-radius: 6px !important; /* 少しシャープに */
-    box-shadow: none !important;   /* 下の影を消してスリムに */
-    margin: 0 !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 編集ボタン（グレー） */
-.btn-edit {
-    background-color: #8e8e93 !important;
-}
-
-/* 削除ボタン（赤） */
-.btn-delete {
-    background-color: #ff3b30 !important;
-}
-
-/* --- アーティスト管理：モダン・スリムデザイン --- */
-
-/* 1レコードの枠組み */
-.artist-admin-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px 4px;
-    border-bottom: 1px solid #f0f0f2;
-    transition: background-color 0.2s;
-}
-
-/* タップした時に少し色が変わる（どの行か分かりやすく） */
-.artist-admin-row:active {
-    background-color: #f9f9fb;
-}
-
-/* 左側：名前エリア */
-.artist-info {
-    display: flex;
-    align-items: center;
-    flex: 1;
-    min-width: 0; /* はみ出し防止 */
-}
-
-/* おしゃれなアクセントドット */
-.artist-dot {
-    width: 6px;
-    height: 6px;
-    background-color: var(--primary-color);
-    border-radius: 50%;
-    margin-right: 10px;
-    flex-shrink: 0;
-}
-
-.artist-name-text {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--text-main);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-/* 右側：ボタンエリア */
-.artist-admin-btns {
-    display: flex;
-    gap: 8px;
-    margin-left: 10px;
-}
-
-/* ミニボタン共通設定 */
-.btn-mini {
-    width: auto !important;
-    min-width: 58px !important;
-    height: 32px !important;
-    padding: 0 12px !important;
-    font-size: 0.75rem !important;
-    font-weight: bold !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
-    margin: 0 !important;
-    border: none !important;
-    color: white !important;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* 編集ボタン：落ち着いたグレーブルー */
-.btn-edit {
-    background-color: #6e6e73 !important;
-}
-.btn-edit:active {
-    background-color: #424245 !important;
-}
-
-/* 削除ボタン：鮮やかなローズレッド */
-.btn-delete {
-    background-color: #ff3b30 !important;
-}
-.btn-delete:active {
-    background-color: #d70015 !important;
-}
-
-/* 検索窓のデザイン */
-.search-box {
-    margin-bottom: 10px;
-}
+/* 管理画面：検索窓 */
+.search-box { margin-bottom: 12px; }
 .search-box input {
-    width: 100% !important;
-    height: 36px !important;
-    background-color: #f2f2f7 !important;
-    border: none !important;
-    border-radius: 10px !important;
-    padding: 0 15px !important;
-    font-size: 0.9rem !important;
+    width: 100% !important; height: 38px !important;
+    background-color: #e5e5ea !important; border: none !important;
+    border-radius: 10px !important; padding: 0 15px !important;
 }
 
-/* 1行に凝縮するための強制設定 */
+/* --- 管理画面：アーティスト行（決定版） --- */
 .artist-admin-row {
     display: flex !important;
-    flex-direction: row !important; /* 絶対に横並び */
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-    border-bottom: 1px solid #f0f0f2;
-}
-
-.artist-admin-btns {
-    display: inline-flex !important; /* ボタンを横に並べる */
-    flex-direction: row !important;
-    gap: 5px;
-    flex-shrink: 0; /* ボタンが潰れないように固定 */
-}
-
-/* ボタンの幅を強制的に小さく固定 */
-.btn-mini {
-    width: 50px !important; 
-    flex: none !important;
-}
-
-/* 管理画面の1行設定 */
-.artist-admin-row {
-    display: flex !important;
-    flex-direction: row !important; /* 横方向に並べる */
+    flex-direction: row !important; /* 横並び強制 */
     justify-content: space-between !important;
     align-items: center !important;
     padding: 10px 0 !important;
     border-bottom: 1px solid #eee !important;
 }
 
-/* ボタンを包むエリアを横並びに強制 */
+.artist-info { display: flex; align-items: center; flex: 1; min-width: 0; }
+.artist-dot {
+    width: 6px; height: 6px; background-color: var(--primary-color);
+    border-radius: 50%; margin-right: 10px; flex-shrink: 0;
+}
+.artist-name-text {
+    font-size: 0.95rem; font-weight: 600;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+/* ボタンエリアを横に固める */
 .artist-admin-btns {
     display: flex !important;
-    flex-direction: row !important; /* 絶対に横並び */
-    gap: 8px !important; /* ボタンの間の隙間 */
-    width: auto !important; /* 幅を自動に */
-    flex-shrink: 0 !important; /* 潰れないように固定 */
+    flex-direction: row !important;
+    gap: 8px !important;
+    flex-shrink: 0 !important;
 }
 
-/* 管理画面のミニボタン自体の設定を上書き */
+/* ミニボタン設定（決定版） */
 .btn-mini {
-    width: 60px !important;      /* ボタンの幅を固定 */
-    height: 32px !important;     /* 高さを固定 */
-    padding: 0 !important;       /* 余計な余白を消す */
-    margin: 0 !important;        /* 外側の余白を消す */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    width: 60px !important;
+    height: 32px !important;
+    padding: 0 !important;
     font-size: 0.75rem !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+    border: none !important;
+    color: white !important;
+    display: flex !important;
+    align-items: center; justify-content: center;
 }
 
+.btn-edit { background-color: #6e6e73 !important; }
+.btn-delete { background-color: #ff3b30 !important; }
 
+/* モーダル・履歴関連 */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: flex; align-items: flex-end; }
+.modal-content { background: #fff; width: 100%; max-height: 90%; border-radius: 20px 20px 0 0; overflow-y: auto; }
+.accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
+.close-btn { background: none !important; box-shadow: none !important; color: #666; width: auto; font-size: 1.2rem; }
