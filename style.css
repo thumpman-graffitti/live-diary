@@ -50,18 +50,24 @@ h2 {
 }
 
 /* フォーム要素 */
-.form-group input, .form-group select, textarea {
-    display: block;
-    width: 100% !important;
-    height: 40px;
-    padding: 8px 12px;
-    margin-bottom: 10px;
+/* フォーム要素：はみ出しを物理的に封じ込める */
+.form-group input, 
+.form-group select, 
+textarea {
+    display: block !important;
+    width: 100% !important; /* 常に親要素の幅いっぱいに */
+    max-width: 100% !important;
+    height: 44px; /* 指で押しやすい高さ */
+    padding: 8px 12px !important;
+    margin-bottom: 12px;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-size: 16px;
-    box-sizing: border-box;
+    font-size: 16px; /* iOSでフォーカス時に画面がズームするのを防ぐサイズ */
+    box-sizing: border-box !important; /* これが100%幅の肝（枠線を含めて計算） */
     background-color: #f9f9f9;
+    color: var(--text-main);
 }
+
 
 textarea { height: auto; resize: none; }
 
