@@ -239,4 +239,11 @@ textarea:focus {
     margin-bottom: 15px;
 }
 
+/* style.css の末尾などに追加 */
+#page-settings section div {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
 
