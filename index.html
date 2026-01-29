@@ -377,17 +377,18 @@ function renderArtistManager() {
     container.innerHTML = '';
 
     if (db.artists.length === 0) {
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:10px;">登録なし</p>';
+        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">登録されたアーティストはいません</p>';
         return;
     }
 
-    // 50音順に並べて表示
     db.artists.sort().forEach(artist => {
         const div = document.createElement('div');
-        // 横並びにするための専用クラス
-        div.className = 'artist-admin-row'; 
+        div.className = 'artist-admin-row'; // CSSでデザインするクラス
         div.innerHTML = `
-            <span class="artist-name-text">${artist}</span>
+            <div class="artist-info">
+                <span class="artist-dot"></span>
+                <span class="artist-name-text">${artist}</span>
+            </div>
             <div class="artist-admin-btns">
                 <button onclick="editArtistName('${artist}')" class="btn-mini btn-edit">編集</button>
                 <button onclick="deleteArtist('${artist}')" class="btn-mini btn-delete">削除</button>
@@ -396,6 +397,7 @@ function renderArtistManager() {
         container.appendChild(div);
     });
 }
+
 
 
 // 名前を編集する
