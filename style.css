@@ -421,3 +421,35 @@ textarea:focus {
     flex: none !important;
 }
 
+/* 管理画面の1行設定 */
+.artist-admin-row {
+    display: flex !important;
+    flex-direction: row !important; /* 横方向に並べる */
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 10px 0 !important;
+    border-bottom: 1px solid #eee !important;
+}
+
+/* ボタンを包むエリアを横並びに強制 */
+.artist-admin-btns {
+    display: flex !important;
+    flex-direction: row !important; /* 絶対に横並び */
+    gap: 8px !important; /* ボタンの間の隙間 */
+    width: auto !important; /* 幅を自動に */
+    flex-shrink: 0 !important; /* 潰れないように固定 */
+}
+
+/* 管理画面のミニボタン自体の設定を上書き */
+.btn-mini {
+    width: 60px !important;      /* ボタンの幅を固定 */
+    height: 32px !important;     /* 高さを固定 */
+    padding: 0 !important;       /* 余計な余白を消す */
+    margin: 0 !important;        /* 外側の余白を消す */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 0.75rem !important;
+}
+
+
