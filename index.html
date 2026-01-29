@@ -68,6 +68,43 @@
             </section>
         </div>
     </main>
+    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div id="modal-view">
+            <div class="modal-header">
+                <h3 id="view-live-name">ライブ詳細</h3>
+                <button onclick="closeModal()" class="close-btn">✕</button>
+            </div>
+            <div class="modal-body">
+                <div id="live-details-info"></div>
+                <hr>
+                <h4>🎵 セットリスト</h4>
+                <div id="setlist-display"></div>
+                <button class="edit-main-btn" onclick="switchEditMode()">編集・セトリ登録</button>
+            </div>
+        </div>
+
+        <div id="modal-edit" class="hidden">
+            <div class="modal-header">
+                <h3>内容の修正</h3>
+                <button onclick="switchEditMode()" class="close-btn">戻る</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="date" id="edit-date">
+                    <input type="text" id="edit-name" placeholder="ライブ名">
+                    <input type="text" id="edit-venue" placeholder="会場">
+                    <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
+                    <h4>🎵 セットリスト (改行で区切ってください)</h4>
+                    <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
+                </div>
+                <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
+                <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <nav class="tab-bar">
     <button onclick="showPage('home')" id="tab-home" class="active">
