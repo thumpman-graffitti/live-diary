@@ -81,73 +81,63 @@ button {
 button:active { transform: translateY(2px); box-shadow: none; }
 
 /* 下部タブバー */
-/* 下部タブバー：JRA公式モバイルサイト風デザイン */
+/* --- 格子状タブバー：JRA公式パネルデザイン --- */
 .tab-bar {
     position: fixed;
     bottom: 0;
     width: 100%;
-    height: 60px; /* 少しスリムに */
-    background: #007130; /* JRAグリーン */
-    display: flex;
+    height: 65px;
+    background-color: #007130 !important; /* JRAグリーン */
+    display: flex !important;
     z-index: 1000;
     padding-bottom: env(safe-area-inset-bottom);
-    border-top: none;
+    /* 上の境界線を少し太くして立体感を出す */
+    border-top: 1px solid #004d21 !important;
 }
 
 .tab-bar button {
     flex: 1;
-    background: none;
-    border: none;
-    box-shadow: none; /* 影を消す */
-    border-radius: 0;
-    padding: 5px 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.7); /* 非選択時は少し透過した白 */
-    font-size: 0.7rem;
-    font-weight: bold;
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    padding: 8px 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #ffffff !important; /* 文字は白 */
+    font-size: 0.7rem !important;
+    font-weight: bold !important;
     position: relative;
-    transition: all 0.2s;
+    /* ボタンの横幅を均等に */
+    width: 25% !important;
 }
 
-/* 縦の区切り線（白の透過でさりげなく） */
-.tab-bar button:not(:last-child)::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 20%;
-    height: 60%;
-    width: 1px;
-    background-color: rgba(255, 255, 255, 0.2);
+/* ★ここがポイント：ボタンの右側にハッキリした縦線を引く★ */
+.tab-bar button:not(:last-child) {
+    border-right: 1px solid rgba(255, 255, 255, 0.4) !important;
 }
 
-/* アクティブなタブ：白文字になり、下に太いラインが入る */
+/* アクティブなタブ：背景を少し暗くして「押されている感」を出す */
 .tab-bar button.active {
-    color: #ffffff !important;
-    background: rgba(255, 255, 255, 0.15); /* 少し明るい緑に見せる */
+    background-color: #004d21 !important; /* 濃い緑 */
+    color: #ffcc00 !important; /* アクティブ時はJRAイエロー */
 }
 
-.tab-bar button.active::before {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 4px;
-    background-color: #ffcc00; /* JRAのアクセントカラー（黄色）をラインに採用 */
-}
-
-/* タブ内のアイコン（絵文字）のサイズ調整 */
+/* アイコン（絵文字）のサイズ */
 .tab-bar button span:first-child {
-    font-size: 1.2rem;
-    margin-bottom: 2px;
+    font-size: 1.3rem !important;
+    margin-bottom: 3px !important;
 }
 
-/* 押し込みアニメーションをタブでは無効化（JRA風の平坦な操作感） */
+/* タップ時の反応（JRA風の平坦なクリック感） */
 .tab-bar button:active {
-    transform: none;
+    background-color: #003316 !important;
+    transform: none !important;
 }
+
 
 
 /* 管理画面：検索窓 */
