@@ -376,19 +376,24 @@ function importData(event) {
 // --- アーティスト管理機能 ---
 
 // 管理画面のアーティスト一覧を描画する
-function renderArtistManager() {
+// アーティスト管理の一覧表示（少し修正：引数でフィルタリング可能に）
+function renderArtistManager(filterText = '') {
     const container = document.getElementById('artist-manager-list');
     if (!container) return;
     container.innerHTML = '';
 
-    if (db.artists.length === 0) {
-        container.innerHTML = '<p style="color:#999; text-align:center; padding:20px;">登録されたアーティストはいません</p>';
+    const filtered = db.artists
+        .sort()
+        .filter(name => name.toLowerCase().includes(filterText.toLowerCase()));
+
+    if (filtered.length === 0) {
+        container.innerHTML = '<p style="color:#999; text-align:center; padding:10px;">見つかりません</p>';
         return;
     }
 
-    db.artists.sort().forEach(artist => {
+    filtered.forEach(artist => {
         const div = document.createElement('div');
-        div.className = 'artist-admin-row'; // CSSでデザインするクラス
+        div.className = 'artist-admin-row';
         div.innerHTML = `
             <div class="artist-info">
                 <span class="artist-dot"></span>
@@ -403,6 +408,11 @@ function renderArtistManager() {
     });
 }
 
+// リアルタイム検索用関数
+function filterArtists() {
+    const text = document.getElementById('artist-search-input').value;
+    renderArtistManager(text);
+}
 
 
 // 名前を編集する
