@@ -246,4 +246,56 @@ textarea:focus {
     gap: 12px;
 }
 
+/* --- アーティスト管理用のスリム設定 --- */
+
+/* 1行を横並びにして、高さを抑える */
+.artist-admin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 0; /* 上下の余白を狭く設定 */
+    border-bottom: 1px solid var(--border-color);
+}
+
+/* アーティスト名のテキスト設定 */
+.artist-name-text {
+    font-size: 0.95rem;
+    font-weight: bold;
+    color: var(--text-main);
+    flex: 1; /* 名前が長くてもボタンを押し出さない */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ボタンを右端に寄せる */
+.artist-admin-btns {
+    display: flex;
+    gap: 6px; /* ボタン同士の隙間 */
+}
+
+/* 管理画面専用のミニボタン */
+.btn-mini {
+    width: auto !important;     /* デフォルトの100%幅を解除 */
+    min-width: 54px !important; /* 押しやすい最低限の幅 */
+    height: 30px !important;    /* 高さを低く */
+    padding: 0 10px !important; /* 左右の余白 */
+    font-size: 0.75rem !important;
+    border-radius: 6px !important; /* 少しシャープに */
+    box-shadow: none !important;   /* 下の影を消してスリムに */
+    margin: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 編集ボタン（グレー） */
+.btn-edit {
+    background-color: #8e8e93 !important;
+}
+
+/* 削除ボタン（赤） */
+.btn-delete {
+    background-color: #ff3b30 !important;
+}
 
