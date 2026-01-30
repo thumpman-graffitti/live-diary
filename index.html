@@ -13,6 +13,25 @@
         display: none !important; 
     }
 
+    /* 2. 各ページの中身（切り替え用） */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* 3. 下のタブバー本体：常に表示（!importantで最優先） */
+    .tab-bar {
+        display: flex !important;
+    }
+</style>
+
+
+
+
+<style>
+    /* 1. 非表示を徹底する（モーダル用） */
+    .hidden { 
+        display: none !important; 
+    }
+
     /* 2. 各ページの中身の表示・非表示 */
     .tab-content { display: none; }
     .tab-content.active { display: block; }
