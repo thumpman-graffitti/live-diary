@@ -317,47 +317,53 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-
-
-
-
-/* --- 履歴画面：アコーディオン内のおしゃれカード化 --- */
+/* 履歴：アコーディオン内カード（スリム版） */
 .live-item-detail {
-    padding: 15px;
-    margin: 8px 12px; /* 左右に余白を作って「左寄り」を解消 */
-    background: #f9f9fb;
-    border-radius: 10px;
-    border-left: 4px solid var(--primary-color); /* 左側にアクセントカラーの線 */
-    transition: background 0.2s;
+    padding: 8px 12px; /* 上下を15px→8pxに大幅カット */
+    margin: 4px 12px;  /* 前後の隙間を詰める */
+    background: #f8f9fa;
+    border-radius: 8px;
+    border-left: 4px solid #007130;
+    display: flex;
+    flex-direction: row; /* 横並びに変更 */
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+/* 日付を左側に固定 */
+.live-date {
+    font-size: 0.7rem;
+    color: #888;
+    white-space: nowrap;
+    width: 70px; /* 日付の幅を固定 */
+    flex-shrink: 0;
+}
+
+/* タイトルと会場を縦に並べる（ここはコンパクトに） */
+.live-info-text {
     display: flex;
     flex-direction: column;
-    gap: 4px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
 }
 
-.live-item-detail:active {
-    background: #f0f0f5;
-}
-
-.live-item-detail .live-date {
-    font-size: 0.75rem;
-    color: #8e8e93;
-    font-weight: 500;
-}
-
-.live-item-detail .live-title {
-    font-size: 1rem;
+.live-title {
+    font-size: 0.9rem; /* 少し小さく */
     font-weight: bold;
-    color: #333;
+    color: #222;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 長いタイトルは「...」にする */
 }
 
-.live-item-detail .live-venue {
-    font-size: 0.8rem;
+.live-venue {
+    font-size: 0.75rem;
     color: #666;
-    display: flex;
-    align-items: center;
-    gap: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
+
 
 /* --- モーダル：サイズ調整と右上の❌ボタン --- */
 .modal-overlay {
