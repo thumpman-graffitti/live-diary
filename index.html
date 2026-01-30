@@ -222,6 +222,7 @@
             save(); showPage('history');
         }
 
+// --- ここから差し替え ---
         function renderHistory() {
             const container = document.getElementById('history-list');
             container.innerHTML = '';
@@ -233,18 +234,20 @@
                 card.innerHTML = `<div style="padding:15px; font-weight:bold; cursor:pointer;" onclick="this.nextElementSibling.classList.toggle('hidden')">${art} <span style="float:right; color:var(--primary-color)">${lives.length}公演</span></div>
                     <div class="hidden" style="border-top:1px solid #eee;">
                     ${lives.map(l=>`
-    <div class="live-history-item" onclick="openDetail(${l.id})">
-        <div style="font-size:0.75rem; color:#8e8e93;">${l.date}</div>
-        <div style="font-weight:bold;">${l.name||'(無題)'}</div>
-        <div class="history-venue">📍 ${l.venue || '会場未登録'}</div>
-    </div>`).join('')}
+                        <div class="live-history-item" onclick="openDetail(${l.id})" style="padding:14px; border-bottom:1px solid #f2f2f7; cursor:pointer;">
+                            <div style="font-size:0.75rem; color:#8e8e93;">${l.date}</div>
+                            <div style="font-weight:bold;">${l.name||'(無題)'}</div>
+                            <div class="history-venue" style="font-size:0.85rem; color:#666; margin-top:4px;">📍 ${l.venue || '会場未登録'}</div>
+                        </div>`).join('')}
+                    </div>`;
                 container.appendChild(card);
             });
         }
-        
-                function openDetail(id) {
+
+        function openDetail(id) {
             currentId = id; 
             const l = db.lives.find(x=>x.id===id);
+            if(!l) return;
             // 表示内容のセット
             document.getElementById('view-live-name').innerText = l.name || 'ライブ詳細';
             document.getElementById('live-details-info').innerHTML = `<p>📅 ${l.date}</p><p>📍 ${l.venue || '未登録'} (${l.pref || '-'})</p><p>${l.memo||''}</p>`;
@@ -258,6 +261,7 @@
 
         function switchEditMode() {
             const l = db.lives.find(x=>x.id===currentId);
+            if(!l) return;
             // 編集フォームに現在の値をセット
             document.getElementById('edit-date').value = l.date;
             document.getElementById('edit-name').value = l.name || '';
@@ -270,16 +274,6 @@
             document.getElementById('modal-edit').classList.remove('hidden');
         }
 
-        function switchEditMode() {
-            const l = db.lives.find(x=>x.id===currentId);
-            document.getElementById('edit-date').value = l.date;
-            document.getElementById('edit-name').value = l.name;
-            document.getElementById('edit-venue').value = l.venue;
-            document.getElementById('edit-memo').value = l.memo;
-            document.getElementById('edit-setlist').value = (l.setlist||[]).join('\n');
-            document.getElementById('modal-view').classList.add('hidden');
-            document.getElementById('modal-edit').classList.remove('hidden');
-        }
 
         function saveEdit() {
             const l = db.lives.find(x=>x.id===currentId);
