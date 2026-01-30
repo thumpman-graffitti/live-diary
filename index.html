@@ -4,101 +4,135 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIVE LOG</title>
-    <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="style.css">
-
     <style>
-        /* 【絶対死守】レイアウト・デザイン設定 */
         :root {
             --primary-color: #007130; /* JRAグリーン */
-            --bg-color: #f5f5f7;
+            --accent-color: #34c759;
+            --bg-color: #f2f2f7;
+            --card-bg: #ffffff;
         }
 
+        /* 全体レイアウト */
         body {
             margin: 0;
-            padding-bottom: 80px !important; /* タブバー用の余白 */
+            padding-bottom: 100px !important;
             background-color: var(--bg-color);
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: -apple-system, "Helvetica Neue", Arial, sans-serif;
         }
 
-        .hidden { display: none !important; }
-        .tab-content { display: none; }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .tab-content { display: none; padding: 15px; }
         .tab-content.active { display: block; }
 
-        /* 【修正】タブバーの強制最前面表示 */
+        /* タブバー（緑背景に復活） */
         .tab-bar {
             display: flex !important;
             position: fixed !important;
             bottom: 0 !important;
             left: 0 !important;
             right: 0 !important;
-            height: 70px !important;
-            background: #fff !important;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.1) !important;
-            z-index: 99999 !important;
+            height: 75px !important;
+            background-color: var(--primary-color) !important;
+            z-index: 9999 !important;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
         }
-
-        /* 【修正】モーダルサイズを最適化 */
-        .modal-content {
-            width: 90% !important;
-            max-width: 400px !important;
-            max-height: 85vh !important;
-            overflow-y: auto !important;
-            border-radius: 20px !important;
-            padding: 20px !important;
-            position: relative;
-        }
-
-        /* 統計のカラーランキング用 */
-        .stats-rank-badge {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            display: inline-block;
-            margin-right: 8px;
-        }
-
-        .stats-row {
+        .tab-bar button {
+            flex: 1;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.6);
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
+            justify-content: center;
+            font-size: 0.7rem;
         }
+        .tab-bar button.active { color: #fff; font-weight: bold; }
+        .tab-bar .icon { font-size: 1.4rem; margin-bottom: 2px; }
+
+        /* モーダル調整 */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); z-index: 10000;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .modal-content {
+            background: #fff; width: 90%; max-width: 450px; 
+            max-height: 80vh; border-radius: 20px; position: relative;
+            overflow-y: auto; padding: 25px; margin-top: -20px;
+        }
+        .close-btn {
+            position: absolute; top: 15px; right: 15px;
+            background: #eee; border: none; border-radius: 50%;
+            width: 32px; height: 32px; font-size: 18px; cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* 統計のおしゃれな色分けリスト */
+        .stats-row {
+            display: flex; align-items: center; padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .rank-badge {
+            width: 10px; height: 10px; border-radius: 2px; margin-right: 12px;
+        }
+        .rank-num { width: 40px; font-weight: bold; color: #666; font-size: 0.9rem; }
+        .rank-name { flex: 1; font-weight: 500; }
+        .rank-count { font-weight: bold; color: var(--primary-color); }
+
+        /* 管理画面の横並びボタン */
+        .admin-btns-horizontal {
+            display: flex; gap: 10px; margin-bottom: 15px;
+        }
+        .admin-btns-horizontal button { flex: 1; padding: 12px; font-size: 0.85rem; }
+
+        /* 検索窓を大きく */
+        #artist-search-input {
+            width: 100%; padding: 12px; border-radius: 10px;
+            border: 1px solid #ddd; font-size: 1rem; margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        .hidden { display: none !important; }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-    <header>
-        <h1 id="view-title">LIVE DIARY🍊6</h1>
-    </header>
+    <header><h1>LIVE DIARY🍊6</h1></header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
             <section class="card">
-                <h2>1. アーティストを登録</h2>
+                <h2>1. アーティスト登録</h2>
                 <div class="form-group">
-                    <input type="text" id="new-artist-name" placeholder="アーティスト名を入力">
-                    <button onclick="addArtist()">アーティスト追加</button>
+                    <input type="text" id="new-artist-name" placeholder="アーティスト名">
+                    <button onclick="addArtist()" style="background: var(--primary-color);">追加</button>
                 </div>
             </section>
             <section class="card">
-                <h2>2. ライブを記録</h2>
+                <h2>2. ライブ記録</h2>
                 <div class="form-group">
-                    <select id="live-artist-select"><option value="">アーティストを選択</option></select>
+                    <select id="live-artist-select"><option value="">選択してください</option></select>
                     <input type="date" id="live-date">
-                    <input type="text" id="live-name" placeholder="ライブ名">
+                    <input type="text" id="live-name" placeholder="ライブ名（ツアー名）">
                     <input type="text" id="live-venue" placeholder="会場名">
                     <select id="live-pref">
                         <option value="">都道府県を選択</option>
-                        <option value="東京都">東京都</option><option value="大阪府">大阪府</option>
-                        <option value="愛知県">愛知県</option><option value="福岡県">福岡県</option>
-                        <option value="北海道">北海道</option><option value="神奈川県">神奈川県</option>
-                        <option value="千葉県">千葉県</option><option value="埼玉県">埼玉県</option>
-                        </select>
+                        <option value="北海道">北海道</option><option value="青森県">青森県</option><option value="岩手県">岩手県</option><option value="宮城県">宮城県</option><option value="秋田県">秋田県</option><option value="山形県">山形県</option><option value="福島県">福島県</option><option value="茨城県">茨城県</option><option value="栃木県">栃木県</option><option value="群馬県">群馬県</option><option value="埼玉県">埼玉県</option><option value="千葉県">千葉県</option><option value="東京都">東京都</option><option value="神奈川県">神奈川県</option><option value="新潟県">新潟県</option><option value="富山県">富山県</option><option value="石川県">石川県</option><option value="福井県">福井県</option><option value="山梨県">山梨県</option><option value="長野県">長野県</option><option value="岐阜県">岐阜県</option><option value="静岡県">静岡県</option><option value="愛知県">愛知県</option><option value="三重県">三重県</option><option value="滋賀県">滋賀県</option><option value="京都府">京都府</option><option value="大阪府">大阪府</option><option value="兵庫県">兵庫県</option><option value="奈良県">奈良県</option><option value="和歌山県">和歌山県</option><option value="鳥取県">鳥取県</option><option value="島根県">島根県</option><option value="岡山県">岡山県</option><option value="広島県">広島県</option><option value="山口県">山口県</option><option value="徳島県">徳島県</option><option value="香川県">香川県</option><option value="愛媛県">愛媛県</option><option value="高知県">高知県</option><option value="福岡県">福岡県</option><option value="佐賀県">佐賀県</option><option value="長崎県">長崎県</option><option value="熊本県">熊本県</option><option value="大分県">大分県</option><option value="宮崎県">宮崎県</option><option value="鹿児島県">鹿児島県</option><option value="沖縄県">沖縄県</option><option value="海外">海外</option>
+                    </select>
                     <textarea id="live-memo" placeholder="メモ" rows="3"></textarea>
-                    <button onclick="addLive()" style="background-color: #34c759;">ライブ登録</button>
+                    <button onclick="addLive()" style="background-color: var(--accent-color);">ライブを登録する</button>
                 </div>
             </section>
         </div>
@@ -108,13 +142,13 @@
         </div>
 
         <div id="page-stats" class="tab-content">
-            <section class="card" style="position: relative; padding: 10px 15px;">
-                <h2 style="margin-bottom: 5px;">📊 参戦比率</h2>
-                <div style="max-width: 220px; margin: 5px auto; position: relative;">
+            <section class="card">
+                <h2>📊 参戦比率</h2>
+                <div style="max-width: 250px; margin: 10px auto; position: relative;">
                     <canvas id="artistChart"></canvas>
-                    <div id="chart-center-text" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center; pointer-events: none;">
-                        <div style="font-size: 0.7rem; color: #666;">Total</div>
-                        <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
+                    <div style="position: absolute; top: 55%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none;">
+                        <div style="font-size: 0.8rem; color: #666;">Total</div>
+                        <div id="total-count-display" style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">0</div>
                     </div>
                 </div>
             </section>
@@ -123,19 +157,17 @@
 
         <div id="page-settings" class="tab-content">
             <section class="card">
-                <h2>データ管理</h2>
-                <div style="display: flex; flex-direction: column; gap: 10px;">
-                    <button onclick="exportData()" style="background:#8e8e93;">データをエクスポート</button>
-                    <button onclick="document.getElementById('import-file').click()" style="background: var(--primary-color);">バックアップから復元</button>
-                    <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
+                <h2>データバックアップ</h2>
+                <div class="admin-btns-horizontal">
+                    <button onclick="exportData()" style="background:#8e8e93; color:white; border:none; border-radius:10px;">書き出し</button>
+                    <button onclick="document.getElementById('import-file').click()" style="background:var(--primary-color); color:white; border:none; border-radius:10px;">読み込み</button>
                 </div>
+                <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
             </section>
             <section class="card">
                 <h2>🎨 アーティスト管理</h2>
-                <div class="search-box">
-                    <input type="text" id="artist-search-input" placeholder="🔍 検索..." oninput="filterArtists()">
-                </div>
-                <div id="artist-manager-list" style="margin-top: 10px;"></div>
+                <input type="text" id="artist-search-input" placeholder="🔍 アーティスト名を検索..." oninput="filterArtists()">
+                <div id="artist-manager-list"></div>
             </section>
         </div>
     </main>
@@ -144,29 +176,25 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button onclick="closeModal()" class="close-btn">✕</button>
             <div id="modal-view">
-                <div class="modal-header"><h3 id="view-live-name">ライブ詳細</h3></div>
-                <div class="modal-body">
-                    <div id="live-details-info"></div>
-                    <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
-                    <h4 style="color: var(--primary-color);">🎵 セットリスト</h4>
-                    <div id="setlist-display"></div>
-                    <button class="edit-main-btn" onclick="switchEditMode()" style="margin-top:20px;">編集・セトリ登録</button>
-                </div>
+                <h3 id="view-live-name" style="margin-top:10px; color:var(--primary-color);"></h3>
+                <div id="live-details-info"></div>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <h4 style="color: var(--primary-color); margin-bottom:10px;">🎵 セットリスト</h4>
+                <div id="setlist-display"></div>
+                <button onclick="switchEditMode()" style="width:100%; padding:12px; margin-top:20px; border-radius:10px; background:var(--primary-color); color:white; border:none; font-weight:bold;">編集・セトリ登録</button>
             </div>
             <div id="modal-edit" class="hidden">
-                <div class="modal-header"><h3>内容の修正</h3></div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>📅 日付</label><input type="date" id="edit-date">
-                        <label>🎤 ライブ名</label><input type="text" id="edit-name">
-                        <label>📍 会場</label><input type="text" id="edit-venue">
-                        <label>📝 メモ</label><textarea id="edit-memo" rows="2"></textarea>
-                        <label>🎵 セトリ(改行区切り)</label><textarea id="edit-setlist" rows="5"></textarea>
-                    </div>
-                    <div class="modal-footer-btns">
-                        <button onclick="saveEdit()" style="background: var(--primary-color); color:white;">保存</button>
-                        <button onclick="deleteLive()" style="color:#e60012; border:1px solid #e60012; background:none;">削除</button>
-                    </div>
+                <h3 style="margin-top:10px;">内容の修正</h3>
+                <div class="form-group">
+                    <label>日付</label><input type="date" id="edit-date">
+                    <label>ライブ名</label><input type="text" id="edit-name">
+                    <label>会場</label><input type="text" id="edit-venue">
+                    <label>メモ</label><textarea id="edit-memo" rows="3"></textarea>
+                    <label>セットリスト(改行区切り)</label><textarea id="edit-setlist" rows="6"></textarea>
+                </div>
+                <div style="display:flex; gap:10px; margin-top:20px; padding-bottom:10px;">
+                    <button onclick="saveEdit()" style="flex:2; padding:15px; background:var(--primary-color); color:white; border:none; border-radius:10px; font-weight:bold;">保存する</button>
+                    <button onclick="deleteLive()" style="flex:1; padding:15px; background:white; color:#e60012; border:1px solid #e60012; border-radius:10px;">削除</button>
                 </div>
             </div>
         </div>
@@ -181,122 +209,137 @@
 
     <script>
         let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
-        let currentEditId = null;
-        let artistChart = null;
-        const chartColors = ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'];
+        let currentId = null;
+        let chart = null;
+        const colors = ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#af52de', '#007aff', '#5856d6'];
 
-        window.onload = () => { showPage('home'); updateArtistSelect(); setDefaultDate(); };
+        window.onload = () => { updateArtistSelect(); showPage('home'); };
+
+        function showPage(id) {
+            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+            document.getElementById('page-'+id).classList.add('active');
+            document.getElementById('tab-'+id).classList.add('active');
+            if(id==='history') renderHistory();
+            if(id==='stats') renderStats();
+            if(id==='settings') renderArtistManager();
+        }
 
         function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
-            document.getElementById('page-' + pageId).classList.add('active');
-            document.getElementById('tab-' + pageId).classList.add('active');
-            if(pageId === 'history') renderHistory();
-            if(pageId === 'stats') renderStats();
-            if(pageId === 'settings') renderArtistManager();
-        }
-
         function addArtist() {
-            const name = document.getElementById('new-artist-name').value.trim();
-            if(!name || db.artists.includes(name)) return;
-            db.artists.push(name); save();
+            const val = document.getElementById('new-artist-name').value.trim();
+            if(!val || db.artists.includes(val)) return;
+            db.artists.push(val); save();
             document.getElementById('new-artist-name').value = '';
             updateArtistSelect();
         }
 
         function updateArtistSelect() {
-            const select = document.getElementById('live-artist-select');
-            select.innerHTML = '<option value="">アーティストを選択</option>' + db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('');
+            const s = document.getElementById('live-artist-select');
+            s.innerHTML = '<option value="">選択してください</option>' + db.artists.sort().map(a=>`<option value="${a}">${a}</option>`).join('');
         }
 
         function addLive() {
-            const artist = document.getElementById('live-artist-select').value;
-            const date = document.getElementById('live-date').value;
-            if(!artist || !date) return alert('入力不足');
-            db.lives.push({ id: Date.now(), artist, date, name: document.getElementById('live-name').value, venue: document.getElementById('live-venue').value, pref: document.getElementById('live-pref').value, memo: document.getElementById('live-memo').value, setlist: [] });
-            save(); alert('登録完了'); showPage('history');
+            const art = document.getElementById('live-artist-select').value;
+            const day = document.getElementById('live-date').value;
+            if(!art || !day) return alert('入力不足です');
+            db.lives.push({ id:Date.now(), artist:art, date:day, name:document.getElementById('live-name').value, venue:document.getElementById('live-venue').value, pref:document.getElementById('live-pref').value, memo:document.getElementById('live-memo').value, setlist:[] });
+            save(); alert('登録しました！'); showPage('history');
         }
 
         function renderHistory() {
             const container = document.getElementById('history-list');
             container.innerHTML = '';
-            db.artists.sort().forEach(artist => {
-                const lives = db.lives.filter(l => l.artist === artist).sort((a,b) => new Date(b.date) - new Date(a.date));
+            db.artists.sort().forEach(art => {
+                const lives = db.lives.filter(l=>l.artist===art).sort((a,b)=>new Date(b.date)-new Date(a.date));
                 if(!lives.length) return;
                 const card = document.createElement('div');
                 card.className = 'card'; card.style.padding = '0';
-                card.innerHTML = `<div class="accordion-header" onclick="this.nextElementSibling.classList.toggle('hidden')"><span>${artist}</span><span>${lives.length} 公演 ▽</span></div>
-                    <div class="hidden" style="padding-bottom:10px;">${lives.map(l => `<div class="live-item-detail" onclick="openDetail(${l.id})"><div>${l.date}</div><div style="font-weight:bold;">${l.name || '無題'}</div></div>`).join('')}</div>`;
+                card.innerHTML = `<div class="accordion-header" onclick="this.nextElementSibling.classList.toggle('hidden')"><span>${art}</span><span style="color:var(--primary-color)">${lives.length} 公演 ▽</span></div>
+                    <div class="hidden" style="padding-bottom:10px;">${lives.map(l=>`<div class="live-item-detail" onclick="openDetail(${l.id})"><div class="live-date">${l.date}</div><div style="font-weight:bold;">${l.name||'(無題)'}</div><div>📍 ${l.venue||'未登録'}</div></div>`).join('')}</div>`;
                 container.appendChild(card);
             });
         }
 
         function openDetail(id) {
-            currentEditId = id;
-            const l = db.lives.find(x => x.id === id);
-            document.getElementById('view-live-name').innerText = l.name || '詳細';
-            document.getElementById('live-details-info').innerHTML = `<p>📅 ${l.date}</p><p>📍 ${l.venue} (${l.pref})</p><p>${l.memo || ''}</p>`;
-            document.getElementById('setlist-display').innerHTML = l.setlist?.length ? l.setlist.map((s,i)=>`<div>${i+1}. ${s}</div>`).join('') : '未登録';
+            currentId = id; const l = db.lives.find(x=>x.id===id);
+            document.getElementById('view-live-name').innerText = l.name || 'ライブ詳細';
+            document.getElementById('live-details-info').innerHTML = `<p>📅 ${l.date}</p><p>📍 ${l.venue} (${l.pref})</p><p>📝 ${l.memo||'なし'}</p>`;
+            document.getElementById('setlist-display').innerHTML = l.setlist?.length ? l.setlist.map((s,i)=>`<div style="padding:5px 0; border-bottom:1px solid #eee;">${i+1}. ${s}</div>`).join('') : '未登録';
             document.getElementById('modal-overlay').classList.remove('hidden');
         }
 
         function switchEditMode() {
-            const l = db.lives.find(x => x.id === currentEditId);
+            const l = db.lives.find(x=>x.id===currentId);
             document.getElementById('edit-date').value = l.date;
             document.getElementById('edit-name').value = l.name;
             document.getElementById('edit-venue').value = l.venue;
             document.getElementById('edit-memo').value = l.memo;
-            document.getElementById('edit-setlist').value = (l.setlist || []).join('\n');
+            document.getElementById('edit-setlist').value = (l.setlist||[]).join('\n');
             document.getElementById('modal-view').classList.add('hidden');
             document.getElementById('modal-edit').classList.remove('hidden');
         }
 
         function saveEdit() {
-            const l = db.lives.find(x => x.id === currentEditId);
+            const l = db.lives.find(x=>x.id===currentId);
             l.date = document.getElementById('edit-date').value;
             l.name = document.getElementById('edit-name').value;
             l.venue = document.getElementById('edit-venue').value;
             l.memo = document.getElementById('edit-memo').value;
-            l.setlist = document.getElementById('edit-setlist').value.split('\n').filter(s => s.trim());
+            l.setlist = document.getElementById('edit-setlist').value.split('\n').filter(s=>s.trim());
             save(); closeModal(); renderHistory();
         }
 
-        function deleteLive() { if(confirm('削除しますか？')){ db.lives = db.lives.filter(x=>x.id!==currentEditId); save(); closeModal(); renderHistory(); } }
+        function deleteLive() { if(confirm('削除しますか？')){ db.lives=db.lives.filter(x=>x.id!==currentId); save(); closeModal(); renderHistory(); } }
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); document.getElementById('modal-view').classList.remove('hidden'); document.getElementById('modal-edit').classList.add('hidden'); }
 
         function renderStats() {
-            const counts = {}; db.lives.forEach(l => counts[l.artist] = (counts[l.artist] || 0) + 1);
-            const sorted = Object.entries(counts).sort((a,b)=>b[1]-a[1]);
+            const countMap = {}; db.lives.forEach(l => countMap[l.artist] = (countMap[l.artist] || 0) + 1);
+            const sorted = Object.entries(countMap).sort((a,b)=>b[1]-a[1]);
             document.getElementById('total-count-display').innerText = db.lives.length;
-            const ctx = document.getElementById('artistChart').getContext('2d');
-            if(artistChart) artistChart.destroy();
-            artistChart = new Chart(ctx, { type: 'doughnut', data: { labels: sorted.map(s=>s[0]), datasets: [{ data: sorted.map(s=>s[1]), backgroundColor: chartColors }] }, options: { cutout: '75%', plugins: { legend: { display: false } } } });
 
-            const prefCounts = {}; db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
-            const prefSorted = Object.entries(prefCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+            if(chart) chart.destroy();
+            chart = new Chart(document.getElementById('artistChart'), {
+                type: 'doughnut', data: { labels: sorted.map(s=>s[0]), datasets: [{ data: sorted.map(s=>s[1]), backgroundColor: colors }] },
+                options: { cutout: '75%', plugins: { legend: { display: false } } }
+            });
 
-            document.getElementById('stats-ranking-list').innerHTML = `<section class="card"><h2>🏆 アーティストランキング</h2>
-                ${sorted.map((s,i)=>`<div class="stats-row"><span><span class="stats-rank-badge" style="background:${chartColors[i%chartColors.length]}"></span>${i+1}位 ${s[0]}</span><span><b>${s[1]}</b> 回</span></div>`).join('')}</section>
-                <section class="card"><h2>📍 都道府県トップ5</h2>
-                ${prefSorted.map((p,i)=>`<div class="stats-row"><span>${i+1}位 ${p[0]}</span><span>${p[1]} 公演</span></div>`).join('')}</section>`;
+            // ランキング表示（同率順位対応）
+            let rankHtml = '<section class="card"><h2>🏆 アーティストランキング</h2>';
+            let currentRank = 1;
+            sorted.forEach((s, i) => {
+                if(i > 0 && s[1] < sorted[i-1][1]) currentRank = i + 1;
+                rankHtml += `<div class="stats-row"><div class="rank-badge" style="background:${colors[i%colors.length]}"></div><div class="rank-num">${currentRank}位</div><div class="rank-name">${s[0]}</div><div class="rank-count">${s[1]}回</div></div>`;
+            });
+            rankHtml += '</section>';
+
+            // 都道府県ランキング（同率順位対応）
+            const pMap = {}; db.lives.forEach(l => { if(l.pref) pMap[l.pref] = (pMap[l.pref] || 0) + 1; });
+            const pSorted = Object.entries(pMap).sort((a,b)=>b[1]-a[1]);
+            rankHtml += '<section class="card"><h2>📍 都道府県ランキング</h2>';
+            let pRank = 1;
+            pSorted.forEach((p, i) => {
+                if(i > 0 && p[1] < pSorted[i-1][1]) pRank = i + 1;
+                rankHtml += `<div class="stats-row"><div class="rank-num">${pRank}位</div><div class="rank-name">${p[0]}</div><div class="rank-count">${p[1]}回</div></div>`;
+            });
+            document.getElementById('stats-ranking-list').innerHTML = rankHtml + '</section>';
         }
 
         function renderArtistManager() {
             const q = document.getElementById('artist-search-input').value.toLowerCase();
-            document.getElementById('artist-manager-list').innerHTML = db.artists.filter(a => a.toLowerCase().includes(q)).sort().map(a => `
-                <div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;">
-                    <span>${a}</span>
-                    <div><button onclick="editArtistName('${a}')" style="font-size:0.7rem; padding:4px 8px;">編集</button>
-                    <button onclick="deleteArtist('${a}')" style="font-size:0.7rem; padding:4px 8px; color:red; border-color:red; background:none;">削除</button></div>
+            document.getElementById('artist-manager-list').innerHTML = db.artists.filter(a=>a.toLowerCase().includes(q)).sort().map(a => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:15px; border-bottom:1px solid #eee;">
+                    <span style="font-weight:bold;">${a}</span>
+                    <div style="display:flex; gap:8px;">
+                        <button onclick="editArtistName('${a}')" style="font-size:0.75rem; padding:6px 12px; background:#eee; border:none; border-radius:5px;">編集</button>
+                        <button onclick="deleteArtist('${a}')" style="font-size:0.75rem; padding:6px 12px; color:red; background:none; border:1px solid red; border-radius:5px;">削除</button>
+                    </div>
                 </div>`).join('');
         }
         function filterArtists() { renderArtistManager(); }
         function editArtistName(old) { const n = prompt('新しい名前', old); if(n && n!==old){ db.artists[db.artists.indexOf(old)]=n; db.lives.forEach(l=>{if(l.artist===old)l.artist=n;}); save(); renderArtistManager(); } }
         function deleteArtist(n) { if(confirm('削除しますか？')){ db.artists=db.artists.filter(a=>a!==n); db.lives=db.lives.filter(l=>l.artist!==n); save(); renderArtistManager(); } }
-        function setDefaultDate() { document.getElementById('live-date').value = new Date().toISOString().split('T')[0]; }
         function exportData() { const blob = new Blob([JSON.stringify(db)], {type:'application/json'}); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href=url; a.download='livelog.json'; a.click(); }
         function importData(e) { const f = e.target.files[0]; const r = new FileReader(); r.onload = (ev) => { db = JSON.parse(ev.target.result); save(); location.reload(); }; r.readAsText(f); }
     </script>
