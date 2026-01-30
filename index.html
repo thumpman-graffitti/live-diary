@@ -593,11 +593,75 @@ function renderStats() {
     });
 
     // --- 3. データ集計（都道府県別） ---
+    // --- 3. データ集計（都道府県別：同着かつ北から南順） ---
+    // HTMLのセレクトボックスから都道府県の並び順（北→南）を配列で取得
+    const prefOrder = Array.from(document.querySelectorAll('#live-pref option'))
+                           .map(opt => opt.value)
+                           .filter(val => val !== "");
+
     const prefCounts = {};
     db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
-    const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
+    
+    // ソート：回数が多ければ上、同じ回数なら prefOrder の順（北から順）
+    const prefRankingData = Object.entries(prefCounts).sort((a, b) => {
+        if (b[1] !== a[1]) return b[1] - a[1];
+        return prefOrder.indexOf(a[0]) - prefOrder.indexOf(b[0]);
+    });
 
-    // --- 4. HTMLの出力（ランキングリスト） ---
+    let pRank = 1;
+    let pSkip = 0;
+    let pPrev = -1;
+
+    // 都道府県ランキング用のHTMLを作成（TOP5まで）
+    const prefHTML = prefRankingData.slice(0, 5).map(([name, count], i) => {
+        if (count !== pPrev) {
+            pRank = pRank + pSkip;
+            pSkip = 1;
+        } else {
+            pSkip++;
+        }
+        pPrev = count;
+        const pRankDisplay = (i > 0 && count === prefRankingData[i-1][1]) ? "" : `${pRank}位`;
+
+        return `
+            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #eee;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:0.8rem; color:#888; width:30px;">${pRankDisplay}</span>
+                    <span style="font-weight:bold;">${name}</span>
+                </div>
+                <span style="color:#666; font-size:0.9rem;">${count} 公演</span>
+            </div>
+        `;
+    }).join('');
+
+    // --- 4. HTMLの出力（全体の組み立て：アーティストランキング側） ---
+    // ここから下は、アーティスト側のランキングを計算して表示する部分です
+    let currentRank = 1;
+    let skipCount = 0;
+    let prevCount = -1;
+
+    const fullRankingHTML = sortedData.map(([name, count], i) => {
+        if (count !== prevCount) {
+            currentRank = currentRank + skipCount;
+            skipCount = 1;
+        } else {
+            skipCount++;
+        }
+        prevCount = count;
+        const rankDisplay = (i > 0 && count === sortedData[i-1][1]) ? "" : `${currentRank}位`;
+
+        return `
+            <div class="stats-row">
+                <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
+                <div class="stats-info">
+                    <span class="stats-rank">${rankDisplay}</span>
+                    <span class="stats-name">${name}</span>
+                    <span class="stats-count"><b>${count}</b> 回</span>
+                </div>
+            </div>
+        `;
+    });
+
     // --- 4. HTMLの出力（ランキングリスト） ---
     // ランキングの順位を計算するロジック（同着対応）
     let currentRank = 1;
