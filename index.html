@@ -39,37 +39,28 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* 日付欄を含む全入力項目の幅を完璧に揃える */
-        input[type="text"],
-        input[type="date"],
-        select,
-        textarea { 
+        .section-title {
+            font-size: 0.85rem;
+            color: #8e8e93;
+            margin-bottom: 12px;
+            font-weight: bold;
             display: block;
-            width: 100% !important;
-            max-width: 100% !important;
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            font-size: 1rem;
-            box-sizing: border-box;
-            margin: 0 0 12px 0;
-            appearance: none;
-            -webkit-appearance: none;
         }
 
-        /* JRA風タブバー */
+        input[type="text"], input[type="date"], select, textarea { 
+            display: block; width: 100% !important; max-width: 100% !important;
+            padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
+            box-sizing: border-box; margin-bottom: 12px; appearance: none; -webkit-appearance: none;
+        }
+
+        /* JRA風タブバー（白抜きアイコン・日本語） */
         .tab-bar {
-            display: flex !important;
-            position: fixed !important;
-            bottom: 0; left: 0; right: 0;
-            height: 85px;
-            background-color: var(--primary-color);
-            z-index: 9999;
+            display: flex !important; position: fixed !important; bottom: 0; left: 0; right: 0;
+            height: 85px; background-color: var(--primary-color); z-index: 9999;
             border-top: 1px solid rgba(255,255,255,0.3);
         }
         .tab-bar button {
-            flex: 1; background: none; border: none;
-            color: rgba(255,255,255,0.7);
+            flex: 1; background: none; border: none; color: rgba(255,255,255,0.6);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative;
         }
@@ -78,40 +69,21 @@
             width: 1px; background-color: rgba(255,255,255,0.3);
         }
         .tab-bar button.active { color: #ffffff; font-weight: bold; background: rgba(255,255,255,0.1); }
-        .tab-bar .icon { font-size: 1.8rem; margin-bottom: 4px; }
-        .tab-bar span:not(.icon) { font-size: 0.85rem; font-weight: 600; }
+        .tab-bar .icon { font-size: 1.6rem; margin-bottom: 4px; filter: grayscale(1) brightness(2); }
+        .tab-bar span:not(.icon) { font-size: 0.8rem; }
 
-        /* ボタンデザイン */
         button.primary-btn {
             width: 100%; background: linear-gradient(135deg, var(--primary-color), #008f3d);
-            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold; font-size: 1rem;
+            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
         }
         button.accent-btn {
             width: 100%; background: linear-gradient(135deg, #34c759, #28a745);
-            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold; font-size: 1rem;
+            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
         }
 
-        /* 履歴・統計・管理のUI */
-        .live-history-item { padding: 14px; border-bottom: 1px solid #f2f2f7; cursor: pointer; }
-        .history-venue { font-size: 0.85rem; color: #666; margin-top: 4px; }
         .stats-list-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
         .color-dot { width: 4px; height: 16px; border-radius: 2px; margin-right: 10px; }
         .rank-num { width: 35px; font-weight: bold; color: #8e8e93; }
-
-        /* モーダル */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.75); z-index: 10000;
-            display: flex; align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: #fff; width: 90%; max-width: 420px; 
-            max-height: 80vh; border-radius: 20px; overflow: hidden;
-            display: flex; flex-direction: column;
-        }
-        .modal-header { padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-        .close-btn { background: #f0f0f2; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; cursor: pointer; }
-        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
 
         .hidden { display: none !important; }
     </style>
@@ -124,26 +96,24 @@
     <main id="app">
         <div id="page-home" class="tab-content active">
             <div class="card">
-                <h2 style="font-size: 0.9rem; color: #666; margin-bottom:10px;">アーティスト登録</h2>
+                <span class="section-title">アーティスト新規追加</span>
                 <div style="display: flex; gap: 8px;">
-                    <input type="text" id="new-artist-name" placeholder="アーティスト名" style="margin-bottom:0;">
+                    <input type="text" id="new-artist-name" placeholder="名前を入力" style="margin-bottom:0;">
                     <button onclick="addArtist()" class="primary-btn" style="width: auto; padding: 0 20px;">追加</button>
                 </div>
             </div>
             <div class="card">
-                <h2 style="font-size: 0.9rem; color: #666; margin-bottom:10px;">ライブを記録</h2>
-                <div style="display: flex; flex-direction: column;">
-                    <select id="live-artist-select"><option value="">アーティストを選択</option></select>
-                    <input type="date" id="live-date"> 
-                    <input type="text" id="live-name" placeholder="ライブ名">
-                    <input type="text" id="live-venue" placeholder="会場名">
-                    <select id="live-pref">
-                        <option value="">都道府県を選択</option>
-                        <option value="北海道">北海道</option><option value="青森県">青森県</option><option value="岩手県">岩手県</option><option value="宮城県">宮城県</option><option value="秋田県">秋田県</option><option value="山形県">山形県</option><option value="福島県">福島県</option><option value="茨城県">茨城県</option><option value="栃木県">栃木県</option><option value="群馬県">群馬県</option><option value="埼玉県">埼玉県</option><option value="千葉県">千葉県</option><option value="東京都">東京都</option><option value="神奈川県">神奈川県</option><option value="新潟県">新潟県</option><option value="富山県">富山県</option><option value="石川県">石川県</option><option value="福井県">福井県</option><option value="山梨県">山梨県</option><option value="長野県">長野県</option><option value="岐阜県">岐阜県</option><option value="静岡県">静岡県</option><option value="愛知県">愛知県</option><option value="三重県">三重県</option><option value="滋賀県">滋賀県</option><option value="京都府">京都府</option><option value="大阪府">大阪府</option><option value="兵庫県">兵庫県</option><option value="奈良県">奈良県</option><option value="和歌山県">和歌山県</option><option value="鳥取県">鳥取県</option><option value="島根県">島根県</option><option value="岡山県">岡山県</option><option value="広島県">広島県</option><option value="山口県">山口県</option><option value="徳島県">徳島県</option><option value="香川県">香川県</option><option value="愛媛県">愛媛県</option><option value="高知県">高知県</option><option value="福岡県">福岡県</option><option value="佐賀県">佐賀県</option><option value="長崎県">長崎県</option><option value="熊本県">熊本県</option><option value="大分県">大分県</option><option value="宮崎県">宮崎県</option><option value="鹿児島県">鹿児島県</option><option value="沖縄県">沖縄県</option><option value="海外">海外</option>
-                    </select>
-                    <textarea id="live-memo" placeholder="メモ" rows="3"></textarea>
-                    <button onclick="addLive()" class="accent-btn">ライブを登録する</button>
-                </div>
+                <span class="section-title">新しいライブの記録</span>
+                <select id="live-artist-select"><option value="">アーティストを選択</option></select>
+                <input type="date" id="live-date"> 
+                <input type="text" id="live-name" placeholder="公演タイトル（任意）">
+                <input type="text" id="live-venue" placeholder="会場名">
+                <select id="live-pref">
+                    <option value="">都道府県を選択</option>
+                    <option value="北海道">北海道</option><option value="青森県">青森県</option><option value="岩手県">岩手県</option><option value="宮城県">宮城県</option><option value="秋田県">秋田県</option><option value="山形県">山形県</option><option value="福島県">福島県</option><option value="茨城県">茨城県</option><option value="栃木県">栃木県</option><option value="群馬県">群馬県</option><option value="埼玉県">埼玉県</option><option value="千葉県">千葉県</option><option value="東京都">東京都</option><option value="神奈川県">神奈川県</option><option value="新潟県">新潟県</option><option value="富山県">富山県</option><option value="石川県">石川県</option><option value="福井県">福井県</option><option value="山梨県">山梨県</option><option value="長野県">長野県</option><option value="岐阜県">岐阜県</option><option value="静岡県">静岡県</option><option value="愛知県">愛知県</option><option value="三重県">三重県</option><option value="滋賀県">滋賀県</option><option value="京都府">京都府</option><option value="大阪府">大阪府</option><option value="兵庫県">兵庫県</option><option value="奈良県">奈良県</option><option value="和歌山県">和歌山県</option><option value="鳥取県">鳥取県</option><option value="島根県">島根県</option><option value="岡山県">岡山県</option><option value="広島県">広島県</option><option value="山口県">山口県</option><option value="徳島県">徳島県</option><option value="香川県">香川県</option><option value="愛媛県">愛媛県</option><option value="高知県">高知県</option><option value="福岡県">福岡県</option><option value="佐賀県">佐賀県</option><option value="長崎県">長崎県</option><option value="熊本県">熊本県</option><option value="大分県">大分県</option><option value="宮崎県">宮崎県</option><option value="鹿児島県">鹿児島県</option><option value="沖縄県">沖縄県</option><option value="海外">海外</option>
+                </select>
+                <textarea id="live-memo" placeholder="メモ・感想" rows="3"></textarea>
+                <button onclick="addLive()" class="accent-btn">ライブを登録する</button>
             </div>
         </div>
 
@@ -154,6 +124,7 @@
                 <div style="max-width: 200px; margin: 0 auto; position: relative;">
                     <canvas id="artistChart"></canvas>
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center;">
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: bold;">Total</div>
                         <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
                     </div>
                 </div>
@@ -163,12 +134,15 @@
 
         <div id="page-settings" class="tab-content">
             <div class="card">
+                <span class="section-title">データのバックアップ・復元</span>
                 <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button onclick="exportData()" style="flex:1; background:#8e8e93; color:white; border:none; padding:12px; border-radius:10px;">書出</button>
-                    <button onclick="document.getElementById('import-file').click()" style="flex:1; background:var(--primary-color); color:white; border:none; padding:12px; border-radius:10px;">読込</button>
+                    <button onclick="exportData()" style="flex:1; background:#8e8e93; color:white; border:none; padding:12px; border-radius:10px;">書出し</button>
+                    <button onclick="document.getElementById('import-file').click()" style="flex:1; background:var(--primary-color); color:white; border:none; padding:12px; border-radius:10px;">読込み</button>
                 </div>
                 <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
-                <input type="text" id="artist-search-input" placeholder="🔍 アーティスト検索" oninput="filterArtists()">
+                
+                <span class="section-title" style="margin-top:20px; border-top: 1px solid #eee; padding-top: 20px;">登録アーティストの管理</span>
+                <input type="text" id="artist-search-input" placeholder="🔍 名前で検索" oninput="filterArtists()">
                 <div id="artist-manager-list"></div>
             </div>
         </div>
@@ -203,10 +177,10 @@
     </div>
 
     <nav class="tab-bar">
-        <button onclick="showPage('home')" id="tab-home" class="active"><span class="icon">🎟️</span><span>HOME</span></button>
-        <button onclick="showPage('history')" id="tab-history"><span class="icon">🎙️</span><span>HISTORY</span></button>
-        <button onclick="showPage('stats')" id="tab-stats"><span class="icon">📈</span><span>STATS</span></button>
-        <button onclick="showPage('settings')" id="tab-settings"><span class="icon">🛠️</span><span>ADMIN</span></button>
+        <button onclick="showPage('home')" id="tab-home" class="active"><span class="icon">♢</span><span>ホーム</span></button>
+        <button onclick="showPage('history')" id="tab-history"><span class="icon">▤</span><span>履歴</span></button>
+        <button onclick="showPage('stats')" id="tab-stats"><span class="icon">○</span><span>統計</span></button>
+        <button onclick="showPage('settings')" id="tab-settings"><span class="icon">⚙</span><span>管理</span></button>
     </nav>
 
     <script>
@@ -258,7 +232,7 @@
                 card.className = 'card'; card.style.padding = '0';
                 card.innerHTML = `<div style="padding:15px; font-weight:bold; cursor:pointer;" onclick="this.nextElementSibling.classList.toggle('hidden')">${art} <span style="float:right; color:var(--primary-color)">${lives.length}公演</span></div>
                     <div class="hidden" style="border-top:1px solid #eee;">
-                        ${lives.map(l=>`<div class="live-history-item" onclick="openDetail(${l.id})"><div>${l.date}</div><div style="font-weight:bold;">${l.name||'(無題)'}</div><div class="history-venue">📍 ${l.venue || '会場未登録'}</div></div>`).join('')}
+                        ${lives.map(l=>`<div style="padding:14px; border-bottom:1px solid #f2f2f7; cursor:pointer;" onclick="openDetail(${l.id})"><div>${l.date}</div><div style="font-weight:bold;">${l.name||'(無題)'}</div><div style="font-size:0.85rem; color:#666; margin-top:4px;">📍 ${l.venue || '会場未登録'}</div></div>`).join('')}
                     </div>`;
                 container.appendChild(card);
             });
@@ -303,7 +277,7 @@
             if(chart) chart.destroy();
             chart = new Chart(document.getElementById('artistChart'), { type: 'doughnut', data: { labels: aSorted.map(s=>s[0]), datasets: [{ data: aSorted.map(s=>s[1]), backgroundColor: refinedColors, borderWidth: 0 }] }, options: { cutout: '80%', plugins: { legend: { display: false } } } });
 
-            let html = '<div class="card"><h3>🏆 アーティスト</h3>';
+            let html = '<div class="card"><span class="section-title">🏆 アーティスト別公演回数</span>';
             let lastA = -1;
             aSorted.forEach((s, i) => {
                 const showRank = s[1] === lastA ? '' : (i + 1) + '位';
@@ -314,7 +288,7 @@
 
             const pMap = {}; db.lives.forEach(l => { if(l.pref) pMap[l.pref] = (pMap[l.pref] || 0) + 1; });
             const pSorted = Object.entries(pMap).sort((a,b) => b[1] - a[1] || prefOrder.indexOf(a[0]) - prefOrder.indexOf(b[0]));
-            html += '<div class="card"><h3>📍 都道府県</h3>';
+            html += '<div class="card"><span class="section-title">📍 都道府県別公演回数</span>';
             let lastP = -1;
             pSorted.forEach((p, i) => {
                 const showRank = p[1] === lastP ? '' : (i + 1) + '位';
