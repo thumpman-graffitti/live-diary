@@ -520,6 +520,7 @@ function setDefaultDate() {
 window.addEventListener('DOMContentLoaded', setDefaultDate);
 
 // --- 追加：統計機能（ランキング表示） ---
+// --- 追加：統計機能（ランキング表示） ---
 function renderStats() {
     const container = document.getElementById('stats-ranking-list');
     const totalDisplay = document.getElementById('total-count-display');
@@ -531,19 +532,15 @@ function renderStats() {
         return;
     }
 
-    // --- 1. データ集計（「その他」まとめ機能付き） ---
+    // --- 1. アーティストデータ集計 ---
     const artistCounts = {};
     db.lives.forEach(l => { artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1; });
-        // 集計後のソート: まず回数(b-a)で降順、同じなら名前(localeCompare)で昇順
     const sortedData = Object.entries(artistCounts).sort((a, b) => {
-        if (b[1] !== a[1]) {
-            return b[1] - a[1]; // 回数の多い順
-        }
-        return a[0].localeCompare(b[0], 'ja'); // 名前のあいうえお順
+        if (b[1] !== a[1]) return b[1] - a[1];
+        return a[0].localeCompare(b[0], 'ja');
     });
 
-
-    const displayLimit = 7; // 個別に色を出すアーティスト数
+    const displayLimit = 7;
     let labels = [];
     let counts = [];
     let othersCount = 0;
@@ -562,16 +559,13 @@ function renderStats() {
         counts.push(othersCount);
     }
     
-    totalDisplay.innerText = db.lives.length; // 通算数を表示
+    totalDisplay.innerText = db.lives.length;
 
     // --- 2. グラフ描画 ---
     const ctx = document.getElementById('artistChart').getContext('2d');
     if (artistChart) artistChart.destroy();
 
-    const chartColors = [
-        '#007130', '#34c759', '#ffcc00', '#ff9500', 
-        '#ff3b30', '#5856d6', '#007aff', '#8e8e93'
-    ];
+    const chartColors = ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'];
 
     artistChart = new Chart(ctx, {
         type: 'doughnut',
@@ -592,9 +586,7 @@ function renderStats() {
         }
     });
 
-    // --- 3. データ集計（都道府県別） ---
-    // --- 3. データ集計（都道府県別：同着かつ北から南順） ---
-    // HTMLのセレクトボックスから都道府県の並び順（北→南）を配列で取得
+    // --- 3. 都道府県データ集計（北から南順） ---
     const prefOrder = Array.from(document.querySelectorAll('#live-pref option'))
                            .map(opt => opt.value)
                            .filter(val => val !== "");
@@ -602,54 +594,32 @@ function renderStats() {
     const prefCounts = {};
     db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
     
-    // ソート：回数が多ければ上、同じ回数なら prefOrder の順（北から順）
     const prefRankingData = Object.entries(prefCounts).sort((a, b) => {
         if (b[1] !== a[1]) return b[1] - a[1];
         return prefOrder.indexOf(a[0]) - prefOrder.indexOf(b[0]);
     });
 
-    let pRank = 1;
-    let pSkip = 0;
-    let pPrev = -1;
-
-    // 都道府県ランキング用のHTMLを作成（TOP5まで）
+    let pRank = 1, pSkip = 0, pPrev = -1;
     const prefHTML = prefRankingData.slice(0, 5).map(([name, count], i) => {
-        if (count !== pPrev) {
-            pRank = pRank + pSkip;
-            pSkip = 1;
-        } else {
-            pSkip++;
-        }
+        if (count !== pPrev) { pRank += pSkip; pSkip = 1; } else { pSkip++; }
         pPrev = count;
-        const pRankDisplay = (i > 0 && count === prefRankingData[i-1][1]) ? "" : `${pRank}位`;
-
+        const pRankDisp = (i > 0 && count === prefRankingData[i-1][1]) ? "" : `${pRank}位`;
         return `
             <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 10px; border-bottom:1px solid #eee;">
                 <div style="display:flex; align-items:center; gap:10px;">
-                    <span style="font-size:0.8rem; color:#888; width:30px;">${pRankDisplay}</span>
+                    <span style="font-size:0.8rem; color:#888; width:30px;">${pRankDisp}</span>
                     <span style="font-weight:bold;">${name}</span>
                 </div>
                 <span style="color:#666; font-size:0.9rem;">${count} 公演</span>
-            </div>
-        `;
+            </div>`;
     }).join('');
 
-    // --- 4. HTMLの出力（全体の組み立て：アーティストランキング側） ---
-    // ここから下は、アーティスト側のランキングを計算して表示する部分です
-    let currentRank = 1;
-    let skipCount = 0;
-    let prevCount = -1;
-
-    const fullRankingHTML = sortedData.map(([name, count], i) => {
-        if (count !== prevCount) {
-            currentRank = currentRank + skipCount;
-            skipCount = 1;
-        } else {
-            skipCount++;
-        }
+    // --- 4. アーティストランキングHTML生成（同着対応） ---
+    let currentRank = 1, skipCount = 0, prevCount = -1;
+    const fullRankingHTMLRows = sortedData.map(([name, count], i) => {
+        if (count !== prevCount) { currentRank += skipCount; skipCount = 1; } else { skipCount++; }
         prevCount = count;
         const rankDisplay = (i > 0 && count === sortedData[i-1][1]) ? "" : `${currentRank}位`;
-
         return `
             <div class="stats-row">
                 <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
@@ -658,71 +628,30 @@ function renderStats() {
                     <span class="stats-name">${name}</span>
                     <span class="stats-count"><b>${count}</b> 回</span>
                 </div>
-            </div>
-        `;
+            </div>`;
     });
 
-    // --- 4. HTMLの出力（ランキングリスト） ---
-    // ランキングの順位を計算するロジック（同着対応）
-    let currentRank = 1;
-    let skipCount = 0;
-    let prevCount = -1;
-
-    // 全体のランキングHTMLを作成
-    const fullRankingHTML = sortedData.map(([name, count], i) => {
-        // 回数が前と同じなら順位はそのまま、違うならスキップした分を足して更新
-        if (count !== prevCount) {
-            currentRank = currentRank + skipCount;
-            skipCount = 1;
-        } else {
-            skipCount++;
-        }
-        prevCount = count;
-
-        // 同着の場合は順位の数字を表示し、2人目以降は非表示にする
-        const rankDisplay = (i > 0 && count === sortedData[i-1][1]) ? "" : `${currentRank}位`;
-
-        return `
-            <div class="stats-row">
-                <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
-                <div class="stats-info">
-                    <span class="stats-rank">${rankDisplay}</span>
-                    <span class="stats-name">${name}</span>
-                    <span class="stats-count"><b>${count}</b> 回</span>
-                </div>
-            </div>
-        `;
-    });
-
-    const top5HTML = fullRankingHTML.slice(0, 5).join('');
-    const restHTML = fullRankingHTML.slice(5).join('');
+    const top5HTML = fullRankingHTMLRows.slice(0, 5).join('');
+    const restHTML = fullRankingHTMLRows.slice(5).join('');
 
     container.innerHTML = `
         <section class="card">
             <h2>🏆 アーティスト別ランキング</h2>
             ${top5HTML}
-
             ${restHTML.length > 0 ? `
-                <div id="stats-more-list" class="hidden">
-                    ${restHTML}
-                </div>
+                <div id="stats-more-list" class="hidden">${restHTML}</div>
                 <button onclick="toggleStatsMore()" id="stats-more-btn" style="background:none; color:var(--primary-color); border:none; width:100%; padding:10px; font-weight:bold; cursor:pointer;">
                     ▼ もっと見る
                 </button>
             ` : ''}
         </section>
-
         <section class="card">
             <h2>📍 都道府県別トップ</h2>
-            ${prefRanking.slice(0, 3).map(([name, count]) => `
-                <div style="display:flex; justify-content:space-between; padding:12px 10px; border-bottom:1px solid #eee;">
-                    <span style="font-weight:bold;">${name}</span>
-                    <span style="color:#666;">${count} 公演</span>
-                </div>
-            `).join('')}
+            ${prefHTML || '<p style="text-align:center; color:#999; padding:10px;">記録がありません</p>'}
         </section>
     `;
 }
+
 
 // 統計の「もっと見る」切り替え用関数
 function toggleStatsMore() {
