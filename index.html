@@ -213,9 +213,13 @@ let artistChart = null; // ★これをつける（二重描画バグを防ぐ�
 
 // 2. ページ読み込み時の初期化
 window.onload = function() {
+    // ページ読み込み時に念のためモーダルを隠す
+    closeModal(); 
+    
     updateArtistSelect();
     showPage('home'); // 最初にホームを表示
 };
+
 
 // 3. ページ切り替え
 function showPage(pageId) {
