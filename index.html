@@ -519,31 +519,41 @@ window.addEventListener('DOMContentLoaded', setDefaultDate);
 
 // --- 追加：統計機能（ランキング表示） ---
 // --- 統計機能（グラフとランキング表示） ---
-function renderStats() {
-    const container = document.getElementById('stats-ranking-list');
-    const totalDisplay = document.getElementById('total-count-display');
-    if (!container || !totalDisplay) return;
-
-    if (db.lives.length === 0) {
-        container.innerHTML = '<section class="card"><p style="text-align:center; color:#999; padding:20px;">ライブ記録がまだありません</p></section>';
-        totalDisplay.innerText = "0";
-        return;
-    }
-
-    // --- 1. データ集計（アーティスト別） ---
+    // --- 1. データ集計（「その他」まとめ機能付き） ---
     const artistCounts = {};
     db.lives.forEach(l => { artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1; });
     const sortedData = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]);
 
-    const labels = sortedData.map(d => d[0]);
-    const counts = sortedData.map(d => d[1]);
+    const displayLimit = 7; // 個別に色を出すアーティスト数
+    let labels = [];
+    let counts = [];
+    let othersCount = 0;
+
+    sortedData.forEach(([name, count], i) => {
+        if (i < displayLimit) {
+            labels.push(name);
+            counts.push(count);
+        } else {
+            othersCount += count;
+        }
+    });
+
+    if (othersCount > 0) {
+        labels.push("その他");
+        counts.push(othersCount);
+    }
+    
     totalDisplay.innerText = db.lives.length; // 通算数を表示
 
     // --- 2. グラフ描画 ---
     const ctx = document.getElementById('artistChart').getContext('2d');
     if (artistChart) artistChart.destroy();
 
-    const chartColors = ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'];
+    // 8番目に「その他」用のグレー（#8e8e93）を配置
+    const chartColors = [
+        '#007130', '#34c759', '#ffcc00', '#ff9500', 
+        '#ff3b30', '#5856d6', '#007aff', '#8e8e93'
+    ];
 
     artistChart = new Chart(ctx, {
         type: 'doughnut',
