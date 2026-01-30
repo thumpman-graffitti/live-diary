@@ -154,3 +154,8 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .btn-delete { background-color: #ff3b30 !important; }
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
+
+/* タブの表示・非表示を制御する必須設定 */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
