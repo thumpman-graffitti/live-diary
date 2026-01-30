@@ -163,9 +163,9 @@
                 </div>
                 <div id="modal-edit" class="hidden">
                     <input type="date" id="edit-date">
-                    <input type="text" id="edit-name">
-                    <input type="text" id="edit-venue">
-                    <textarea id="edit-memo" rows="3"></textarea>
+                    <input type="text" id="edit-name" placeholder="ライブ名">
+                    <input type="text" id="edit-venue" placeholder="会場名">
+                    <textarea id="edit-memo" rows="3" placeholder="メモ"></textarea>
                     <textarea id="edit-setlist" rows="5" placeholder="セトリ（改行区切り）"></textarea>
                     <div style="display:flex; gap:10px; margin-top:20px;">
                         <button onclick="saveEdit()" class="primary-btn" style="flex:2;">保存</button>
@@ -232,18 +232,42 @@
                 card.className = 'card'; card.style.padding = '0';
                 card.innerHTML = `<div style="padding:15px; font-weight:bold; cursor:pointer;" onclick="this.nextElementSibling.classList.toggle('hidden')">${art} <span style="float:right; color:var(--primary-color)">${lives.length}公演</span></div>
                     <div class="hidden" style="border-top:1px solid #eee;">
-                        ${lives.map(l=>`<div style="padding:14px; border-bottom:1px solid #f2f2f7; cursor:pointer;" onclick="openDetail(${l.id})"><div>${l.date}</div><div style="font-weight:bold;">${l.name||'(無題)'}</div><div style="font-size:0.85rem; color:#666; margin-top:4px;">📍 ${l.venue || '会場未登録'}</div></div>`).join('')}
-                    </div>`;
+                    ${lives.map(l=>`
+    <div class="live-history-item" onclick="openDetail(${l.id})">
+        <div style="font-size:0.75rem; color:#8e8e93;">${l.date}</div>
+        <div style="font-weight:bold;">${l.name||'(無題)'}</div>
+        <div class="history-venue">📍 ${l.venue || '会場未登録'}</div>
+    </div>`).join('')}
                 container.appendChild(card);
             });
         }
-
-        function openDetail(id) {
-            currentId = id; const l = db.lives.find(x=>x.id===id);
+        
+                function openDetail(id) {
+            currentId = id; 
+            const l = db.lives.find(x=>x.id===id);
+            // 表示内容のセット
             document.getElementById('view-live-name').innerText = l.name || 'ライブ詳細';
-            document.getElementById('live-details-info').innerHTML = `<p>📅 ${l.date}</p><p>📍 ${l.venue} (${l.pref})</p><p>${l.memo||''}</p>`;
+            document.getElementById('live-details-info').innerHTML = `<p>📅 ${l.date}</p><p>📍 ${l.venue || '未登録'} (${l.pref || '-'})</p><p>${l.memo||''}</p>`;
             document.getElementById('setlist-display').innerHTML = l.setlist?.length ? l.setlist.map((s,i)=>`<div>${i+1}. ${s}</div>`).join('') : 'セトリ未登録';
+            
+            // 重要：まず詳細画面を見せて、編集画面を隠す
+            document.getElementById('modal-view').classList.remove('hidden');
+            document.getElementById('modal-edit').classList.add('hidden');
             document.getElementById('modal-overlay').classList.remove('hidden');
+        }
+
+        function switchEditMode() {
+            const l = db.lives.find(x=>x.id===currentId);
+            // 編集フォームに現在の値をセット
+            document.getElementById('edit-date').value = l.date;
+            document.getElementById('edit-name').value = l.name || '';
+            document.getElementById('edit-venue').value = l.venue || '';
+            document.getElementById('edit-memo').value = l.memo || '';
+            document.getElementById('edit-setlist').value = (l.setlist||[]).join('\n');
+            
+            // 重要：詳細画面を隠して、編集画面を見せる
+            document.getElementById('modal-view').classList.add('hidden');
+            document.getElementById('modal-edit').classList.remove('hidden');
         }
 
         function switchEditMode() {
