@@ -270,6 +270,51 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     color: #333;
 }
 
+/* --- 統計画面：ランキング行のデザイン --- */
+.stats-row {
+    display: flex;
+    align-items: center;
+    background: #fff;
+    margin-bottom: 8px; /* 行ごとの隙間 */
+    border-radius: 6px;
+    overflow: hidden; /* 角丸からはみ出さないように */
+    border: 1px solid #eee;
+    height: 48px;
+}
+
+/* グラフと連動する左側のカラーバー */
+.stats-color-bar {
+    width: 6px;
+    height: 100%;
+    flex-shrink: 0;
+}
+
+/* 中のテキストレイアウト */
+.stats-info {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0 12px;
+}
+
+.stats-rank {
+    font-size: 0.8rem;
+    color: #888;
+    width: 35px; /* 順位の幅を固定して揃える */
+}
+
+.stats-name {
+    flex-grow: 1;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 名前が長すぎたら「...」にする */
+}
+
+.stats-count {
+    font-size: 0.9rem;
+    color: #333;
+}
 
 
 .btn-edit { background-color: #6e6e73 !important; }
