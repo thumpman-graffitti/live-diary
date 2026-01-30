@@ -138,37 +138,10 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .modal-body { padding: 0 20px 20px 20px; }
 
 
-/* モーダルを「浮いているポップアップ」にするための設定 */
-.modal-overlay {
-    position: fixed;   /* 画面に対して固定して浮かせる */
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.7); /* 背景を暗くしてポップアップを目立たせる */
-    z-index: 10000;    /* タブバーよりも手前に表示 */
-    display: flex;     /* 中身を中央に寄せる */
-    align-items: center;
-    justify-content: center;
-}
-
-/* ポップアップの白い箱の設定 */
-.modal-content {
-    background: #fff;
-    width: 90%;
-    max-width: 400px;
-    border-radius: 20px;
-    overflow: hidden;
-    position: relative;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-}
-
 /* 隠したい時に使う設定 */
 .hidden {
     display: none !important;
 }
-
-
-
-
 
 
 /* 管理画面 */
@@ -182,4 +155,50 @@ button:active { transform: translateY(2px); box-shadow: none; }
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
 .tab-content.active { display: block; }
+
+
+/* --- ここから差し替え（CSSの最後に貼り付け） --- */
+
+/* モーダルを「画面の真ん中」に浮かせるための絶対ルール */
+.modal-overlay {
+    position: fixed !important;   /* 画面に対して固定 */
+    top: 0 !important;
+    left: 0 !important;
+    width: 100vw !important;      /* 画面の横幅いっぱい */
+    height: 100vh !important;     /* 画面の縦幅いっぱい */
+    background: rgba(0,0,0,0.7) !important; /* 背景を暗く */
+    z-index: 10000 !important;    /* 一番手前に */
+    display: flex !important;     /* 中身を中央寄せにする */
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* ポップアップの白い箱 */
+.modal-content {
+    background: #ffffff !important;
+    width: 90% !important;
+    max-width: 400px !important;
+    border-radius: 20px !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    margin: auto !important;      /* 念のための真ん中寄せ */
+}
+
+/* 隠すための設定 */
+.hidden {
+    display: none !important;
+}
+
+/* モーダルの中の調整 */
+.modal-body {
+    padding: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+/* --- ここまで差し替え --- */
+
+
 
