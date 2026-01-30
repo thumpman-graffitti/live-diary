@@ -129,14 +129,6 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 
-.close-btn {
-    position: sticky; top: 12px; margin-left: auto; margin-right: 12px;
-    width: 32px; height: 32px; background: #f0f0f0; border-radius: 50%;
-    border: none; font-size: 18px; display: flex; align-items: center;
-    justify-content: center; z-index: 100;
-}
-.modal-body { padding: 0 20px 20px 20px; }
-
 
 /* 隠したい時に使う設定 */
 .hidden {
@@ -159,46 +151,60 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 /* --- ここから差し替え（CSSの最後に貼り付け） --- */
 
-/* モーダルを「画面の真ん中」に浮かせるための絶対ルール */
-.modal-overlay {
-    position: fixed !important;   /* 画面に対して固定 */
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;      /* 画面の横幅いっぱい */
-    height: 100vh !important;     /* 画面の縦幅いっぱい */
-    background: rgba(0,0,0,0.7) !important; /* 背景を暗く */
-    z-index: 10000 !important;    /* 一番手前に */
-    display: flex !important;     /* 中身を中央寄せにする */
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-/* ポップアップの白い箱 */
-.modal-content {
-    background: #ffffff !important;
-    width: 90% !important;
-    max-width: 400px !important;
-    border-radius: 20px !important;
-    position: relative !important;
-    display: flex !important;
-    flex-direction: column !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
-    margin: auto !important;      /* 念のための真ん中寄せ */
-}
 
 /* 隠すための設定 */
 .hidden {
     display: none !important;
 }
 
-/* モーダルの中の調整 */
-.modal-body {
-    padding: 20px;
-    max-height: 70vh;
-    overflow-y: auto;
-}
 
-/* --- ここまで差し替え --- */
+        /* --- ここから追加：モーダルをポップアップにする魔法の命令 --- */
+        .modal-overlay {
+            position: fixed !important;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7); /* 背景を暗くする */
+            z-index: 10000;
+            display: flex;
+            align-items: center;    /* 上下中央 */
+            justify-content: center; /* 左右中央 */
+        }
+
+        .modal-content {
+            background: #fff;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-body {
+            padding: 20px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .close-btn {
+            background: #f0f0f2;
+            border: none;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        /* --- ここまで追加 --- */
+
 
 
 
