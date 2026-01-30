@@ -8,16 +8,22 @@
     <link rel="stylesheet" href="style.css">
 
 <style>
-    /* 強制的に非表示にする設定 */
+    /* 1. 非表示を徹底する（モーダル用） */
     .hidden { 
         display: none !important; 
     }
 
-    /* モーダルが表示されている時、中身を整理する */
-    #modal-view, #modal-edit {
-        width: 100%;
+    /* 2. 各ページの中身の表示・非表示 */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    /* 3. タブバー自体の表示設定（重要！） */
+    /* これを書かないと、下のタブボタンが縦に並んだり消えたりします */
+    .tab-bar.active {
+        display: flex !important;
     }
 </style>
+
 
 
 
