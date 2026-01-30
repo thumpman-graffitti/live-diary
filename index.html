@@ -126,41 +126,44 @@
     </div>
 
 
-    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div id="modal-view">
-                <div class="modal-header">
-                    <h3 id="view-live-name">ライブ詳細</h3>
-                    <button onclick="closeModal()" class="close-btn">✕</button>
-                </div>
-                <div class="modal-body">
-                    <div id="live-details-info"></div>
-                    <hr>
-                    <h4>🎵 セットリスト</h4>
-                    <div id="setlist-display"></div>
-                    <button class="edit-main-btn" onclick="switchEditMode()">編集・セトリ登録</button>
-                </div>
+
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <button onclick="closeModal()" class="close-btn">✕</button>
+
+        <div id="modal-view">
+            <div class="modal-header">
+                <h3 id="view-live-name">ライブ詳細</h3>
             </div>
-            <div id="modal-edit" class="hidden">
-                <div class="modal-header">
-                    <h3>内容の修正</h3>
-                    <button onclick="switchEditMode()" class="close-btn">戻る</button>
+            <div class="modal-body">
+                <div id="live-details-info"></div>
+                <hr style="border:0; border-top:1px solid #eee; margin:20px 0;">
+                <h4 style="color: var(--primary-color); margin-bottom:10px;">🎵 セットリスト</h4>
+                <div id="setlist-display"></div>
+                <button class="edit-main-btn" onclick="switchEditMode()" style="margin-top:20px;">編集・セトリ登録</button>
+            </div>
+        </div>
+
+        <div id="modal-edit" class="hidden">
+            <div class="modal-header">
+                <h3>内容の修正</h3>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <input type="date" id="edit-date">
+                    <input type="text" id="edit-name" placeholder="ライブ名">
+                    <input type="text" id="edit-venue" placeholder="会場">
+                    <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
+                    <h4>🎵 セットリスト (改行で区切ってください)</h4>
+                    <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
                 </div>
-                <div class="modal-body">
-                    <div class="form-group">
-                        <input type="date" id="edit-date">
-                        <input type="text" id="edit-name" placeholder="ライブ名">
-                        <input type="text" id="edit-venue" placeholder="会場">
-                        <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
-                        <h4>🎵 セットリスト (改行で区切ってください)</h4>
-                        <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
-                    </div>
-                    <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
-                    <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
-                </div>
+                <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
+                <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
             </div>
         </div>
     </div>
+</div>
+
 
     <nav class="tab-bar">
         <button onclick="showPage('home')" id="tab-home" class="active">
@@ -296,14 +299,14 @@ function renderHistory() {
         section.innerHTML = `
             <div class="accordion-header" onclick="toggleAccordion('${artist}')">
                 <span>${artist}</span>
-                <span style="color: var(--primary-color)">${artistLives.length} 公演 ▽</span>
+                <span style="color: var(--primary-color); font-size: 0.9rem;">${artistLives.length} 公演 ▽</span>
             </div>
-            <div id="list-${artist}" class="hidden">
+            <div id="list-${artist}" class="hidden" style="padding-bottom: 10px;">
                 ${artistLives.map(l => `
                     <div class="live-item-detail" onclick="openDetail(${l.id})">
-                        <div style="font-size: 0.8rem; color: #888;">${l.date}</div>
-                        <div style="font-weight: bold;">${l.name || '(無題)'}</div>
-                        <div style="font-size: 0.8rem; color: #666;">📍 ${l.venue || '会場不明'}</div>
+                        <div class="live-date">${l.date.replace(/-/g, '.')}</div>
+                        <div class="live-title">${l.name || '(無題のライブ)'}</div>
+                        <div class="live-venue">📍 ${l.venue || '会場未登録'}</div>
                     </div>
                 `).join('')}
             </div>
