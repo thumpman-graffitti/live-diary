@@ -9,6 +9,8 @@
 }
 
 /* 全体設定 */
+* { box-sizing: border-box !important; }
+
 body {
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     margin: 0;
@@ -44,401 +46,111 @@ h2 {
     padding: 16px;
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    box-sizing: border-box;
     width: calc(100% - 24px);
     overflow: hidden; 
 }
 
 /* フォーム要素 */
-/* --- フォーム要素（はみ出し防止・決定版） --- */
-/* 全要素の計算方式を固定 */
-* {
-    box-sizing: border-box !important;
-}
-
 .form-group input, 
 .form-group select, 
 textarea {
     display: block !important;
-    width: 100% !important; /* 親要素（カード）の幅に合わせる */
-    max-width: 100% !important; /* 絶対に外に出さない */
-    height: 44px; /* 指で押しやすい高さ */
+    width: 100% !important;
+    max-width: 100% !important;
+    height: 44px;
     padding: 8px 12px !important;
-    margin: 0 0 12px 0 !important; /* 下にだけ隙間を作る */
+    margin: 0 0 12px 0 !important;
     border: 1px solid var(--border-color);
     border-radius: 6px;
-    font-size: 16px; /* iPhoneでのズーム防止 */
+    font-size: 16px;
     background-color: #f9f9f9;
-    color: var(--text-main);
 }
 
-/* テキストエリアだけは高さ自由 */
-textarea {
-    height: auto !important;
-    min-height: 80px;
+textarea { height: auto !important; min-height: 80px; resize: none; }
+
+/* 日付入力のスマホ最適化 */
+#live-date, #edit-date { appearance: none; -webkit-appearance: none; position: relative; }
+input[type="date"]::-webkit-calendar-picker-indicator {
+    position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;
 }
 
-
-textarea { height: auto; resize: none; }
-
-/* メインボタン */
+/* ボタン */
 button {
-    width: 100%;
-    padding: 12px;
-    background: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: bold;
+    width: 100%; padding: 12px;
+    background: var(--primary-color); color: white;
+    border: none; border-radius: 25px;
+    font-size: 1rem; font-weight: bold;
     box-shadow: 0 3px 0 #004d21;
 }
-
 button:active { transform: translateY(2px); box-shadow: none; }
 
-/* 下部タブバー */
-/* --- 格子状タブバー：JRA公式パネルデザイン --- */
+/* タブバー */
 .tab-bar {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    height: 65px;
-    background-color: #007130 !important; /* JRAグリーン */
-    display: flex !important;
-    z-index: 1000;
+    position: fixed; bottom: 0; width: 100%; height: 65px;
+    background-color: #007130 !important;
+    display: flex !important; z-index: 1000;
     padding-bottom: env(safe-area-inset-bottom);
-    /* 上の境界線を少し太くして立体感を出す */
     border-top: 1px solid #004d21 !important;
 }
-
 .tab-bar button {
-    flex: 1;
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    border-radius: 0 !important;
-    margin: 0 !important;
-    padding: 8px 0 !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #ffffff !important; /* 文字は白 */
-    font-size: 0.7rem !important;
-    font-weight: bold !important;
-    position: relative;
-    /* ボタンの横幅を均等に */
-    width: 25% !important;
+    flex: 1; background: none !important; border: none !important;
+    box-shadow: none !important; border-radius: 0 !important;
+    margin: 0 !important; display: flex !important;
+    flex-direction: column !important; align-items: center !important;
+    justify-content: center !important; color: #ffffff !important;
+    font-size: 0.7rem !important; width: 25% !important;
 }
+.tab-bar button:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.4) !important; }
+.tab-bar button.active { background-color: #004d21 !important; color: #ffcc00 !important; }
+.tab-bar button span:first-child { font-size: 1.3rem !important; margin-bottom: 3px !important; }
 
-/* ★ここがポイント：ボタンの右側にハッキリした縦線を引く★ */
-.tab-bar button:not(:last-child) {
-    border-right: 1px solid rgba(255, 255, 255, 0.4) !important;
-}
-
-/* アクティブなタブ：背景を少し暗くして「押されている感」を出す */
-.tab-bar button.active {
-    background-color: #004d21 !important; /* 濃い緑 */
-    color: #ffcc00 !important; /* アクティブ時はJRAイエロー */
-}
-
-/* アイコン（絵文字）のサイズ */
-.tab-bar button span:first-child {
-    font-size: 1.3rem !important;
-    margin-bottom: 3px !important;
-}
-
-/* タップ時の反応（JRA風の平坦なクリック感） */
-.tab-bar button:active {
-    background-color: #003316 !important;
-    transform: none !important;
-}
-
-
-
-/* 管理画面：検索窓 */
-.search-box { margin-bottom: 12px; }
-.search-box input {
-    width: 100% !important; height: 38px !important;
-    background-color: #e5e5ea !important; border: none !important;
-    border-radius: 10px !important; padding: 0 15px !important;
-}
-
-/* --- 管理画面：アーティスト行（決定版） --- */
-.artist-admin-row {
-    display: flex !important;
-    flex-direction: row !important; /* 横並び強制 */
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 10px 0 !important;
-    border-bottom: 1px solid #eee !important;
-}
-
-.artist-info { display: flex; align-items: center; flex: 1; min-width: 0; }
-.artist-dot {
-    width: 6px; height: 6px; background-color: var(--primary-color);
-    border-radius: 50%; margin-right: 10px; flex-shrink: 0;
-}
-.artist-name-text {
-    font-size: 0.95rem; font-weight: 600;
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-}
-
-/* ボタンエリアを横に固める */
-.artist-admin-btns {
-    display: flex !important;
-    flex-direction: row !important;
-    gap: 8px !important;
-    flex-shrink: 0 !important;
-}
-
-/* ミニボタン設定（決定版） */
-.btn-mini {
-    width: 60px !important;
-    height: 32px !important;
-    padding: 0 !important;
-    font-size: 0.75rem !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
-    border: none !important;
-    color: white !important;
-    display: flex !important;
-    align-items: center; justify-content: center;
-}
-
-/* 日付入力欄の特別対策 */
-#live-date, 
-#edit-date {
-    appearance: none; /* OS標準の見た目を一度リセット */
-    -webkit-appearance: none;
-    min-width: 0; /* 幅計算をリセット */
-    position: relative;
-}
-
-/* スマホのカレンダー・ドラムロール起動エリアを広げる */
-input[type="date"]::-webkit-calendar-picker-indicator {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    opacity: 0; /* カレンダーアイコンは見せず、枠のどこを触っても起動するようにする */
-    cursor: pointer;
-}
-
-/* 統計画面：ランキングの1行分 */
-.stats-row {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    margin-bottom: 8px; /* 行と行の間の隙間 */
-    border-radius: 6px;
-    overflow: hidden;
-    border: 1px solid #eee;
-    height: 48px;
-}
-
-/* グラフと連動する色の棒 */
-.stats-color-bar {
-    width: 6px;
-    height: 100%;
-    flex-shrink: 0;
-}
-
-/* 中のテキストレイアウト */
-.stats-info {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0 12px;
-}
-
-.stats-rank {
-    font-size: 0.8rem;
-    color: #888;
-    width: 35px;
-}
-
-.stats-name {
-    flex-grow: 1;
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.stats-count {
-    font-size: 0.9rem;
-    color: #333;
-}
-
-/* --- 統計画面：ランキング行のデザイン --- */
-.stats-row {
-    display: flex;
-    align-items: center;
-    background: #fff;
-    margin-bottom: 8px; /* 行ごとの隙間 */
-    border-radius: 6px;
-    overflow: hidden; /* 角丸からはみ出さないように */
-    border: 1px solid #eee;
-    height: 48px;
-}
-
-/* グラフと連動する左側のカラーバー */
-.stats-color-bar {
-    width: 6px;
-    height: 100%;
-    flex-shrink: 0;
-}
-
-/* 中のテキストレイアウト */
-.stats-info {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    padding: 0 12px;
-}
-
-.stats-rank {
-    font-size: 0.8rem;
-    color: #888;
-    width: 35px; /* 順位の幅を固定して揃える */
-}
-
-.stats-name {
-    flex-grow: 1;
-    font-weight: bold;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 名前が長すぎたら「...」にする */
-}
-
-.stats-count {
-    font-size: 0.9rem;
-    color: #333;
-}
-
-
-/* 履歴：アコーディオン内カード（スリム版） */
+/* 履歴スリムカード */
 .live-item-detail {
-    padding: 8px 12px; /* 上下を15px→8pxに大幅カット */
-    margin: 4px 12px;  /* 前後の隙間を詰める */
-    background: #f8f9fa;
-    border-radius: 8px;
+    padding: 8px 12px; margin: 4px 12px;
+    background: #f8f9fa; border-radius: 8px;
     border-left: 4px solid #007130;
-    display: flex;
-    flex-direction: row; /* 横並びに変更 */
-    align-items: center;
-    gap: 12px;
+    display: flex; align-items: center; gap: 12px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
+.live-date { font-size: 0.7rem; color: #888; width: 70px; flex-shrink: 0; }
+.live-info-text { display: flex; flex-direction: column; overflow: hidden; }
+.live-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.live-venue { font-size: 0.75rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* 日付を左側に固定 */
-.live-date {
-    font-size: 0.7rem;
-    color: #888;
-    white-space: nowrap;
-    width: 70px; /* 日付の幅を固定 */
-    flex-shrink: 0;
+/* 統計ランキング */
+.stats-row {
+    display: flex; align-items: center; background: #fff;
+    margin-bottom: 8px; border-radius: 6px; overflow: hidden;
+    border: 1px solid #eee; height: 48px;
 }
+.stats-color-bar { width: 6px; height: 100%; flex-shrink: 0; }
+.stats-info { display: flex; align-items: center; width: 100%; padding: 0 12px; }
+.stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
+.stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* タイトルと会場を縦に並べる（ここはコンパクトに） */
-.live-info-text {
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-}
-
-.live-title {
-    font-size: 0.9rem; /* 少し小さく */
-    font-weight: bold;
-    color: #222;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; /* 長いタイトルは「...」にする */
-}
-
-.live-venue {
-    font-size: 0.75rem;
-    color: #666;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-
-/* --- モーダル：サイズ調整と右上の❌ボタン --- */
+/* モーダル */
 .modal-overlay {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px); /* 背景をぼかしておしゃれに */
-    z-index: 2000;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    display: flex; align-items: center; justify-content: center;
+    background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 2000;
 }
-
 .modal-content {
-    width: 90%;
-    max-width: 400px;
-    max-height: 75vh; /* タブバーに被らないよう高さを制限 */
-    margin-bottom: 70px; /* タブバーの高さ分、下を空ける */
-    border-radius: 20px;
-    position: relative; /* ❌ボタンの基準 */
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
+    width: 90%; max-width: 400px; max-height: 80vh;
+    margin-bottom: 70px; background: #fff; border-radius: 20px;
+    position: relative; overflow-y: auto; display: flex; flex-direction: column;
 }
-
-.modal-header {
-    padding: 18px;
-    background: #fff;
-    border-bottom: 1px solid #eee;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.modal-header h3 {
-    margin: 0;
-    font-size: 1.1rem;
-    padding-right: 30px; /* ボタンと被らないように */
-}
-
-/* 右上の閉じるボタン（❌） */
 .close-btn {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    width: 30px;
-    height: 30px;
-    background: #eee;
-    border-radius: 50%;
-    border: none;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #666;
-    cursor: pointer;
-    z-index: 10;
+    position: sticky; top: 12px; margin-left: auto; margin-right: 12px;
+    width: 32px; height: 32px; background: #f0f0f0; border-radius: 50%;
+    border: none; font-size: 18px; display: flex; align-items: center;
+    justify-content: center; z-index: 100;
 }
+.modal-body { padding: 0 20px 20px 20px; }
 
-.modal-body {
-    padding: 20px;
-    overflow-y: auto; /* 内容が長くてもスクロール可能に */
-    background: #fff;
-}
-
-
-
-
-
-
-
-
-
+/* 管理画面 */
+.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
 .btn-edit { background-color: #6e6e73 !important; }
 .btn-delete { background-color: #ff3b30 !important; }
-
-/* モーダル・履歴関連 */
-
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
