@@ -16,7 +16,7 @@
 <body>
 
     <header>
-        <h1 id="view-title">LIVE DIARY🍊5</h1>
+        <h1 id="view-title">LIVE DIARY🍊6</h1>
     </header>
 
     <main id="app">
@@ -520,7 +520,6 @@ function setDefaultDate() {
 window.addEventListener('DOMContentLoaded', setDefaultDate);
 
 // --- 追加：統計機能（ランキング表示） ---
-// --- 追加：統計機能（ランキング表示） ---
 function renderStats() {
     const container = document.getElementById('stats-ranking-list');
     const totalDisplay = document.getElementById('total-count-display');
@@ -535,7 +534,14 @@ function renderStats() {
     // --- 1. データ集計（「その他」まとめ機能付き） ---
     const artistCounts = {};
     db.lives.forEach(l => { artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1; });
-    const sortedData = Object.entries(artistCounts).sort((a, b) => b[1] - a[1]);
+        // 集計後のソート: まず回数(b-a)で降順、同じなら名前(localeCompare)で昇順
+    const sortedData = Object.entries(artistCounts).sort((a, b) => {
+        if (b[1] !== a[1]) {
+            return b[1] - a[1]; // 回数の多い順
+        }
+        return a[0].localeCompare(b[0], 'ja'); // 名前のあいうえお順
+    });
+
 
     const displayLimit = 7; // 個別に色を出すアーティスト数
     let labels = [];
@@ -593,35 +599,48 @@ function renderStats() {
 
     // --- 4. HTMLの出力（ランキングリスト） ---
     // --- 4. HTMLの出力（ランキングリスト） ---
-    const top5 = sortedData.slice(0, 5);
-    const rest = sortedData.slice(5);
+    // ランキングの順位を計算するロジック（同着対応）
+    let currentRank = 1;
+    let skipCount = 0;
+    let prevCount = -1;
+
+    // 全体のランキングHTMLを作成
+    const fullRankingHTML = sortedData.map(([name, count], i) => {
+        // 回数が前と同じなら順位はそのまま、違うならスキップした分を足して更新
+        if (count !== prevCount) {
+            currentRank = currentRank + skipCount;
+            skipCount = 1;
+        } else {
+            skipCount++;
+        }
+        prevCount = count;
+
+        // 同着の場合は順位の数字を表示し、2人目以降は非表示にする
+        const rankDisplay = (i > 0 && count === sortedData[i-1][1]) ? "" : `${currentRank}位`;
+
+        return `
+            <div class="stats-row">
+                <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
+                <div class="stats-info">
+                    <span class="stats-rank">${rankDisplay}</span>
+                    <span class="stats-name">${name}</span>
+                    <span class="stats-count"><b>${count}</b> 回</span>
+                </div>
+            </div>
+        `;
+    });
+
+    const top5HTML = fullRankingHTML.slice(0, 5).join('');
+    const restHTML = fullRankingHTML.slice(5).join('');
 
     container.innerHTML = `
         <section class="card">
             <h2>🏆 アーティスト別ランキング</h2>
-            ${top5.map(([name, count], i) => `
-                <div class="stats-row">
-                    <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
-                    <div class="stats-info">
-                        <span class="stats-rank">${i+1}位</span>
-                        <span class="stats-name">${name}</span>
-                        <span class="stats-count"><b>${count}</b> 回</span>
-                    </div>
-                </div>
-            `).join('')}
+            ${top5HTML}
 
-            ${rest.length > 0 ? `
+            ${restHTML.length > 0 ? `
                 <div id="stats-more-list" class="hidden">
-                    ${rest.map(([name, count], i) => `
-                        <div class="stats-row">
-                            <div class="stats-color-bar" style="background-color:${chartColors[i+5] || '#ccc'};"></div>
-                            <div class="stats-info">
-                                <span class="stats-rank">${i+6}位</span>
-                                <span class="stats-name">${name}</span>
-                                <span class="stats-count"><b>${count}</b> 回</span>
-                            </div>
-                        </div>
-                    `).join('')}
+                    ${restHTML}
                 </div>
                 <button onclick="toggleStatsMore()" id="stats-more-btn" style="background:none; color:var(--primary-color); border:none; width:100%; padding:10px; font-weight:bold; cursor:pointer;">
                     ▼ もっと見る
