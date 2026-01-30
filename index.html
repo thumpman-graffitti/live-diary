@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="style.css">
 
 <style>
-    /* 1. モーダルなどの非表示設定（必須） */
+    /* 1. モーダルなどの非表示設定 */
     .hidden { 
         display: none !important; 
     }
@@ -21,22 +21,37 @@
         display: block; 
     }
 
-    /* 3. 【復活の鍵】タブバーを最前面に固定する */
+    /* 3. タブバーを画面の一番下に固定して表示する */
     .tab-bar {
         display: flex !important;
-        position: fixed !important;   /* 画面の下に固定 */
-        bottom: 0 !important;         /* ぴったり下にくっつける */
-        left: 0 !important;           /* 左端から */
-        right: 0 !important;          /* 右端まで */
-        z-index: 9999 !important;      /* 何があっても一番上に表示 */
-        background: #f8f8f8;          /* 背景色を確保（style.cssに合わせる） */
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        z-index: 9999 !important;
     }
 
-    /* 4. コンテンツがタブに被らないように下に余白を作る */
+    /* 4. タブバーに隠れないように画面下に余白を作る */
     body {
-        padding-bottom: 80px !important;
+        padding-bottom: 70px !important;
     }
 </style>
+
+
+
+<style>
+    /* 1. モーダルなどの非表示設定（必須） */
+    .hidden { 
+        display: none !important; 
+    }
+
+    /* 2. 各ページの中身の切り替え */
+    .tab-content { 
+        display: none; 
+    }
+    .tab-content.active { 
+        display: block; 
+    }
 
 
     /* 1. 非表示を徹底する（モーダル用） */
