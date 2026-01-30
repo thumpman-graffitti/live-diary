@@ -9,14 +9,13 @@
             --primary-color: #007130; /* JRAグリーン */
             --accent-color: #34c759;
             --bg-color: #f2f2f7;
-            --text-main: #1c1c1e;
         }
 
         body {
             margin: 0;
             padding-bottom: 100px !important;
             background-color: var(--bg-color);
-            font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+            font-family: -apple-system, "SF Pro Display", sans-serif;
         }
 
         header {
@@ -39,57 +38,63 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
 
-        /* 【復活】JRAホームページ風タブバー：白の境界線入り */
+        /* 【修正】入力項目の幅を100%に統一 */
+        input, select, textarea { 
+            width: 100% !important; /* 強制的に幅を揃える */
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box; /* パディングを含めた幅計算 */
+            margin-bottom: 2px;
+        }
+
+        /* タブバー：JRA風境界線 */
         .tab-bar {
             display: flex !important;
             position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            right: 0 !important;
-            height: 70px !important;
-            background-color: var(--primary-color) !important;
-            z-index: 9999 !important;
+            bottom: 0; left: 0; right: 0;
+            height: 70px;
+            background-color: var(--primary-color);
+            z-index: 9999;
             border-top: 1px solid rgba(255,255,255,0.3);
         }
         .tab-bar button {
-            flex: 1;
-            background: none;
-            border: none;
+            flex: 1; background: none; border: none;
             color: rgba(255,255,255,0.7);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
             position: relative;
         }
-        /* ボタン間の白い縦線 */
         .tab-bar button:not(:last-child)::after {
-            content: "";
-            position: absolute;
-            right: 0;
-            top: 20%;
-            height: 60%;
-            width: 1px;
-            background-color: rgba(255,255,255,0.3);
+            content: ""; position: absolute; right: 0; top: 20%; height: 60%;
+            width: 1px; background-color: rgba(255,255,255,0.3);
         }
         .tab-bar button.active { color: #ffffff; font-weight: bold; background: rgba(255,255,255,0.1); }
-        .tab-bar .icon { font-size: 1.4rem; margin-bottom: 2px; }
 
-        /* お洒落なボタンデザイン */
+        /* ボタンデザイン */
         button.primary-btn {
+            width: 100%;
             background: linear-gradient(135deg, var(--primary-color), #008f3d);
             color: white; border: none; border-radius: 10px;
             padding: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(0,113,48,0.3);
-            cursor: pointer; transition: transform 0.1s;
         }
         button.accent-btn {
+            width: 100%;
             background: linear-gradient(135deg, #34c759, #28a745);
             color: white; border: none; border-radius: 10px;
             padding: 14px; font-weight: bold; box-shadow: 0 4px 10px rgba(52,199,89,0.3);
         }
-        button:active { transform: scale(0.98); }
 
-        /* モーダル修正：右上×ボタンを完全に固定 */
+        /* 履歴一覧のスタイル */
+        .live-history-item {
+            padding: 12px 15px;
+            border-bottom: 1px solid #f2f2f7;
+            cursor: pointer;
+        }
+        .live-history-item:active { background-color: #f9f9fb; }
+        .history-venue { font-size: 0.85rem; color: #666; margin-top: 2px; }
+
+        /* モーダル */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.75); z-index: 10000;
@@ -98,32 +103,15 @@
         .modal-content {
             background: #fff; width: 90%; max-width: 420px; 
             max-height: 80vh; border-radius: 20px; overflow: hidden;
-            display: flex; flex-direction: column; position: relative;
+            display: flex; flex-direction: column;
         }
         .modal-header {
             padding: 15px 20px; background: #fff; border-bottom: 1px solid #eee;
             display: flex; justify-content: space-between; align-items: center;
         }
-        .close-btn {
-            background: #f0f0f2; border: none; border-radius: 50%;
-            width: 32px; height: 32px; font-size: 16px; cursor: pointer;
-        }
-        .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-
-        /* 統計の洗練されたリスト */
-        .stats-list-item {
-            display: flex; align-items: center; padding: 12px 0;
-            border-bottom: 1px solid #f2f2f7;
-        }
-        .color-dot { width: 4px; height: 16px; border-radius: 2px; margin-right: 10px; }
-        .rank-num { width: 35px; font-weight: bold; color: #8e8e93; font-size: 0.9rem; }
-        .rank-name { flex: 1; font-weight: 600; }
-        .rank-count { font-weight: bold; color: var(--primary-color); }
+        .close-btn { background: #f0f0f2; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 16px; }
 
         .hidden { display: none !important; }
-        input, select, textarea { 
-            padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem; width: 100%; box-sizing: border-box;
-        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -134,18 +122,17 @@
     <main id="app">
         <div id="page-home" class="tab-content active">
             <div class="card">
-                <h2 style="font-size: 0.9rem; color: #666;">アーティスト登録</h2>
+                <h2 style="font-size: 0.9rem; color: #666; margin-bottom:10px;">アーティスト登録</h2>
                 <div style="display: flex; gap: 8px;">
-                    <input type="text" id="new-artist-name" placeholder="名前を入力">
-                    <button onclick="addArtist()" class="primary-btn" style="padding: 10px 20px;">追加</button>
+                    <input type="text" id="new-artist-name" placeholder="アーティスト名">
+                    <button onclick="addArtist()" class="primary-btn" style="width: auto; padding: 0 20px;">追加</button>
                 </div>
             </div>
             <div class="card">
-                <h2 style="font-size: 0.9rem; color: #666;">ライブを記録</h2>
+                <h2 style="font-size: 0.9rem; color: #666; margin-bottom:10px;">ライブを記録</h2>
                 <div style="display: flex; flex-direction: column; gap: 12px;">
                     <select id="live-artist-select"><option value="">アーティストを選択</option></select>
-                    <input type="date" id="live-date">
-                    <input type="text" id="live-name" placeholder="ライブ名">
+                    <input type="date" id="live-date"> <input type="text" id="live-name" placeholder="ライブ名">
                     <input type="text" id="live-venue" placeholder="会場名">
                     <select id="live-pref">
                         <option value="">都道府県を選択</option>
@@ -157,14 +144,15 @@
             </div>
         </div>
 
-        <div id="page-history" class="tab-content"><div id="history-list"></div></div>
+        <div id="page-history" class="tab-content">
+            <div id="history-list"></div>
+        </div>
 
         <div id="page-stats" class="tab-content">
             <div class="card">
                 <div style="max-width: 200px; margin: 0 auto; position: relative;">
                     <canvas id="artistChart"></canvas>
                     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center;">
-                        <div style="font-size: 0.7rem; color: #8e8e93;">Total</div>
                         <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
                     </div>
                 </div>
@@ -179,7 +167,7 @@
                     <button onclick="document.getElementById('import-file').click()" style="flex:1; background:var(--primary-color); color:white; border:none; padding:12px; border-radius:10px;">読み込み</button>
                 </div>
                 <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
-                <input type="text" id="artist-search-input" placeholder="🔍 アーティスト検索" oninput="filterArtists()" style="background:#f2f2f7; border:none;">
+                <input type="text" id="artist-search-input" placeholder="🔍 アーティスト検索" oninput="filterArtists()">
                 <div id="artist-manager-list" style="margin-top:10px;"></div>
             </div>
         </div>
@@ -191,12 +179,12 @@
                 <h3 id="modal-title" style="margin:0; font-size:1rem;">詳細</h3>
                 <button onclick="closeModal()" class="close-btn">✕</button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" id="modal-body-content">
                 <div id="modal-view">
                     <h2 id="view-live-name" style="color:var(--primary-color); margin-top:0;"></h2>
                     <div id="live-details-info"></div>
                     <div id="setlist-display" style="background:#f9f9fb; padding:15px; border-radius:10px; margin-top:15px;"></div>
-                    <button onclick="switchEditMode()" class="primary-btn" style="width:100%; margin-top:20px;">編集する</button>
+                    <button onclick="switchEditMode()" class="primary-btn" style="margin-top:20px;">編集する</button>
                 </div>
                 <div id="modal-edit" class="hidden">
                     <div style="display: flex; flex-direction: column; gap: 10px;">
@@ -231,7 +219,6 @@
         window.onload = () => { 
             updateArtistSelect(); 
             showPage('home');
-            // 【復活】本日日付の初期表示
             document.getElementById('live-date').value = new Date().toISOString().split('T')[0];
         };
 
@@ -247,17 +234,16 @@
 
         function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
 
-        function addArtist() {
-            const v = document.getElementById('new-artist-name').value.trim();
-            if(!v || db.artists.includes(v)) return;
-            db.artists.push(v); save();
-            document.getElementById('new-artist-name').value = '';
-            updateArtistSelect();
-        }
-
         function updateArtistSelect() {
             const s = document.getElementById('live-artist-select');
             s.innerHTML = '<option value="">アーティストを選択</option>' + db.artists.sort().map(a=>`<option value="${a}">${a}</option>`).join('');
+        }
+
+        function addArtist() {
+            const v = document.getElementById('new-artist-name').value.trim();
+            if(!v || db.artists.includes(v)) return;
+            db.artists.push(v); save(); updateArtistSelect();
+            document.getElementById('new-artist-name').value = '';
         }
 
         function addLive() {
@@ -277,7 +263,13 @@
                 const card = document.createElement('div');
                 card.className = 'card'; card.style.padding = '0';
                 card.innerHTML = `<div style="padding:15px; font-weight:bold; cursor:pointer;" onclick="this.nextElementSibling.classList.toggle('hidden')">${art} <span style="float:right; color:var(--primary-color)">${lives.length}公演</span></div>
-                    <div class="hidden" style="border-top:1px solid #eee;">${lives.map(l=>`<div style="padding:12px; border-bottom:1px solid #f2f2f7;" onclick="openDetail(${l.id})"><div>${l.date}</div><div style="font-weight:bold;">${l.name||'(無題)'}</div></div>`).join('')}</div>`;
+                    <div class="hidden" style="border-top:1px solid #eee;">
+                        ${lives.map(l=>`
+                            <div class="live-history-item" onclick="openDetail(${l.id})">
+                                <div style="font-size:0.75rem; color:#8e8e93;">${l.date}</div>
+                                <div style="font-weight:bold;">${l.name||'(無題)'}</div>
+                                <div class="history-venue">📍 ${l.venue || '会場未登録'}</div> </div>`).join('')}
+                    </div>`;
                 container.appendChild(card);
             });
         }
@@ -325,7 +317,7 @@
             let lastA = -1;
             aSorted.forEach((s, i) => {
                 const showRank = s[1] === lastA ? '' : (i + 1) + '位';
-                html += `<div class="stats-list-item"><div class="color-dot" style="background:${refinedColors[i%refinedColors.length]}"></div><div class="rank-num">${showRank}</div><div class="rank-name">${s[0]}</div><div class="rank-count">${s[1]}回</div></div>`;
+                html += `<div style="display:flex; align-items:center; padding:10px 0; border-bottom:1px solid #f2f2f7;"><div style="width:4px; height:16px; border-radius:2px; margin-right:10px; background:${refinedColors[i%refinedColors.length]}"></div><div style="width:35px; font-weight:bold; color:#8e8e93; font-size:0.9rem;">${showRank}</div><div style="flex:1;">${s[0]}</div><div style="font-weight:bold; color:var(--primary-color);">${s[1]}回</div></div>`;
                 lastA = s[1];
             });
             html += '</div>';
@@ -336,7 +328,7 @@
             let lastP = -1;
             pSorted.forEach((p, i) => {
                 const showRank = p[1] === lastP ? '' : (i + 1) + '位';
-                html += `<div class="stats-list-item"><div class="rank-num">${showRank}</div><div class="rank-name">${p[0]}</div><div class="rank-count">${p[1]}回</div></div>`;
+                html += `<div style="display:flex; align-items:center; padding:10px 0; border-bottom:1px solid #f2f2f7;"><div style="width:35px; font-weight:bold; color:#8e8e93; font-size:0.9rem;">${showRank}</div><div style="flex:1;">${p[0]}</div><div style="font-weight:bold; color:var(--primary-color);">${p[1]}回</div></div>`;
                 lastP = p[1];
             });
             document.getElementById('stats-ranking-list').innerHTML = html + '</div>';
