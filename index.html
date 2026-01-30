@@ -144,25 +144,35 @@
             </div>
         </div>
 
-        <div id="modal-edit" class="hidden">
-            <div class="modal-header">
-                <h3>内容の修正</h3>
-            </div>
-            <div class="modal-body">
-                <div class="form-group">
-                    <input type="date" id="edit-date">
-                    <input type="text" id="edit-name" placeholder="ライブ名">
-                    <input type="text" id="edit-venue" placeholder="会場">
-                    <textarea id="edit-memo" placeholder="メモ" rows="2"></textarea>
-                    <h4>🎵 セットリスト (改行で区切ってください)</h4>
-                    <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3" rows="10"></textarea>
-                </div>
-                <button onclick="saveEdit()" style="background: var(--primary-color);">保存する</button>
-                <button onclick="deleteLive()" style="background: #e60012; margin-top: 10px;">この記録を削除</button>
-            </div>
+<div id="modal-edit" class="hidden">
+    <div class="modal-header">
+        <h3>内容の修正</h3>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label style="font-size:0.8rem; color:#666;">📅 日付</label>
+            <input type="date" id="edit-date">
+            
+            <label style="font-size:0.8rem; color:#666;">🎤 ライブ名</label>
+            <input type="text" id="edit-name" placeholder="ライブ名">
+            
+            <label style="font-size:0.8rem; color:#666;">📍 会場</label>
+            <input type="text" id="edit-venue" placeholder="会場">
+            
+            <label style="font-size:0.8rem; color:#666;">📝 メモ</label>
+            <textarea id="edit-memo" placeholder="メモ" rows="2" style="width:100%; box-sizing:border-box; padding:8px; border-radius:8px; border:1px solid #ddd;"></textarea>
+            
+            <label style="font-size:0.8rem; color:#666;">🎵 セットリスト (1曲ずつ改行)</label>
+            <textarea id="edit-setlist" placeholder="曲名1&#10;曲名2&#10;曲名3"></textarea>
+        </div>
+        
+        <div class="modal-footer-btns">
+            <button onclick="saveEdit()" style="background: var(--primary-color); color:white; border:none; padding:12px; border-radius:10px; font-weight:bold;">保存する</button>
+            <button onclick="deleteLive()" style="background: #fff; color:#e60012; border:1px solid #e60012; padding:10px; border-radius:10px; font-size:0.8rem;">この記録を削除</button>
         </div>
     </div>
 </div>
+
 
 
     <nav class="tab-bar">
