@@ -148,10 +148,11 @@
         </div>
     </main>
 
+
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 id="modal-title" style="margin:0; font-size:1rem;">詳細</h3>
+                <h3 style="margin:0; font-size:1rem;">詳細・編集</h3>
                 <button onclick="closeModal()" class="close-btn">✕</button>
             </div>
             <div class="modal-body">
@@ -175,6 +176,42 @@
             </div>
         </div>
     </div>
+    ```
+
+---
+
+### ⚠️ 重要：CSSも必ずセットで
+HTMLを直しても、**CSSに「浮かせる命令」がないと画面下部に出たまま**になります。
+HTML内の `<style>` タグの中（一番下でOK）に、以下の3つの設定が入っているか**今一度確認**してください。入っていなければ、`</style>` の直前に入れてください。
+
+```css
+/* これがないと浮かびません */
+.modal-overlay {
+    position: fixed !important;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* これがないと白い箱になりません */
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+}
+
+/* これがないと「閉じる」ボタンが機能しません */
+.close-btn {
+    background: #f0f0f2;
+    border: none;
+    border-radius: 50%;
+    width: 30px; height: 30px;
+
 
     <nav class="tab-bar">
         <button onclick="showPage('home')" id="tab-home" class="active"><span class="icon">♢</span><span>ホーム</span></button>
