@@ -80,26 +80,28 @@
         <div id="page-history" class="tab-content">
             <div id="history-list"></div>
         </div>
-
 <div id="page-stats" class="tab-content">
-    <section class="card" style="position: relative;">
-        <h2>📊 参戦アーティスト比率</h2>
-        <div style="max-width: 300px; margin: 0 auto; position: relative;">
+    <section class="card" style="position: relative; padding: 10px 15px;">
+        <h2 style="margin-bottom: 5px;">📊 参戦比率</h2>
+        <div style="max-width: 220px; margin: 5px auto; position: relative;">
             <canvas id="artistChart"></canvas>
             <div id="chart-center-text" style="
                 position: absolute; 
-                top: 55%; left: 50%; 
-                transform: translate(-50%, -50%); 
+                top: 50%; left: 50%; 
+                transform: translate(-50%, -40%); 
                 text-align: center;
                 pointer-events: none;">
-                <div style="font-size: 0.8rem; color: #666;">Total</div>
-                <div id="total-count-display" style="font-size: 2rem; font-weight: bold; color: var(--primary-color);">0</div>
+                <div style="font-size: 0.7rem; color: #666; line-height: 1;">Total</div>
+                <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
             </div>
         </div>
     </section>
 
     <div id="stats-ranking-list"></div>
 </div>
+
+
+
 
 
 <div id="page-settings" class="tab-content">
@@ -590,10 +592,14 @@ function renderStats() {
     const prefRanking = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]);
 
     // --- 4. HTMLの出力（ランキングリスト） ---
+    // --- 4. HTMLの出力（ランキングリスト） ---
+    const top5 = sortedData.slice(0, 5);
+    const rest = sortedData.slice(5);
+
     container.innerHTML = `
         <section class="card">
-            <h2>🏆 アーティスト別 TOP5</h2>
-            ${sortedData.slice(0, 5).map(([name, count], i) => `
+            <h2>🏆 アーティスト別ランキング</h2>
+            ${top5.map(([name, count], i) => `
                 <div class="stats-row">
                     <div class="stats-color-bar" style="background-color:${chartColors[i] || '#ccc'};"></div>
                     <div class="stats-info">
@@ -603,6 +609,24 @@ function renderStats() {
                     </div>
                 </div>
             `).join('')}
+
+            ${rest.length > 0 ? `
+                <div id="stats-more-list" class="hidden">
+                    ${rest.map(([name, count], i) => `
+                        <div class="stats-row">
+                            <div class="stats-color-bar" style="background-color:${chartColors[i+5] || '#ccc'};"></div>
+                            <div class="stats-info">
+                                <span class="stats-rank">${i+6}位</span>
+                                <span class="stats-name">${name}</span>
+                                <span class="stats-count"><b>${count}</b> 回</span>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+                <button onclick="toggleStatsMore()" id="stats-more-btn" style="background:none; color:var(--primary-color); border:none; width:100%; padding:10px; font-weight:bold; cursor:pointer;">
+                    ▼ もっと見る
+                </button>
+            ` : ''}
         </section>
 
         <section class="card">
@@ -616,6 +640,20 @@ function renderStats() {
         </section>
     `;
 }
+
+// 統計の「もっと見る」切り替え用関数
+function toggleStatsMore() {
+    const list = document.getElementById('stats-more-list');
+    const btn = document.getElementById('stats-more-btn');
+    if (list.classList.contains('hidden')) {
+        list.classList.remove('hidden');
+        btn.innerText = '▲ 閉じる';
+    } else {
+        list.classList.add('hidden');
+        btn.innerText = '▼ もっと見る';
+    }
+}
+
 
     </script>
 </body>
