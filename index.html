@@ -17,19 +17,20 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* 3. 【修正】下のタブバー本体：常に表示（!importantで最優先） */
+    /* 3. 【復活の修正】下のタブバー本体：画面最前面に固定 */
     .tab-bar {
         display: flex !important;
-        position: fixed !important;
+        position: fixed !important;   /* 画面下に固定 */
         bottom: 0 !important;
         left: 0 !important;
         right: 0 !important;
-        z-index: 9999 !important;
+        z-index: 9999 !important;      /* 重なりを一番上に */
+        background: #fff;             /* 背景色を確保 */
     }
-    
-    /* タブで中身が隠れないよう余白を追加 */
+
+    /* コンテンツがタブに重なって隠れないよう、一番下に余白を空ける */
     body {
-        padding-bottom: 90px !important;
+        padding-bottom: 85px !important;
     }
 </style>
 
@@ -222,11 +223,13 @@ window.onload = function() {
 function showPage(pageId) {
     const contents = document.querySelectorAll('.tab-content');
     contents.forEach(p => p.classList.remove('active'));
+    
     const tabs = document.querySelectorAll('.tab-bar button');
     tabs.forEach(b => b.classList.remove('active'));
     
     const targetPage = document.getElementById('page-' + pageId);
     const targetTab = document.getElementById('tab-' + pageId);
+    
     if (targetPage) targetPage.classList.add('active');
     if (targetTab) targetTab.classList.add('active');
     
@@ -262,6 +265,7 @@ function addLive() {
     const artist = document.getElementById('live-artist-select').value;
     const date = document.getElementById('live-date').value;
     if(!artist || !date) return alert('入力が不足しています');
+
     const live = {
         id: Date.now(),
         artist: artist,
@@ -274,6 +278,12 @@ function addLive() {
     };
     db.lives.push(live);
     save();
+    
+    document.getElementById('live-date').value = '';
+    document.getElementById('live-name').value = '';
+    document.getElementById('live-venue').value = '';
+    document.getElementById('live-memo').value = '';
+    
     alert('ライブを記録しました');
     showPage('history');
 }
@@ -282,10 +292,13 @@ function renderHistory() {
     const container = document.getElementById('history-list');
     container.innerHTML = '';
     [...db.artists].sort().forEach(artist => {
-        const artistLives = db.lives.filter(l => l.artist === artist).sort((a,b) => new Date(b.date) - new Date(a.date));
+        const artistLives = db.lives.filter(l => l.artist === artist)
+            .sort((a,b) => new Date(b.date) - new Date(a.date));
         if(artistLives.length === 0) return;
+
         const section = document.createElement('div');
-        section.className = 'card'; section.style.padding = '0';
+        section.className = 'card';
+        section.style.padding = '0';
         section.innerHTML = `
             <div class="accordion-header" onclick="toggleAccordion('${artist}')">
                 <span>${artist}</span>
@@ -297,22 +310,34 @@ function renderHistory() {
                         <div class="live-date">${l.date.replace(/-/g, '.')}</div>
                         <div class="live-title">${l.name || '(無題のライブ)'}</div>
                         <div class="live-venue">📍 ${l.venue || '会場未登録'}</div>
-                    </div>`).join('')}
-            </div>`;
+                    </div>
+                `).join('')}
+            </div>
+        `;
         container.appendChild(section);
     });
 }
 
-function toggleAccordion(artist) { const el = document.getElementById('list-' + artist); if(el) el.classList.toggle('hidden'); }
+function toggleAccordion(artist) {
+    const el = document.getElementById('list-' + artist);
+    if(el) el.classList.toggle('hidden');
+}
 
 function openDetail(id) {
     currentEditId = id;
     const live = db.lives.find(l => l.id === id);
+    if(!live) return;
+    
     document.getElementById('view-live-name').innerText = live.name || 'ライブ詳細';
-    document.getElementById('live-details-info').innerHTML = `<p><strong>📅 日付:</strong> ${live.date}</p><p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p><p><strong>📝 メモ:</strong><br>${live.memo || 'なし'}</p>`;
+    document.getElementById('live-details-info').innerHTML = `
+        <p><strong>📅 日付:</strong> ${live.date}</p>
+        <p><strong>📍 会場:</strong> ${live.venue} (${live.pref})</p>
+        <p><strong>📝 メモ:</strong><br>${live.memo || 'なし'}</p>
+    `;
     const setlistDiv = document.getElementById('setlist-display');
     setlistDiv.innerHTML = live.setlist && live.setlist.length > 0 ? 
-        live.setlist.map((song, i) => `<div class="setlist-item"><div class="set-num">${String(i+1).padStart(2,'0')}</div><div>${song}</div></div>`).join('') : '<p style="color:#999; padding:10px;">未登録</p>';
+        live.setlist.map((song, i) => `<div class="setlist-item"><div class="set-num">${String(i+1).padStart(2,'0')}</div><div>${song}</div></div>`).join('') : 
+        '<p style="color:#999; padding:10px;">未登録</p>';
     document.getElementById('modal-overlay').classList.remove('hidden');
 }
 
@@ -323,23 +348,112 @@ function switchEditMode() {
     document.getElementById('edit-venue').value = live.venue;
     document.getElementById('edit-memo').value = live.memo || '';
     document.getElementById('edit-setlist').value = (live.setlist || []).join('\n');
-    document.getElementById('modal-view').classList.add('hidden');
-    document.getElementById('modal-edit').classList.remove('hidden');
+    document.getElementById('modal-view').classList.toggle('hidden');
+    document.getElementById('modal-edit').classList.toggle('hidden');
 }
 
 function saveEdit() {
     const index = db.lives.findIndex(l => l.id === currentEditId);
+    if(index === -1) return;
     db.lives[index].date = document.getElementById('edit-date').value;
     db.lives[index].name = document.getElementById('edit-name').value;
     db.lives[index].venue = document.getElementById('edit-venue').value;
     db.lives[index].memo = document.getElementById('edit-memo').value;
     db.lives[index].setlist = document.getElementById('edit-setlist').value.split('\n').filter(line => line.trim() !== '');
-    save(); closeModal(); renderHistory();
+    save();
+    closeModal();
+    renderHistory();
 }
 
-function deleteLive() { if(confirm('削除しますか？')){ db.lives = db.lives.filter(l => l.id !== currentEditId); save(); closeModal(); renderHistory(); } }
-function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); document.getElementById('modal-view').classList.remove('hidden'); document.getElementById('modal-edit').classList.add('hidden'); }
+function deleteLive() {
+    if(!confirm('このライブ記録を削除しますか？')) return;
+    db.lives = db.lives.filter(l => l.id !== currentEditId);
+    save();
+    closeModal();
+    renderHistory();
+}
+
+function closeModal() {
+    document.getElementById('modal-overlay').classList.add('hidden');
+    document.getElementById('modal-view').classList.remove('hidden');
+    document.getElementById('modal-edit').classList.add('hidden');
+}
+
 function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
+
+function exportData() {
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db));
+    const dlAnchor = document.createElement('a');
+    dlAnchor.setAttribute("href", dataStr);
+    dlAnchor.setAttribute("download", "livelog_backup.json");
+    dlAnchor.click();
+}
+
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const importedDb = JSON.parse(e.target.result);
+            if (confirm('データを復元しますか？')) {
+                db = importedDb;
+                save();
+                location.reload();
+            }
+        } catch (err) { alert('失敗しました'); }
+    };
+    reader.readAsText(file);
+}
+
+function renderArtistManager(filterText = '') {
+    const container = document.getElementById('artist-manager-list');
+    if (!container) return;
+    container.innerHTML = '';
+    const filtered = db.artists.sort().filter(name => name.toLowerCase().includes(filterText.toLowerCase()));
+    filtered.forEach(artist => {
+        const div = document.createElement('div');
+        div.className = 'artist-admin-row';
+        div.innerHTML = `
+            <div class="artist-info"><span class="artist-dot"></span><span class="artist-name-text">${artist}</span></div>
+            <div class="artist-admin-btns">
+                <button onclick="editArtistName('${artist}')" class="btn-mini btn-edit">編集</button>
+                <button onclick="deleteArtist('${artist}')" class="btn-mini btn-delete">削除</button>
+            </div>`;
+        container.appendChild(div);
+    });
+}
+
+function filterArtists() {
+    renderArtistManager(document.getElementById('artist-search-input').value);
+}
+
+function editArtistName(oldName) {
+    const newName = prompt(`「${oldName}」の新しい名前：`, oldName);
+    if (!newName || newName === oldName) return;
+    const index = db.artists.indexOf(oldName);
+    if (index !== -1) db.artists[index] = newName;
+    db.lives.forEach(live => { if (live.artist === oldName) live.artist = newName; });
+    save();
+    updateArtistSelect();
+    renderArtistManager();
+}
+
+function deleteArtist(name) {
+    if (!confirm(`「${name}」を削除しますか？`)) return;
+    db.artists = db.artists.filter(a => a !== name);
+    db.lives = db.lives.filter(l => l.artist !== name);
+    save();
+    updateArtistSelect();
+    renderArtistManager();
+}
+
+function setDefaultDate() {
+    const today = new Date().toISOString().split('T')[0];
+    const dateInput = document.getElementById('live-date');
+    if (dateInput) dateInput.value = today;
+}
+window.addEventListener('DOMContentLoaded', setDefaultDate);
 
 function renderStats() {
     const container = document.getElementById('stats-ranking-list');
@@ -357,25 +471,31 @@ function renderStats() {
     if (artistChart) artistChart.destroy();
     artistChart = new Chart(ctx, {
         type: 'doughnut',
-        data: { labels: sortedData.map(s=>s[0]), datasets: [{ data: sortedData.map(s=>s[1]), backgroundColor: ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93'] }] },
+        data: {
+            labels: sortedData.map(s => s[0]),
+            datasets: [{
+                data: sortedData.map(s => s[1]),
+                backgroundColor: ['#007130', '#34c759', '#ffcc00', '#ff9500', '#ff3b30', '#5856d6', '#007aff', '#8e8e93']
+            }]
+        },
         options: { cutout: '75%', plugins: { legend: { display: false } } }
     });
 
-    // 都道府県トップの集計
     const prefCounts = {};
     db.lives.forEach(l => { if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1; });
-    const prefRanking = Object.entries(prefCounts).sort((a,b)=>b[1]-a[1]).slice(0,5);
+    const prefRankingData = Object.entries(prefCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
 
     container.innerHTML = `
         <section class="card">
             <h2>🏆 アーティスト別ランキング</h2>
-            ${sortedData.slice(0,5).map((s,i)=>`<div class="stats-row"><div class="stats-info"><span class="stats-rank">${i+1}位</span><span class="stats-name">${s[0]}</span><span class="stats-count"><b>${s[1]}</b> 回</span></div></div>`).join('')}
-            ${sortedData.length > 5 ? `<div id="stats-more-list" class="hidden">${sortedData.slice(5).map((s,i)=>`<div class="stats-row"><div class="stats-info"><span class="stats-rank">${i+6}位</span><span class="stats-name">${s[0]}</span><span class="stats-count"><b>${s[1]}</b> 回</span></div></div>`).join('')}</div><button onclick="toggleStatsMore()" id="stats-more-btn" style="background:none; color:var(--primary-color); border:none; width:100%; padding:10px; font-weight:bold;">▼ もっと見る</button>` : ''}
+            ${sortedData.slice(0, 5).map((s, i) => `<div class="stats-row"><div class="stats-info"><span class="stats-rank">${i+1}位</span><span class="stats-name">${s[0]}</span><span class="stats-count"><b>${s[1]}</b> 回</span></div></div>`).join('')}
+            ${sortedData.length > 5 ? `<div id="stats-more-list" class="hidden">${sortedData.slice(5).map((s, i) => `<div class="stats-row"><div class="stats-info"><span class="stats-rank">${i+6}位</span><span class="stats-name">${s[0]}</span><span class="stats-count"><b>${s[1]}</b> 回</span></div></div>`).join('')}</div><button onclick="toggleStatsMore()" id="stats-more-btn" style="background:none; color:var(--primary-color); border:none; width:100%; padding:10px; font-weight:bold;">▼ もっと見る</button>` : ''}
         </section>
         <section class="card">
             <h2>📍 都道府県別トップ</h2>
-            ${prefRanking.map((p,i)=>`<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${i+1}位 ${p[0]}</span><span>${p[1]} 公演</span></div>`).join('') || 'なし'}
-        </section>`;
+            ${prefRankingData.map((p, i) => `<div style="display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;"><span>${i+1}位 ${p[0]}</span><span>${p[1]} 公演</span></div>`).join('') || '<p>記録なし</p>'}
+        </section>
+    `;
 }
 
 function toggleStatsMore() {
@@ -384,31 +504,6 @@ function toggleStatsMore() {
     if (list.classList.contains('hidden')) { list.classList.remove('hidden'); btn.innerText = '▲ 閉じる'; } 
     else { list.classList.add('hidden'); btn.innerText = '▼ もっと見る'; }
 }
-
-function renderArtistManager(filterText = '') {
-    const container = document.getElementById('artist-manager-list');
-    container.innerHTML = '';
-    const filtered = db.artists.sort().filter(name => name.toLowerCase().includes(filterText.toLowerCase()));
-    filtered.forEach(artist => {
-        const div = document.createElement('div');
-        div.className = 'artist-admin-row';
-        div.innerHTML = `
-            <div class="artist-info"><span class="artist-dot"></span><span class="artist-name-text">${artist}</span></div>
-            <div class="artist-admin-btns">
-                <button onclick="editArtistName('${artist}')" class="btn-mini btn-edit">編集</button>
-                <button onclick="deleteArtist('${artist}')" class="btn-mini btn-delete">削除</button>
-            </div>`;
-        container.appendChild(div);
-    });
-}
-
-function filterArtists() { renderArtistManager(document.getElementById('artist-search-input').value); }
-function editArtistName(oldName) { const newName = prompt(`新しい名前`, oldName); if (newName && newName !== oldName) { db.artists[db.artists.indexOf(oldName)] = newName; db.lives.forEach(l => { if (l.artist === oldName) l.artist = newName; }); save(); renderArtistManager(); updateArtistSelect(); } }
-function deleteArtist(name) { if (confirm('削除しますか？')) { db.artists = db.artists.filter(a => a !== name); db.lives = db.lives.filter(l => l.artist !== name); save(); renderArtistManager(); updateArtistSelect(); } }
-function setDefaultDate() { const today = new Date().toISOString().split('T')[0]; document.getElementById('live-date').value = today; }
-window.addEventListener('DOMContentLoaded', setDefaultDate);
-function exportData() { const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db)); const dlAnchor = document.createElement('a'); dlAnchor.setAttribute("href", dataStr); dlAnchor.setAttribute("download", "livelog_backup.json"); dlAnchor.click(); }
-function importData(event) { const file = event.target.files[0]; const reader = new FileReader(); reader.onload = (e) => { db = JSON.parse(e.target.result); save(); location.reload(); }; reader.readAsText(file); }
     </script>
 </body>
 </html>
