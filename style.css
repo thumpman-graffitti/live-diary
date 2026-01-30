@@ -128,17 +128,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
 .stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* モーダル */
-.modal-overlay {
-    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-    display: flex; align-items: center; justify-content: center;
-    background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(4px); z-index: 2000;
-}
-.modal-content {
-    width: 90%; max-width: 400px; max-height: 80vh;
-    margin-bottom: 70px; background: #fff; border-radius: 20px;
-    position: relative; overflow-y: auto; display: flex; flex-direction: column;
-}
+
 .close-btn {
     position: sticky; top: 12px; margin-left: auto; margin-right: 12px;
     width: 32px; height: 32px; background: #f0f0f0; border-radius: 50%;
@@ -146,6 +136,40 @@ button:active { transform: translateY(2px); box-shadow: none; }
     justify-content: center; z-index: 100;
 }
 .modal-body { padding: 0 20px 20px 20px; }
+
+
+/* モーダルを「浮いているポップアップ」にするための設定 */
+.modal-overlay {
+    position: fixed;   /* 画面に対して固定して浮かせる */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); /* 背景を暗くしてポップアップを目立たせる */
+    z-index: 10000;    /* タブバーよりも手前に表示 */
+    display: flex;     /* 中身を中央に寄せる */
+    align-items: center;
+    justify-content: center;
+}
+
+/* ポップアップの白い箱の設定 */
+.modal-content {
+    background: #fff;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* 隠したい時に使う設定 */
+.hidden {
+    display: none !important;
+}
+
+
+
+
+
 
 /* 管理画面 */
 .artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
