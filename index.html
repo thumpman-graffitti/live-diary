@@ -90,6 +90,12 @@
         .rank-num { width: 35px; font-weight: bold; color: #8e8e93; }
 
         .hidden { display: none !important; }
+        
+        /* CSSファイルの設定を絶対優先させる呪文 */
+        .modal-overlay { display: flex !important; position: fixed !important; z-index: 100000 !important; }
+        .modal-content { margin: auto !important; position: relative !important; }
+        
+        
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
