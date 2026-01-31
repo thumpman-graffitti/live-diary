@@ -149,33 +149,35 @@
     </main>
 
 
-    <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
-        <div class="modal-content" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <h3 style="margin:0; font-size:1rem;">詳細・編集</h3>
-                <button onclick="closeModal()" class="close-btn">✕</button>
+
+
+<div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0; font-size:1rem;">詳細・編集</h3>
+            <button onclick="closeModal()" class="close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+            <div id="modal-view">
+                <h2 id="view-live-name" style="color:var(--primary-color); margin-top:0;"></h2>
+                <div id="live-details-info"></div>
+                <div id="setlist-display" style="background:#f9f9fb; padding:15px; border-radius:10px; margin-top:15px;"></div>
+                <button onclick="switchEditMode()" class="primary-btn" style="margin-top:20px;">編集する</button>
             </div>
-            <div class="modal-body">
-                <div id="modal-view">
-                    <h2 id="view-live-name" style="color:var(--primary-color); margin-top:0;"></h2>
-                    <div id="live-details-info"></div>
-                    <div id="setlist-display" style="background:#f9f9fb; padding:15px; border-radius:10px; margin-top:15px;"></div>
-                    <button onclick="switchEditMode()" class="primary-btn" style="margin-top:20px;">編集する</button>
-                </div>
-                <div id="modal-edit" class="hidden">
-                    <input type="date" id="edit-date">
-                    <input type="text" id="edit-name" placeholder="ライブ名">
-                    <input type="text" id="edit-venue" placeholder="会場名">
-                    <textarea id="edit-memo" rows="3" placeholder="メモ"></textarea>
-                    <textarea id="edit-setlist" rows="5" placeholder="セトリ（改行区切り）"></textarea>
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button onclick="saveEdit()" class="primary-btn" style="flex:2;">保存</button>
-                        <button onclick="deleteLive()" style="flex:1; background:white; color:red; border:1px solid red; border-radius:10px;">削除</button>
-                    </div>
+            <div id="modal-edit" class="hidden">
+                <input type="date" id="edit-date">
+                <input type="text" id="edit-name" placeholder="ライブ名">
+                <input type="text" id="edit-venue" placeholder="会場名">
+                <textarea id="edit-memo" rows="3" placeholder="メモ"></textarea>
+                <textarea id="edit-setlist" rows="5" placeholder="セトリ（改行区切り）"></textarea>
+                <div style="display:flex; gap:10px; margin-top:20px;">
+                    <button onclick="saveEdit()" class="primary-btn" style="flex:2;">保存</button>
+                    <button onclick="deleteLive()" style="flex:1; background:white; color:red; border:1px solid red; border-radius:10px;">削除</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
     <nav class="tab-bar">
