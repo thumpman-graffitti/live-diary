@@ -100,7 +100,7 @@
 
 <body>
 
-    <header>LIVE DIARY🍊2</header>
+    <header>LIVE DIARY🍊3</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -326,10 +326,22 @@
             document.getElementById('stats-ranking-list').innerHTML = html + '</div>';
         }
 
-        function renderArtistManager() {
-            const q = document.getElementById('artist-search-input').value.toLowerCase();
-            document.getElementById('artist-manager-list').innerHTML = db.artists.filter(a=>a.toLowerCase().includes(q)).sort().map(a => `<div style="display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid #eee;"><span>${a}</span><div><button onclick="editArtistName('${a}')" style="background:#e5e5ea; color:#007aff; border:none; padding:6px 12px; border-radius:8px; margin-right:5px;">編集</button><button onclick="deleteArtist('${a}')" style="background:none; color:red; border:1px solid red; border-radius:8px; padding:6px 12px;">削除</button></div></div>`).join('');
-        }
+function renderArtistManager() {
+    const q = document.getElementById('artist-search-input').value.toLowerCase();
+    // ここで class="artist-admin-row" という「箱」に入れてボタンを囲むように書き換えます
+    document.getElementById('artist-manager-list').innerHTML = db.artists
+        .filter(a => a.toLowerCase().includes(q))
+        .sort()
+        .map(a => `
+            <div class="artist-admin-row">
+                <span>${a}</span>
+                <div class="btn-group">
+                    <button onclick="editArtistName('${a}')" class="btn-mini btn-edit">編集</button>
+                    <button onclick="deleteArtist('${a}')" class="btn-mini btn-delete">削除</button>
+                </div>
+            </div>`).join('');
+}
+
         function filterArtists() { renderArtistManager(); }
         function editArtistName(old) { const n = prompt('新しい名前', old); if(n && n!==old){ db.artists[db.artists.indexOf(old)]=n; db.lives.forEach(l=>{if(l.artist===old)l.artist=n;}); save(); renderArtistManager(); } }
         function deleteArtist(n) { if(confirm('削除しますか？')){ db.artists=db.artists.filter(a=>a!==n); db.lives=db.lives.filter(l=>l.artist!==n); save(); renderArtistManager(); } }
