@@ -153,18 +153,26 @@ button:active { transform: translateY(2px); box-shadow: none; }
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             padding: 0;
         }
-
+        
         .modal-header {
-            padding: 15px 20px;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            position: sticky;
-            top: 0;
-            background: #fff;
-            z-index: 1;
-        }
+    padding: 15px 20px !important; /* 左右に20pxの余裕を持たせる */
+    border-bottom: 1px solid #eee !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    background: #fff !important;
+    width: 100% !important; /* 箱いっぱいに広げる */
+    box-sizing: border-box !important; /* 余白を計算に含める */
+}
+
+/* タイトル自体の余白もリセット */
+#modal-title {
+    margin: 0 !important;
+    padding: 0 !important;
+    flex: 1 !important; /* 可能な限り広がる */
+    text-align: left !important;
+}
+
 
         .modal-body { padding: 20px; }
 
