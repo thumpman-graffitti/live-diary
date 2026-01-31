@@ -175,25 +175,6 @@ button:active { transform: translateY(2px); box-shadow: none; }
         }
 
 
-/* 隠したい時に使う設定 */
-.hidden {
-    display: none !important;
-}
-
-
-/* 管理画面 */
-.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
-.btn-edit { background-color: #6e6e73 !important; }
-.btn-delete { background-color: #ff3b30 !important; }
-
-.accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
-
-/* タブの表示・非表示を制御する必須設定 */
-.tab-content { display: none; }
-.tab-content.active { display: block; }
-
-
 
 /* --- モーダル全体の背景（ポップアップを中央に浮かせる） --- */
 .modal-overlay {
@@ -247,6 +228,28 @@ button:active { transform: translateY(2px); box-shadow: none; }
     justify-content: center !important;
     cursor: pointer !important;
 }
+
+
+
+/* 隠したい時に使う設定 */
+.hidden {
+    display: none !important;
+}
+
+
+/* 管理画面 */
+.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
+.btn-edit { background-color: #6e6e73 !important; }
+.btn-delete { background-color: #ff3b30 !important; }
+
+.accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
+
+/* タブの表示・非表示を制御する必須設定 */
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+
 
 
 
