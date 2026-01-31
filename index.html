@@ -229,7 +229,17 @@
             const day = document.getElementById('live-date').value;
             if(!art || !day) return alert('入力不足');
             db.lives.push({ id:Date.now(), artist:art, date:day, name:document.getElementById('live-name').value, venue:document.getElementById('live-venue').value, pref:document.getElementById('live-pref').value, memo:document.getElementById('live-memo').value, setlist:[] });
-            save(); showPage('history');
+            save(); 
+                        // --- ここから入力エリアの初期化処理を追加 ---
+            document.getElementById('live-artist-select').value = '';
+            document.getElementById('live-name').value = '';
+            document.getElementById('live-venue').value = '';
+            document.getElementById('live-pref').value = '';
+            document.getElementById('live-memo').value = '';
+            // 日付は今日の日付に戻す（お好みで）
+            document.getElementById('live-date').value = new Date().toISOString().split('T')[0];
+            
+            showPage('history');
         }
 
 // --- ここから差し替え ---
