@@ -261,33 +261,47 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 /* 管理画面 */
 /* アーティスト管理の行の設定 */
-.artist-admin-row { 
-    display: flex !important; 
-    justify-content: space-between !important; 
-    align-items: center !important; 
-    padding: 12px 0 !important; 
-    border-bottom: 1px solid #eee !important; 
-}
-
-/* ボタンを包む要素を横並び（フレックス）に強制 */
-.artist-admin-row div {
+/* ボタンを横に並べるための設定 */
+.artist-admin-row {
     display: flex !important;
-    flex-direction: row !important; /* 横に並べる */
-    gap: 8px !important; /* ボタン同士の隙間 */
+    justify-content: space-between !important;
+    align-items: center !important;
+    padding: 12px 0 !important;
+    border-bottom: 1px solid #eee !important;
 }
 
-/* ついでにボタン自体のサイズを微調整 */
-.btn-mini { 
-    width: auto !important; /* 文字数に合わせる */
-    min-width: 60px !important;
-    height: 34px !important; 
-    font-size: 0.8rem !important; 
-    padding: 0 10px !important;
+.btn-group {
+    display: flex !important;
+    gap: 8px !important; /* ボタンの隙間 */
 }
 
+/* 編集・削除ボタンの共通スタイル */
+.btn-mini {
+    width: 65px !important;
+    height: 32px !important;
+    font-size: 0.8rem !important;
+    padding: 0 !important;
+    border-radius: 6px !important;
+    box-shadow: none !important; /* 管理画面はスッキリさせる */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
 
-.btn-edit { background-color: #6e6e73 !important; }
+.btn-edit { background-color: #8e8e93 !important; }
 .btn-delete { background-color: #ff3b30 !important; }
+
+/* モーダルのバツボタン（目立たせる） */
+.close-btn {
+    background: #444 !important; /* 背景を思い切って暗く */
+    color: #fff !important; /* 文字を白に */
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 1.2rem !important;
+    opacity: 1 !important;
+    z-index: 10001 !important;
+}
+
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
