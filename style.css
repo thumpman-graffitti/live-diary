@@ -176,13 +176,25 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
         .modal-body { padding: 20px; }
 
-        .close-btn {
-            background: #f0f0f2;
-            border: none;
-            border-radius: 50%;
-            width: 30px; height: 30px;
-            display: flex; align-items: center; justify-content: center;
-        }
+
+.close-btn {
+    background: #e5e5ea !important; /* 濃いめのグレーに変更 */
+    color: #333 !important; /* 文字色をハッキリ */
+    border: none !important;
+    border-radius: 50% !important;
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    font-size: 1.2rem !important;
+    font-weight: bold !important;
+}
+
+.close-btn:active {
+    background: #d1d1d6 !important; /* 押した時にさらに濃く */
+}
 
 
 
