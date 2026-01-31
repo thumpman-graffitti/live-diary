@@ -149,7 +149,7 @@
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
         <div class="modal-content" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 style="margin:0; font-size:1rem;">詳細・編集</h3>
+                <h3 id="modal-title" style="margin:0; font-size:1rem;">ライブ詳細</h3>
                 <button onclick="closeModal()" class="close-btn">✕</button>
             </div>
             <div class="modal-body">
@@ -173,6 +173,7 @@
             </div>
         </div>
     </div>
+
 
     <nav class="tab-bar">
         <button onclick="showPage('home')" id="tab-home" class="active"><span class="icon">♢</span><span>ホーム</span></button>
