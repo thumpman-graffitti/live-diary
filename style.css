@@ -248,8 +248,32 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 
 /* 管理画面 */
-.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
+/* アーティスト管理の行の設定 */
+.artist-admin-row { 
+    display: flex !important; 
+    justify-content: space-between !important; 
+    align-items: center !important; 
+    padding: 12px 0 !important; 
+    border-bottom: 1px solid #eee !important; 
+}
+
+/* ボタンを包む要素を横並び（フレックス）に強制 */
+.artist-admin-row div {
+    display: flex !important;
+    flex-direction: row !important; /* 横に並べる */
+    gap: 8px !important; /* ボタン同士の隙間 */
+}
+
+/* ついでにボタン自体のサイズを微調整 */
+.btn-mini { 
+    width: auto !important; /* 文字数に合わせる */
+    min-width: 60px !important;
+    height: 34px !important; 
+    font-size: 0.8rem !important; 
+    padding: 0 10px !important;
+}
+
+
 .btn-edit { background-color: #6e6e73 !important; }
 .btn-delete { background-color: #ff3b30 !important; }
 
