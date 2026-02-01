@@ -100,7 +100,7 @@
 
 <body>
 
-    <header>LIVE DIARY2🍊</header>
+    <header>LIVE DIARY3🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -127,7 +127,11 @@
         </div>
 
         <div id="page-history" class="tab-content"><div id="history-list"></div></div>
-               <div id="page-stats" class="tab-content">
+        
+        
+        
+        
+                <div id="page-stats" class="tab-content">
             <div class="card">
                 <div style="max-width: 200px; margin: 0 auto; position: relative;">
                     <canvas id="artistChart"></canvas>
@@ -138,29 +142,16 @@
                 </div>
             </div>
 
-            <div class="card">
-                <span class="section-title">🗺 全国遠征マップ</span>
-                <div id="japan-map" class="japan-map-container"></div>
-                <div style="text-align: center; font-size: 0.8rem; color: #8e8e93; margin-top: 10px;">
-                    制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color);">0</span> / 47 都道府県
+            <div class="card" style="padding: 10px;">
+                <span class="section-title" style="margin-left: 8px;">🗺 全国遠征マップ</span>
+                <div id="japan-map" style="width: 100%; height: auto; margin: 10px 0;"></div>
+                <div style="text-align: center; font-size: 0.9rem; font-weight: bold; color: #333;">
+                    制覇: <span id="visited-pref-count" style="color:var(--primary-color); font-size: 1.2rem;">0</span> / 47 都道府県
                 </div>
             </div>
 
             <div id="stats-ranking-list"></div>
-        </div>
-
-            <div class="card">
-                <span class="section-title">🗺 全国遠征マップ</span>
-                <div id="japan-map" class="japan-map-container">
-                    </div>
-                <div style="text-align: center; font-size: 0.8rem; color: #8e8e93; margin-top: 10px;">
-                    制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color);">0</span> / 47 都道府県
-                </div>
-            </div>
-            <div id="stats-ranking-list"></div>
-        </div>
-
-            <div id="stats-ranking-list"></div>
+   
         </div>
         <div id="page-settings" class="tab-content">
             <div class="card">
@@ -401,9 +392,9 @@
                         <text x="${d.x+9}" y="${d.y+13}" font-size="6" text-anchor="middle" fill="${isVisited ? '#fff' : '#666'}" style="pointer-events:none;">${d.p.substr(0,2)}</text>
                     </g>`;
             });
-            svgHtml += `</svg>`;
-            container.innerHTML = svgHtml;
+                        container.innerHTML = svgHtml + `</svg>`;
         }
+
 
 
 function renderArtistManager() {
