@@ -371,77 +371,80 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // 円の直径を22px、グリッド間隔(s)も22pxにすることで隙間を物理的にゼロにする
-            const r = 11;
-            const s = 22; 
-            const ox = 60, oy = 40;
+            // 1タイルのサイズ（正方形）
+            const s = 24; 
+            // 全体の開始位置オフセット
+            const ox = 20, oy = 20;
 
+            // マップデータ：x, y はグリッド単位(s)の倍数で指定し、隙間をなくす
             const mapData = [
-                // 北海道 (最上段)
-                {p:'北海道', x:ox+s*8, y:oy+s*0, r:22, big:true},
+                // 北海道（特大タイルで存在感を出す）
+                {p:'北海道', x:ox+s*10, y:oy+s*0, w:s*2, h:s*2, big:true},
                 
-                // 東北 (ご指示のT字型：隙間なし連結)
-                {p:'青森県', x:ox+s*8, y:oy+s*2},
-                {p:'秋田県', x:ox+s*7, y:oy+s*3}, {p:'岩手県', x:ox+s*8, y:oy+s*3},
-                {p:'山形県', x:ox+s*7, y:oy+s*4}, {p:'宮城県', x:ox+s*8, y:oy+s*4},
-                {p:'福島県', x:ox+s*8, y:oy+s*5},
+                // 東北（日本海側と太平洋側の2列で構成し、湾曲を表現）
+                {p:'青森県', x:ox+s*10, y:oy+s*2}, {p:'秋田県', x:ox+s*9, y:oy+s*3}, {p:'岩手県', x:ox+s*10, y:oy+s*3},
+                {p:'山形県', x:ox+s*9, y:oy+s*4}, {p:'宮城県', x:ox+s*10, y:oy+s*4}, {p:'福島県', x:ox+s*9, y:oy+s*5},
                 
-                // 北陸・中部・関東 (ブロック状に連結)
-                {p:'新潟県', x:ox+s*6, y:oy+s*4}, {p:'富山県', x:ox+s*5, y:oy+s*4}, {p:'石川県', x:ox+s*4, y:oy+s*4},
-                {p:'群馬県', x:ox+s*7, y:oy+s*5}, {p:'栃木県', x:ox+s*8, y:oy+s*6}, {p:'茨城県', x:ox+s*9, y:oy+s*6},
-                {p:'福井県', x:ox+s*4, y:oy+s*5}, {p:'岐阜県', x:ox+s*5, y:oy+s*5}, {p:'長野県', x:ox+s*6, y:oy+s*5},
-                {p:'埼玉県', x:ox+s*7, y:oy+s*6}, {p:'東京都', x:ox+s*8, y:oy+s*7}, {p:'千葉県', x:ox+s*9, y:oy+s*7},
-                {p:'山梨県', x:ox+s*7, y:oy+s*7}, {p:'愛知県', x:ox+s*6, y:oy+s*6}, {p:'静岡県', x:ox+s*7, y:oy+s*8}, {p:'神奈川県', x:ox+s*8, y:oy+s*8},
+                // 関東（東京を中心に密集させる）
+                {p:'茨城県', x:ox+s*11, y:oy+s*5}, {p:'栃木県', x:ox+s*10, y:oy+s*5}, {p:'群馬県', x:ox+s*9, y:oy+s*6},
+                {p:'埼玉県', x:ox+s*10, y:oy+s*6}, {p:'千葉県', x:ox+s*11, y:oy+s*6},
+                {p:'東京都', x:ox+s*10, y:oy+s*7}, {p:'神奈川県', x:ox+s*10, y:oy+s*8},
 
-                // 近畿 (大阪・奈良・和歌山を垂直に隙間なく)
-                {p:'滋賀県', x:ox+s*5, y:oy+s*6}, {p:'三重県', x:ox+s*6, y:oy+s*7},
-                {p:'京都府', x:ox+s*4, y:oy+s*6}, {p:'兵庫県', x:ox+s*3, y:oy+s*6},
-                {p:'大阪府', x:ox+s*4, y:oy+s*7}, {p:'奈良県', x:ox+s*5, y:oy+s*7},
-                {p:'和歌山県', x:ox+s*4, y:oy+s*8},
+                // 中部・北陸（本州の曲がり角を表現）
+                {p:'新潟県', x:ox+s*8, y:oy+s*4}, {p:'富山県', x:ox+s*7, y:oy+s*4}, {p:'石川県', x:ox+s*6, y:oy+s*4},
+                {p:'福井県', x:ox+s*5, y:oy+s*5}, {p:'長野県', x:ox+s*8, y:oy+s*5}, {p:'岐阜県', x:ox+s*6, y:oy+s*5},
+                {p:'山梨県', x:ox+s*9, y:oy+s*7}, {p:'愛知県', x:ox+s*7, y:oy+s*6}, {p:'静岡県', x:ox+s*8, y:oy+s*7},
 
-                // 中国 (近畿の左に密着)
-                {p:'鳥取県', x:ox+s*2, y:oy+s*6}, {p:'島根県', x:ox+s*1, y:oy+s*6},
-                {p:'岡山県', x:ox+s*2, y:oy+s*7}, {p:'広島県', x:ox+s*1, y:oy+s*7},
-                {p:'山口県', x:ox+s*0, y:oy+s*7},
+                // 近畿（内陸と半島部を整理して配置）
+                {p:'滋賀県', x:ox+s*6, y:oy+s*6}, {p:'京都府', x:ox+s*5, y:oy+s*6}, {p:'兵庫県', x:ox+s*4, y:oy+s*6},
+                {p:'大阪府', x:ox+s*5, y:oy+s*7}, {p:'奈良県', x:ox+s*6, y:oy+s*7}, {p:'三重県', x:ox+s*7, y:oy+s*7},
+                {p:'和歌山県', x:ox+s*5, y:oy+s*8},
 
-                // 四国 (2x2の連結ブロック)
-                {p:'香川県', x:ox+s*2, y:oy+s*8}, {p:'愛媛県', x:ox+s*1, y:oy+s*8},
-                {p:'徳島県', x:ox+s*2, y:oy+s*9}, {p:'高知県', x:ox+s*1, y:oy+s*9},
+                // 中国（横一列＋山口で構成）
+                {p:'鳥取県', x:ox+s*3, y:oy+s*6}, {p:'島根県', x:ox+s*2, y:oy+s*6},
+                {p:'岡山県', x:ox+s*3, y:oy+s*7}, {p:'広島県', x:ox+s*2, y:oy+s*7}, {p:'山口県', x:ox+s*1, y:oy+s*7},
 
-                // 九州 (ご指示の逆L字型：完全に連結)
-                {p:'長崎県', x:ox-s*2, y:oy+s*8}, {p:'佐賀県', x:ox-s*1, y:oy+s*8}, {p:'福岡県', x:ox+s*0, y:oy+s*8},
-                {p:'熊本県', x:ox+s*0, y:oy+s*9}, {p:'大分県', x:ox+s*1, y:oy+s*10}, // 大分を連結位置へ
-                {p:'宮崎県', x:ox+s*0, y:oy+s*10},
-                {p:'鹿児島県', x:ox+s*0, y:oy+s*11},
-                
-                // 沖縄 (離して配置)
-                {p:'沖縄県', x:ox-s*2, y:oy+s*11}
+                // 四国（コンパクトな長方形にまとめる）
+                {p:'香川県', x:ox+s*3, y:oy+s*9}, {p:'徳島県', x:ox+s*4, y:oy+s*9},
+                {p:'愛媛県', x:ox+s*1, y:oy+s*9}, {p:'高知県', x:ox+s*2, y:oy+s*9},
+
+                // 九州・沖縄（福岡を起点に南北へ展開）
+                {p:'福岡県', x:ox+s*0, y:oy+s*8}, {p:'佐賀県', x:ox-s*1, y:oy+s*8}, {p:'長崎県', x:ox-s*2, y:oy+s*8},
+                {p:'大分県', x:ox+s*0, y:oy+s*9}, {p:'熊本県', x:ox-s*1, y:oy+s*9},
+                {p:'宮崎県', x:ox+s*0, y:oy+s*10}, {p:'鹿児島県', x:ox-s*1, y:oy+s*10},
+                {p:'沖縄県', x:ox-s*2, y:oy+s*12}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 380 350" width="100%" height="auto">
+            // SVGのビューボックスを定義
+            let svgHtml = `<svg viewBox="0 -10 360 360" width="100%" height="auto">
                 <defs>
-                    <radialGradient id="gradVisited" cx="40%" cy="40%" r="60%">
-                        <stop offset="0%" stop-color="#34c759" />
-                        <stop offset="100%" stop-color="#007130" />
-                    </radialGradient>
+                    <linearGradient id="gradVisited" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#34c759" /> <stop offset="100%" stop-color="#007130" /> </linearGradient>
                 </defs>`;
             
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
+                // 訪問済みはグラデーション、未訪問は薄いシステムグレー
                 const color = isVisited ? 'url(#gradVisited)' : '#f2f2f7';
                 const textColor = isVisited ? '#ffffff' : '#8e8e93';
-                const currentR = d.r || r;
+                // タイルの幅と高さ（指定がなければ基本サイズs）
+                const w = d.w || s;
+                const h = d.h || s;
+                // 文字サイズ調整
                 const fontSize = d.big ? 14 : 9;
+                // 角丸の半径（タイルの大きさに合わせる）
+                const radius = d.big ? 8 : 4;
                 
                 svgHtml += `
                     <g>
-                        <circle cx="${d.x}" cy="${d.y}" r="${currentR}" fill="${color}" stroke="#fff" stroke-width="0.3" />
-                        <text x="${d.x}" y="${d.y + (fontSize/2.8)}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif;">${d.p.charAt(0)}</text>
+                        <rect x="${d.x}" y="${d.y}" width="${w}" height="${h}" rx="${radius}" ry="${radius}" fill="${color}" stroke="#ffffff" stroke-width="1" />
+                        <text x="${d.x + w/2}" y="${d.y + h/2 + fontSize/2.5}" font-size="${fontSize}" font-weight="800" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, BlinkMacSystemFont, sans-serif;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
+
 
 
 function renderArtistManager() {
