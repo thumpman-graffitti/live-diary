@@ -163,26 +163,40 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
 .stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
+
+/* --- 修正後：閉じるボタン（日付に被らないように配置） --- */
 .close-btn {
-    position: sticky; 
-    top: 12px; 
-    margin-left: auto; 
-    margin-right: 12px;
-    width: 32px; height: 32px; 
-    background: #f0f0f0; 
-    border-radius: 50%;
-    border: none; 
-    font-size: 18px; 
-    display: flex; 
+    position: absolute !important; /* 箱の右上を基準にする */
+    top: 12px;
+    right: 12px;
+    width: 30px !important;
+    height: 30px !important;
+    background: var(--primary-color) !important; /* 画像の通り緑色にするならこれ */
+    color: #fff !important;
+    border-radius: 50% !important;
+    border: none !important;
+    font-size: 1.2rem !important;
+    display: flex !important;
     align-items: center;
-    justify-content: center; 
-    z-index: 101; /* bodyより上に */
+    justify-content: center;
+    z-index: 10;
+    cursor: pointer;
 }
 
-.modal-body { padding: 0 20px 20px 20px;
-   /* --- 追加：スクロール設定 --- */
-    overflow-y: auto; /* 縦方向にスクロールさせる */
-    -webkit-overflow-scrolling: touch; /* iPhoneでのスクロールを滑らかにする */
+/* --- 修正後：モーダルの中身（タイトル部分の余白を確保） --- */
+.modal-body {
+    padding: 45px 20px 20px 20px !important; /* 上の余白(45px)を増やして「ライブ詳細」やボタンと被らないようにする */
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* 「ライブ詳細」というタイトルの位置を調整 */
+#modal-title {
+    display: block;
+    font-weight: bold;
+    font-size: 1.1rem;
+    padding: 15px 20px 0 20px; /* 上と左に余裕を持たせる */
+    color: var(--text-main);
 }
 
 
