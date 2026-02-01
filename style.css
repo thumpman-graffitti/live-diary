@@ -87,7 +87,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
 /* タブバー */
 /* タブバー */
 .tab-bar {
-    position: fixed; bottom: 0; width: 100%; height: 45px;
+    position: fixed; bottom: 0; width: 100%; height: 55px;
     background-color: #007130 !important;
     display: flex !important; z-index: 1000;
     padding-bottom: env(safe-area-inset-bottom);
@@ -99,7 +99,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
     margin: 0 !important; display: flex !important;
     flex-direction: column !important; align-items: center !important;
     justify-content: center !important; color: #ffffff !important;
-    font-size: 0.7rem !important; width: 25% !important;
+    font-size: 0.65rem !important; width: 25% !important;
     position: relative; /* 疑似要素の基準 */
 }
 
