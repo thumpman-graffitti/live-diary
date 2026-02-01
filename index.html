@@ -205,10 +205,17 @@
         <button onclick="showPage('settings')" id="tab-settings"><span class="icon">⚙</span><span>管理</span></button>
     </nav>
 
-
-
-
     <script>
+    const prefCodes = {
+    "北海道":"HKD","青森県":"AOM","岩手県":"IWT","宮城県":"MYG","秋田県":"AKT","山形県":"YGT","福島県":"FKS",
+    "茨城県":"IBR","栃木県":"TCG","群馬県":"GMA","埼玉県":"STM","千葉県":"CHB","東京都":"TKY","神奈川県":"KNG",
+    "新潟県":"NGT","富山県":"TYM","石川県":"ISK","福井県":"FKI","山梨県":"YNS","長野県":"NGN","岐阜県":"GIF",
+    "静岡県":"SZK","愛知県":"AIC","三重県":"MIE","滋賀県":"SHG","京都府":"KYT","大阪府":"OSK","兵庫県":"HYG",
+    "奈良県":"NRA","和歌山県":"WKY","鳥取県":"TTR","島根県":"SMN","岡山県":"OKY","広島県":"HRS","山口県":"YMG",
+    "徳島県":"TKS","香川県":"KGW","愛媛県":"EHM","高知県":"KCH","福岡県":"FUK","佐賀県":"SAG","長崎県":"NGS",
+    "熊本県":"KMT","大分県":"OIT","宮崎県":"MZA","鹿児島県":"KGS","沖縄県":"OKN"
+};
+
         let db = JSON.parse(localStorage.getItem('live_app_db') || '{"artists":[], "lives":[]}');
         let currentId = null; let chart = null;
         const refinedColors = ['#007130', '#34c759', '#30b0c7', '#007aff', '#5856d6', '#ff3b30', '#ff9500'];
@@ -438,32 +445,26 @@ function renderStats() {
                         <stop offset="100%" stop-color="#007130" />
                     </linearGradient>
                 </defs>`;
-            mapData.forEach(d => {
-    const isVisited = visited.includes(d.p);
-    const color = isVisited ? 'url(#gradVisited)' : '#f2f2f7';
-    const textColor = isVisited ? '#ffffff' : '#8e8e93';
-    const w = d.w || s;
-    const h = d.h || s;
-    
-    // --- 修正ポイント：表示文字のロジック ---
-    let displayChar = d.p.charAt(0); // 基本は1文字目
-    let fontSize = d.big ? 13 : 9;
+                    mapData.forEach(d => {
+        const isVisited = visited.includes(d.p);
+        const color = isVisited ? 'url(#gradVisited)' : '#f2f2f7';
+        const textColor = isVisited ? '#ffffff' : '#8e8e93';
+        const w = d.w || s;
+        const h = d.h || s;
 
-    // 「宮」「福」「山」「長」など、被りやすい県を2文字にする
-    const doubleChars = ["宮城県", "宮崎県", "福島県", "福井県", "福岡県", "山形県", "山梨県", "山口県", "長野県", "長崎県"];
-    
-    if (doubleChars.includes(d.p)) {
-        displayChar = d.p.substring(0, 2); // 「宮城」「宮崎」のように2文字取得
-        fontSize = 7.5; // 2文字入るように少し小さくする
-    }
-    // ------------------------------------
-    
-    svgHtml += `
-        <g>
-            <rect x="${d.x}" y="${d.y}" width="${w}" height="${h}" rx="2" fill="${color}" stroke="#ffffff" stroke-width="0.5" />
-            <text x="${d.x + w/2}" y="${d.y + h/2 + 3}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif;">${displayChar}</text>
-        </g>`;
-});
+        // --- ここから書き換え ---
+        // 3レターコードを取得（辞書になければ漢字1文字）
+        const displayCode = prefCodes[d.p] || d.p.charAt(0);
+        // 3文字が収まるようにサイズを調整（通常マスは7.5px、北海道などの大マスは11px）
+        const fontSize = d.big ? 11 : 7.5;
+        
+        svgHtml += `
+            <g>
+                <rect x="${d.x}" y="${d.y}" width="${w}" height="${h}" rx="2" fill="${color}" stroke="#ffffff" stroke-width="0.5" />
+                <text x="${d.x + w/2}" y="${d.y + h/2 + 3}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif; letter-spacing: -0.2px;">${displayCode}</text>
+            </g>`;
+        // --- ここまで ---
+    });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
