@@ -100,7 +100,7 @@
 
 <body>
 
-    <header>LIVE DIARY🍊</header>
+    <header>LIVE DIARY2🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -127,7 +127,7 @@
         </div>
 
         <div id="page-history" class="tab-content"><div id="history-list"></div></div>
-        <div id="page-stats" class="tab-content">
+               <div id="page-stats" class="tab-content">
             <div class="card">
                 <div style="max-width: 200px; margin: 0 auto; position: relative;">
                     <canvas id="artistChart"></canvas>
@@ -137,17 +137,17 @@
                     </div>
                 </div>
             </div>
-            
-                    <div id="page-stats" class="tab-content">
+
             <div class="card">
-                <div style="max-width: 200px; margin: 0 auto; position: relative;">
-                    <canvas id="artistChart"></canvas>
-                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center;">
-                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: bold;">Total</div>
-                        <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
-                    </div>
+                <span class="section-title">🗺 全国遠征マップ</span>
+                <div id="japan-map" class="japan-map-container"></div>
+                <div style="text-align: center; font-size: 0.8rem; color: #8e8e93; margin-top: 10px;">
+                    制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color);">0</span> / 47 都道府県
                 </div>
             </div>
+
+            <div id="stats-ranking-list"></div>
+        </div>
 
             <div class="card">
                 <span class="section-title">🗺 全国遠征マップ</span>
@@ -332,12 +332,20 @@
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); document.getElementById('modal-view').classList.remove('hidden'); document.getElementById('modal-edit').classList.add('hidden'); }
 
         function renderStats() {
-            const countMap = {}; db.lives.forEach(l => countMap[l.artist] = (countMap[l.artist] || 0) + 1);
+            const countMap = {}; 
+            db.lives.forEach(l => countMap[l.artist] = (countMap[l.artist] || 0) + 1);
             const aSorted = Object.entries(countMap).sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'));
+            
             document.getElementById('total-count-display').innerText = db.lives.length;
+            
             if(chart) chart.destroy();
-            chart = new Chart(document.getElementById('artistChart'), { type: 'doughnut', data: { labels: aSorted.map(s=>s[0]), datasets: [{ data: aSorted.map(s=>s[1]), backgroundColor: refinedColors, borderWidth: 0 }] }, options: { cutout: '80%', plugins: { legend: { display: false } } } });
+            chart = new Chart(document.getElementById('artistChart'), { 
+                type: 'doughnut', 
+                data: { labels: aSorted.map(s=>s[0]), datasets: [{ data: aSorted.map(s=>s[1]), backgroundColor: refinedColors, borderWidth: 0 }] }, 
+                options: { cutout: '80%', plugins: { legend: { display: false } } } 
+            });
 
+            // ランキングHTMLの組み立て
             let html = '<div class="card"><span class="section-title">🏆 アーティスト別公演回数</span>';
             let lastA = -1;
             aSorted.forEach((s, i) => {
@@ -347,8 +355,10 @@
             });
             html += '</div>';
 
-            const pMap = {}; db.lives.forEach(l => { if(l.pref) pMap[l.pref] = (pMap[l.pref] || 0) + 1; });
+            const pMap = {}; 
+            db.lives.forEach(l => { if(l.pref) pMap[l.pref] = (pMap[l.pref] || 0) + 1; });
             const pSorted = Object.entries(pMap).sort((a,b) => b[1] - a[1] || prefOrder.indexOf(a[0]) - prefOrder.indexOf(b[0]));
+            
             html += '<div class="card"><span class="section-title">📍 都道府県別公演回数</span>';
             let lastP = -1;
             pSorted.forEach((p, i) => {
@@ -356,26 +366,45 @@
                 html += `<div class="stats-list-item"><div class="rank-num">${showRank}</div><div style="flex:1;">${p[0]}</div><div style="font-weight:bold; color:var(--primary-color);">${p[1]}回</div></div>`;
                 lastP = p[1];
             });
-            document.getElementById('stats-ranking-list').innerHTML = html + '</div>';
-// renderStats関数内の最後の方に追加
-function updateMap(visitedPrefs) {
-    const mapContainer = document.getElementById('japan-map');
-    // 簡易的な日本地図SVG（簡略化した矩形レイアウト、または詳細なパスデータ）
-    // 今回は確実に動くよう、各都道府県のIDを持ったSVGパスを読み込む処理を想定
-    
-    document.querySelectorAll('.pref-path').forEach(path => {
-        const prefName = path.getAttribute('data-name');
-        if (visitedPrefs.includes(prefName)) {
-            path.classList.add('pref-visited');
-        } else {
-            path.classList.remove('pref-visited');
-        }
-    });
-    
-    document.getElementById('visited-pref-count').innerText = visitedPrefs.length;
-}
+            html += '</div>';
+            
+            document.getElementById('stats-ranking-list').innerHTML = html;
 
+            // 地図の描画を実行
+            const visited = [...new Set(db.lives.map(l => l.pref).filter(p => p && p !== '海外'))];
+            renderJapanMap(visited);
+            document.getElementById('visited-pref-count').innerText = visited.length;
         }
+
+        // 地図を生成する専用関数
+        function renderJapanMap(visited) {
+            const container = document.getElementById('japan-map');
+            if (!container) return;
+
+            const mapData = [
+                {p:'北海道', x:320, y:0}, {p:'青森県', x:320, y:60}, {p:'岩手県', x:320, y:80}, {p:'宮城県', x:320, y:100}, {p:'秋田県', x:300, y:80}, {p:'山形県', x:300, y:100}, {p:'福島県', x:320, y:120},
+                {p:'茨城県', x:340, y:150}, {p:'栃木県', x:320, y:150}, {p:'群馬県', x:300, y:150}, {p:'埼玉県', x:300, y:170}, {p:'千葉県', x:340, y:170}, {p:'東京都', x:320, y:170}, {p:'神奈川県', x:320, y:190},
+                {p:'新潟県', x:280, y:110}, {p:'富山県', x:260, y:110}, {p:'石川県', x:240, y:100}, {p:'福井県', x:240, y:130}, {p:'山梨県', x:280, y:170}, {p:'長野県', x:280, y:140}, {p:'岐阜県', x:260, y:150}, {p:'静岡県', x:280, y:190}, {p:'愛知県', x:260, y:170},
+                {p:'三重県', x:240, y:180}, {p:'滋賀県', x:240, y:150}, {p:'京都府', x:220, y:140}, {p:'大阪府', x:220, y:160}, {p:'兵庫県', x:200, y:140}, {p:'奈良県', x:220, y:180}, {p:'和歌山県', x:220, y:200},
+                {p:'鳥取県', x:180, y:140}, {p:'島根県', x:160, y:140}, {p:'岡山県', x:180, y:160}, {p:'広島県', x:160, y:160}, {p:'山口県', x:140, y:160},
+                {p:'徳島県', x:180, y:210}, {p:'香川県', x:180, y:190}, {p:'愛媛県', x:160, y:190}, {p:'高知県', x:160, y:210},
+                {p:'福岡県', x:100, y:170}, {p:'佐賀県', x:80, y:170}, {p:'長崎県', x:60, y:170}, {p:'熊本県', x:80, y:190}, {p:'大分県', x:100, y:190}, {p:'宮崎県', x:100, y:210}, {p:'鹿児島県', x:80, y:210}, {p:'沖縄県', x:0, y:210}
+            ];
+
+            let svgHtml = `<svg viewBox="0 -5 380 230" width="100%" height="auto">`;
+            mapData.forEach(d => {
+                const isVisited = visited.includes(d.p);
+                const color = isVisited ? 'var(--primary-color)' : '#e0e0e0';
+                svgHtml += `
+                    <g>
+                        <rect x="${d.x}" y="${d.y}" width="18" height="18" fill="${color}" rx="3" />
+                        <text x="${d.x+9}" y="${d.y+13}" font-size="6" text-anchor="middle" fill="${isVisited ? '#fff' : '#666'}" style="pointer-events:none;">${d.p.substr(0,2)}</text>
+                    </g>`;
+            });
+            svgHtml += `</svg>`;
+            container.innerHTML = svgHtml;
+        }
+
 
 function renderArtistManager() {
     const q = document.getElementById('artist-search-input').value.toLowerCase();
