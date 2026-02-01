@@ -142,16 +142,14 @@
                 </div>
             </div>
 
-            <div class="card" style="padding: 10px;">
-                <span class="section-title" style="margin-left: 8px;">🗺 全国遠征マップ</span>
-                <div id="japan-map" style="width: 100%; height: auto; margin: 10px 0;"></div>
-                <div style="text-align: center; font-size: 0.9rem; font-weight: bold; color: #333;">
-                    制覇: <span id="visited-pref-count" style="color:var(--primary-color); font-size: 1.2rem;">0</span> / 47 都道府県
+            <div class="card" style="padding: 20px; border: 1px solid #f2f2f7;">
+                <span class="section-title">🗺 全国遠征マップ</span>
+                <div id="japan-map" style="margin: 15px 0;"></div>
+                <div style="text-align: center; font-size: 0.85rem; color: #8e8e93; margin-top: 10px; background: #f9f9fb; padding: 8px; border-radius: 8px;">
+                    制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color); font-size: 1.1rem;">0</span> <span style="font-size: 0.7rem;">/ 47 都道府県</span>
                 </div>
             </div>
 
-            <div id="stats-ranking-list"></div>
-   
         </div>
         <div id="page-settings" class="tab-content">
             <div class="card">
@@ -372,29 +370,36 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
+            // 都道府県の位置データ
             const mapData = [
-                {p:'北海道', x:320, y:0}, {p:'青森県', x:320, y:60}, {p:'岩手県', x:320, y:80}, {p:'宮城県', x:320, y:100}, {p:'秋田県', x:300, y:80}, {p:'山形県', x:300, y:100}, {p:'福島県', x:320, y:120},
-                {p:'茨城県', x:340, y:150}, {p:'栃木県', x:320, y:150}, {p:'群馬県', x:300, y:150}, {p:'埼玉県', x:300, y:170}, {p:'千葉県', x:340, y:170}, {p:'東京都', x:320, y:170}, {p:'神奈川県', x:320, y:190},
-                {p:'新潟県', x:280, y:110}, {p:'富山県', x:260, y:110}, {p:'石川県', x:240, y:100}, {p:'福井県', x:240, y:130}, {p:'山梨県', x:280, y:170}, {p:'長野県', x:280, y:140}, {p:'岐阜県', x:260, y:150}, {p:'静岡県', x:280, y:190}, {p:'愛知県', x:260, y:170},
-                {p:'三重県', x:240, y:180}, {p:'滋賀県', x:240, y:150}, {p:'京都府', x:220, y:140}, {p:'大阪府', x:220, y:160}, {p:'兵庫県', x:200, y:140}, {p:'奈良県', x:220, y:180}, {p:'和歌山県', x:220, y:200},
-                {p:'鳥取県', x:180, y:140}, {p:'島根県', x:160, y:140}, {p:'岡山県', x:180, y:160}, {p:'広島県', x:160, y:160}, {p:'山口県', x:140, y:160},
-                {p:'徳島県', x:180, y:210}, {p:'香川県', x:180, y:190}, {p:'愛媛県', x:160, y:190}, {p:'高知県', x:160, y:210},
-                {p:'福岡県', x:100, y:170}, {p:'佐賀県', x:80, y:170}, {p:'長崎県', x:60, y:170}, {p:'熊本県', x:80, y:190}, {p:'大分県', x:100, y:190}, {p:'宮崎県', x:100, y:210}, {p:'鹿児島県', x:80, y:210}, {p:'沖縄県', x:0, y:210}
+                {p:'北海道', x:310, y:0}, {p:'青森県', x:310, y:55}, {p:'岩手県', x:310, y:75}, {p:'宮城県', x:310, y:95}, {p:'秋田県', x:290, y:75}, {p:'山形県', x:290, y:95}, {p:'福島県', x:310, y:115},
+                {p:'茨城県', x:330, y:140}, {p:'栃木県', x:310, y:140}, {p:'群馬県', x:290, y:140}, {p:'埼玉県', x:290, y:160}, {p:'千葉県', x:330, y:160}, {p:'東京都', x:310, y:160}, {p:'神奈川県', x:310, y:180},
+                {p:'新潟県', x:270, y:110}, {p:'富山県', x:250, y:110}, {p:'石川県', x:230, y:100}, {p:'福井県', x:230, y:130}, {p:'山梨県', x:270, y:160}, {p:'長野県', x:270, y:135}, {p:'岐阜県', x:250, y:145}, {p:'静岡県', x:270, y:180}, {p:'愛知県', x:250, y:165},
+                {p:'三重県', x:230, y:180}, {p:'滋賀県', x:230, y:155}, {p:'京都府', x:210, y:145}, {p:'大阪府', x:210, y:165}, {p:'兵庫県', x:190, y:145}, {p:'奈良県', x:210, y:185}, {p:'和歌山県', x:210, y:205},
+                {p:'鳥取県', x:170, y:145}, {p:'島根県', x:150, y:145}, {p:'岡山県', x:170, y:165}, {p:'広島県', x:150, y:165}, {p:'山口県', x:130, y:165},
+                {p:'徳島県', x:170, y:210}, {p:'香川県', x:170, y:190}, {p:'愛媛県', x:150, y:190}, {p:'高知県', x:150, y:210},
+                {p:'福岡県', x:95, y:175}, {p:'佐賀県', x:75, y:175}, {p:'長崎県', x:55, y:175}, {p:'熊本県', x:75, y:195}, {p:'大分県', x:95, y:195}, {p:'宮崎県', x:95, y:215}, {p:'鹿児島県', x:75, y:215}, {p:'沖縄県', x:10, y:215}
             ];
 
-            let svgHtml = `<svg viewBox="0 -5 380 230" width="100%" height="auto">`;
+            let svgHtml = `<svg viewBox="0 -5 365 245" width="100%" height="auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">`;
+            
+            // 背景に薄い影用のブロックを敷く（奥行きを出す）
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
-                const color = isVisited ? 'var(--primary-color)' : '#e0e0e0';
+                const bgColor = isVisited ? 'rgba(0, 113, 48, 0.1)' : '#f2f2f7';
+                const mainColor = isVisited ? 'var(--primary-color)' : '#e5e5ea';
+                const textColor = isVisited ? '#ffffff' : '#8e8e93';
+
                 svgHtml += `
-                    <g>
-                        <rect x="${d.x}" y="${d.y}" width="18" height="18" fill="${color}" rx="3" />
-                        <text x="${d.x+9}" y="${d.y+13}" font-size="6" text-anchor="middle" fill="${isVisited ? '#fff' : '#666'}" style="pointer-events:none;">${d.p.substr(0,2)}</text>
+                    <g style="transition: all 0.3s ease;">
+                        <rect x="${d.x}" y="${d.y + 1}" width="20" height="20" fill="${isVisited ? 'rgba(0,0,0,0.1)' : 'transparent'}" rx="5" />
+                        <rect x="${d.x}" y="${d.y}" width="20" height="20" fill="${mainColor}" rx="5" />
+                        <text x="${d.x + 10}" y="${d.y + 13}" font-size="7" font-weight="800" text-anchor="middle" fill="${textColor}" style="pointer-events:none; letter-spacing: -0.5px;">${d.p.substr(0, 2)}</text>
                     </g>`;
             });
-                        container.innerHTML = svgHtml + `</svg>`;
+            
+            container.innerHTML = svgHtml + `</svg>`;
         }
-
 
 
 function renderArtistManager() {
