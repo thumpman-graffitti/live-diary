@@ -371,60 +371,54 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // 半径11px（直径22px）。グリッド間隔を25pxに設定することで隙間を均一に確保。
+            // 円の直径を22px、グリッド間隔(s)も22pxにすることで隙間を物理的にゼロにする
             const r = 11;
-            const s = 25; 
-            const ox = 50, oy = 40;
+            const s = 22; 
+            const ox = 60, oy = 40;
 
             const mapData = [
-                // 北海道 (巨大化して独立)
-                {p:'北海道', x:ox+s*10, y:oy+s*0, r:22, big:true},
+                // 北海道 (最上段)
+                {p:'北海道', x:ox+s*8, y:oy+s*0, r:22, big:true},
                 
-                // 東北 (ご指示のフォーメーションを厳守)
-                {p:'青森県', x:ox+s*10, y:oy+s*2.5},
-                {p:'秋田県', x:ox+s*9,  y:oy+s*3.5}, {p:'岩手県', x:ox+s*10, y:oy+s*3.5},
-                {p:'山形県', x:ox+s*9,  y:oy+s*4.5}, {p:'宮城県', x:ox+s*10, y:oy+s*4.5},
-                {p:'福島県', x:ox+s*10, y:oy+s*5.5},
+                // 東北 (ご指示のT字型：隙間なし連結)
+                {p:'青森県', x:ox+s*8, y:oy+s*2},
+                {p:'秋田県', x:ox+s*7, y:oy+s*3}, {p:'岩手県', x:ox+s*8, y:oy+s*3},
+                {p:'山形県', x:ox+s*7, y:oy+s*4}, {p:'宮城県', x:ox+s*8, y:oy+s*4},
+                {p:'福島県', x:ox+s*8, y:oy+s*5},
                 
-                // 北陸・中部
-                {p:'新潟県', x:ox+s*8,  y:oy+s*4.5},
-                {p:'石川県', x:ox+s*6,  y:oy+s*5.5}, {p:'富山県', x:ox+s*7,  y:oy+s*5.5},
-                {p:'福井県', x:ox+s*6,  y:oy+s*6.5}, {p:'長野県', x:ox+s*8,  y:oy+s*6.5},
-                {p:'岐阜県', x:ox+s*7,  y:oy+s*6.5}, {p:'山梨県', x:ox+s*8.5, y:oy+s*7.5},
-                {p:'静岡県', x:ox+s*8,  y:oy+s*8.5}, {p:'愛知県', x:ox+s*7,  y:oy+s*7.5},
+                // 北陸・中部・関東 (ブロック状に連結)
+                {p:'新潟県', x:ox+s*6, y:oy+s*4}, {p:'富山県', x:ox+s*5, y:oy+s*4}, {p:'石川県', x:ox+s*4, y:oy+s*4},
+                {p:'群馬県', x:ox+s*7, y:oy+s*5}, {p:'栃木県', x:ox+s*8, y:oy+s*6}, {p:'茨城県', x:ox+s*9, y:oy+s*6},
+                {p:'福井県', x:ox+s*4, y:oy+s*5}, {p:'岐阜県', x:ox+s*5, y:oy+s*5}, {p:'長野県', x:ox+s*6, y:oy+s*5},
+                {p:'埼玉県', x:ox+s*7, y:oy+s*6}, {p:'東京都', x:ox+s*8, y:oy+s*7}, {p:'千葉県', x:ox+s*9, y:oy+s*7},
+                {p:'山梨県', x:ox+s*7, y:oy+s*7}, {p:'愛知県', x:ox+s*6, y:oy+s*6}, {p:'静岡県', x:ox+s*7, y:oy+s*8}, {p:'神奈川県', x:ox+s*8, y:oy+s*8},
 
-                // 関東
-                {p:'栃木県', x:ox+s*10, y:oy+s*6.5}, {p:'茨城県', x:ox+s*11, y:oy+s*6.5},
-                {p:'群馬県', x:ox+s*9,  y:oy+s*6.5}, {p:'埼玉県', x:ox+s*9.5, y:oy+s*7.5},
-                {p:'東京都', x:ox+s*10.5, y:oy+s*7.5}, {p:'千葉県', x:ox+s*11.5, y:oy+s*7.5},
-                {p:'神奈川県', x:ox+s*10, y:oy+s*8.5},
+                // 近畿 (大阪・奈良・和歌山を垂直に隙間なく)
+                {p:'滋賀県', x:ox+s*5, y:oy+s*6}, {p:'三重県', x:ox+s*6, y:oy+s*7},
+                {p:'京都府', x:ox+s*4, y:oy+s*6}, {p:'兵庫県', x:ox+s*3, y:oy+s*6},
+                {p:'大阪府', x:ox+s*4, y:oy+s*7}, {p:'奈良県', x:ox+s*5, y:oy+s*7},
+                {p:'和歌山県', x:ox+s*4, y:oy+s*8},
 
-                // 近畿 (大阪・奈良・和歌山を垂直に)
-                {p:'滋賀県', x:ox+s*6,  y:oy+s*7.5}, {p:'三重県', x:ox+s*6.5, y:oy+s*8.5},
-                {p:'京都府', x:ox+s*5,  y:oy+s*7.5}, {p:'大阪府', x:ox+s*5,  y:oy+s*8.5},
-                {p:'兵庫県', x:ox+s*4,  y:oy+s*7.5}, {p:'奈良県', x:ox+s*6,  y:oy+s*8.5},
-                {p:'和歌山県', x:ox+s*5.5, y:oy+s*9.5},
+                // 中国 (近畿の左に密着)
+                {p:'鳥取県', x:ox+s*2, y:oy+s*6}, {p:'島根県', x:ox+s*1, y:oy+s*6},
+                {p:'岡山県', x:ox+s*2, y:oy+s*7}, {p:'広島県', x:ox+s*1, y:oy+s*7},
+                {p:'山口県', x:ox+s*0, y:oy+s*7},
 
-                // 中国
-                {p:'鳥取県', x:ox+s*3,  y:oy+s*7.5}, {p:'島根県', x:ox+s*2,  y:oy+s*7.5},
-                {p:'岡山県', x:ox+s*3,  y:oy+s*8.5}, {p:'広島県', x:ox+s*2,  y:oy+s*8.5},
-                {p:'山口県', x:ox+s*1,  y:oy+s*8.5},
+                // 四国 (2x2の連結ブロック)
+                {p:'香川県', x:ox+s*2, y:oy+s*8}, {p:'愛媛県', x:ox+s*1, y:oy+s*8},
+                {p:'徳島県', x:ox+s*2, y:oy+s*9}, {p:'高知県', x:ox+s*1, y:oy+s*9},
 
-                // 四国 (独立した2x2正方形)
-                {p:'香川県', x:ox+s*3.5, y:oy+s*10}, {p:'徳島県', x:ox+s*3.5, y:oy+s*11},
-                {p:'愛媛県', x:ox+s*2.5, y:oy+s*10}, {p:'高知県', x:ox+s*2.5, y:oy+s*11},
-
-                // 九州 (ご指示のフォーメーションを厳守)
-                {p:'長崎県', x:ox+s*0,  y:oy+s*9.5}, {p:'佐賀県', x:ox+s*1,  y:oy+s*9.5}, {p:'福岡県', x:ox+s*2,  y:oy+s*9.5},
-                {p:'熊本県', x:ox+s*2,  y:oy+s*10.5}, {p:'大分県', x:ox+s*3,  y:oy+s*10.5},
-                {p:'宮崎県', x:ox+s*2,  y:oy+s*11.5},
-                {p:'鹿児島県', x:ox+s*2, y:oy+s*12.5},
+                // 九州 (ご指示の逆L字型：完全に連結)
+                {p:'長崎県', x:ox-s*2, y:oy+s*8}, {p:'佐賀県', x:ox-s*1, y:oy+s*8}, {p:'福岡県', x:ox+s*0, y:oy+s*8},
+                {p:'熊本県', x:ox+s*0, y:oy+s*9}, {p:'大分県', x:ox+s*1, y:oy+s*10}, // 大分を連結位置へ
+                {p:'宮崎県', x:ox+s*0, y:oy+s*10},
+                {p:'鹿児島県', x:ox+s*0, y:oy+s*11},
                 
-                // 沖縄
-                {p:'沖縄県', x:ox+s*0,  y:oy+s*13}
+                // 沖縄 (離して配置)
+                {p:'沖縄県', x:ox-s*2, y:oy+s*11}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 380 400" width="100%" height="auto">
+            let svgHtml = `<svg viewBox="0 0 380 350" width="100%" height="auto">
                 <defs>
                     <radialGradient id="gradVisited" cx="40%" cy="40%" r="60%">
                         <stop offset="0%" stop-color="#34c759" />
@@ -441,14 +435,13 @@
                 
                 svgHtml += `
                     <g>
-                        <circle cx="${d.x}" cy="${d.y}" r="${currentR}" fill="${color}" />
+                        <circle cx="${d.x}" cy="${d.y}" r="${currentR}" fill="${color}" stroke="#fff" stroke-width="0.3" />
                         <text x="${d.x}" y="${d.y + (fontSize/2.8)}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
-
 
 
 function renderArtistManager() {
