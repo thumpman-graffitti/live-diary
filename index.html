@@ -371,59 +371,60 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // 円の半径を11pxに固定。直径22px。
-            // グリッド間隔を23px〜24pxにすることで「重なりゼロ」と「高密度」を両立。
+            // 半径11px（直径22px）。グリッド間隔を25pxに設定することで隙間を均一に確保。
             const r = 11;
-            const s = 23.5; 
-            const ox = 45, oy = 35;
+            const s = 25; 
+            const ox = 50, oy = 40;
 
             const mapData = [
-                // 北海道 (最北端・シンボル)
-                {p:'北海道', x:ox+s*9.5, y:oy+s*0, r:22, big:true},
+                // 北海道 (巨大化して独立)
+                {p:'北海道', x:ox+s*10, y:oy+s*0, r:22, big:true},
                 
-                // 東北 (美しい階段状の整列)
-                {p:'青森県', x:ox+s*9.5, y:oy+s*2.2},
-                {p:'秋田県', x:ox+s*8.5, y:oy+s*3.2}, {p:'岩手県', x:ox+s*9.5, y:oy+s*3.2},
-                {p:'山形県', x:ox+s*8.5, y:oy+s*4.2}, {p:'宮城県', x:ox+s*9.5, y:oy+s*4.2},
-                {p:'福島県', x:ox+s*9.0, y:oy+s*5.2},
+                // 東北 (ご指示のフォーメーションを厳守)
+                {p:'青森県', x:ox+s*10, y:oy+s*2.5},
+                {p:'秋田県', x:ox+s*9,  y:oy+s*3.5}, {p:'岩手県', x:ox+s*10, y:oy+s*3.5},
+                {p:'山形県', x:ox+s*9,  y:oy+s*4.5}, {p:'宮城県', x:ox+s*10, y:oy+s*4.5},
+                {p:'福島県', x:ox+s*10, y:oy+s*5.5},
                 
-                // 関東 (密集させつつ東京を核に)
-                {p:'栃木県', x:ox+s*10.0, y:oy+s*6.2}, {p:'茨城県', x:ox+s*11.0, y:oy+s*6.2},
-                {p:'群馬県', x:ox+s*9.0,  y:oy+s*6.2}, {p:'埼玉県', x:ox+s*9.5,  y:oy+s*7.2},
-                {p:'東京都', x:ox+s*10.5, y:oy+s*7.2}, {p:'千葉県', x:ox+s*11.5, y:oy+s*7.2},
-                {p:'神奈川県', x:ox+s*10.0, y:oy+s*8.2},
+                // 北陸・中部
+                {p:'新潟県', x:ox+s*8,  y:oy+s*4.5},
+                {p:'石川県', x:ox+s*6,  y:oy+s*5.5}, {p:'富山県', x:ox+s*7,  y:oy+s*5.5},
+                {p:'福井県', x:ox+s*6,  y:oy+s*6.5}, {p:'長野県', x:ox+s*8,  y:oy+s*6.5},
+                {p:'岐阜県', x:ox+s*7,  y:oy+s*6.5}, {p:'山梨県', x:ox+s*8.5, y:oy+s*7.5},
+                {p:'静岡県', x:ox+s*8,  y:oy+s*8.5}, {p:'愛知県', x:ox+s*7,  y:oy+s*7.5},
 
-                // 中部・北陸 (新潟から静岡までを整列)
-                {p:'新潟県', x:ox+s*8.0, y:oy+s*4.5},
-                {p:'富山県', x:ox+s*7.0, y:oy+s*5.0}, {p:'石川県', x:ox+s*6.0, y:oy+s*5.0},
-                {p:'長野県', x:ox+s*8.0, y:oy+s*5.7}, {p:'福井県', x:ox+s*6.0, y:oy+s*6.0},
-                {p:'岐阜県', x:ox+s*7.0, y:oy+s*6.5}, {p:'山梨県', x:ox+s*8.5, y:oy+s*7.5},
-                {p:'静岡県', x:ox+s*8.0, y:oy+s*8.5}, {p:'愛知県', x:ox+s*7.0, y:oy+s*7.5},
+                // 関東
+                {p:'栃木県', x:ox+s*10, y:oy+s*6.5}, {p:'茨城県', x:ox+s*11, y:oy+s*6.5},
+                {p:'群馬県', x:ox+s*9,  y:oy+s*6.5}, {p:'埼玉県', x:ox+s*9.5, y:oy+s*7.5},
+                {p:'東京都', x:ox+s*10.5, y:oy+s*7.5}, {p:'千葉県', x:ox+s*11.5, y:oy+s*7.5},
+                {p:'神奈川県', x:ox+s*10, y:oy+s*8.5},
 
                 // 近畿 (大阪・奈良・和歌山を垂直に)
-                {p:'滋賀県', x:ox+s*6.0, y:oy+s*7.0}, {p:'三重県', x:ox+s*6.5, y:oy+s*8.2},
-                {p:'京都府', x:ox+s*5.0, y:oy+s*7.0}, {p:'大阪府', x:ox+s*5.0, y:oy+s*8.0},
-                {p:'兵庫県', x:ox+s*4.0, y:oy+s*7.0}, {p:'奈良県', x:ox+s*6.0, y:oy+s*8.0},
-                {p:'和歌山県', x:ox+s*5.5, y:oy+s*9.0},
+                {p:'滋賀県', x:ox+s*6,  y:oy+s*7.5}, {p:'三重県', x:ox+s*6.5, y:oy+s*8.5},
+                {p:'京都府', x:ox+s*5,  y:oy+s*7.5}, {p:'大阪府', x:ox+s*5,  y:oy+s*8.5},
+                {p:'兵庫県', x:ox+s*4,  y:oy+s*7.5}, {p:'奈良県', x:ox+s*6,  y:oy+s*8.5},
+                {p:'和歌山県', x:ox+s*5.5, y:oy+s*9.5},
 
                 // 中国
-                {p:'鳥取県', x:ox+s*3.0, y:oy+s*7.0}, {p:'島根県', x:ox+s*2.0, y:oy+s*7.0},
-                {p:'岡山県', x:ox+s*3.0, y:oy+s*8.0}, {p:'広島県', x:ox+s*2.0, y:oy+s*8.0},
-                {p:'山口県', x:ox+s*1.0, y:oy+s*8.0},
+                {p:'鳥取県', x:ox+s*3,  y:oy+s*7.5}, {p:'島根県', x:ox+s*2,  y:oy+s*7.5},
+                {p:'岡山県', x:ox+s*3,  y:oy+s*8.5}, {p:'広島県', x:ox+s*2,  y:oy+s*8.5},
+                {p:'山口県', x:ox+s*1,  y:oy+s*8.5},
 
                 // 四国 (独立した2x2正方形)
-                {p:'香川県', x:ox+s*3.0, y:oy+s*9.5}, {p:'徳島県', x:ox+s*3.0, y:oy+s*10.5},
-                {p:'愛媛県', x:ox+s*2.0, y:oy+s*9.5}, {p:'高知県', x:ox+s*2.0, y:oy+s*10.5},
+                {p:'香川県', x:ox+s*3.5, y:oy+s*10}, {p:'徳島県', x:ox+s*3.5, y:oy+s*11},
+                {p:'愛媛県', x:ox+s*2.5, y:oy+s*10}, {p:'高知県', x:ox+s*2.5, y:oy+s*11},
 
-                // 九州 (美しく整列されたブロック)
-                {p:'福岡県', x:ox+s*0.5, y:oy+s*9.0}, {p:'佐賀県', x:ox-s*0.5, y:oy+s*9.0},
-                {p:'大分県', x:ox+s*0.5, y:oy+s*10.0}, {p:'長崎県', x:ox-s*0.5, y:oy+s*10.0},
-                {p:'熊本県', x:ox+s*0.0, y:oy+s*11.0}, {p:'宮崎県', x:ox+s*0.5, y:oy+s*12.0},
-                {p:'鹿児島県', x:ox-s*0.5, y:oy+s*12.0},
-                {p:'沖縄県', x:ox-s*0.5, y:oy+s*14.0}
+                // 九州 (ご指示のフォーメーションを厳守)
+                {p:'長崎県', x:ox+s*0,  y:oy+s*9.5}, {p:'佐賀県', x:ox+s*1,  y:oy+s*9.5}, {p:'福岡県', x:ox+s*2,  y:oy+s*9.5},
+                {p:'熊本県', x:ox+s*2,  y:oy+s*10.5}, {p:'大分県', x:ox+s*3,  y:oy+s*10.5},
+                {p:'宮崎県', x:ox+s*2,  y:oy+s*11.5},
+                {p:'鹿児島県', x:ox+s*2, y:oy+s*12.5},
+                
+                // 沖縄
+                {p:'沖縄県', x:ox+s*0,  y:oy+s*13}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 350 380" width="100%" height="auto">
+            let svgHtml = `<svg viewBox="0 0 380 400" width="100%" height="auto">
                 <defs>
                     <radialGradient id="gradVisited" cx="40%" cy="40%" r="60%">
                         <stop offset="0%" stop-color="#34c759" />
@@ -447,6 +448,7 @@
             
             container.innerHTML = svgHtml + `</svg>`;
         }
+
 
 
 function renderArtistManager() {
