@@ -100,7 +100,7 @@
 
 <body>
 
-    <header>LIVE DIARY🍊3</header>
+    <header>LIVE DIARY🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -353,7 +353,36 @@ function renderArtistManager() {
 }
 
         function filterArtists() { renderArtistManager(); }
-        function editArtistName(old) { const n = prompt('新しい名前', old); if(n && n!==old){ db.artists[db.artists.indexOf(old)]=n; db.lives.forEach(l=>{if(l.artist===old)l.artist=n;}); save(); renderArtistManager(); } }
+
+        function editArtistName(old) {
+            const n = prompt('新しい名前', old);
+            if (!n || n === old) return;
+
+            // 1. すでにその名前が存在するかチェック
+            const exists = db.artists.includes(n);
+
+            if (exists) {
+                if (confirm(`「${n}」は既に存在します。履歴を統合してもよろしいですか？`)) {
+                    // 既存のAに統合する場合：古いBを削除するだけ（履歴は下の処理でAに書き換わる）
+                    db.artists = db.artists.filter(a => a !== old);
+                } else {
+                    return; // キャンセル
+                }
+            } else {
+                // 存在しない名前なら、普通に名前を上書き
+                db.artists[db.artists.indexOf(old)] = n;
+            }
+
+            // 2. 履歴（lives）の中にあるアーティスト名をすべて新しい名前に書き換える
+            db.lives.forEach(l => {
+                if (l.artist === old) l.artist = n;
+            });
+
+            save();
+            renderArtistManager();
+            if(document.getElementById('page-history').classList.contains('active')) renderHistory();
+        }
+
         function deleteArtist(n) { if(confirm('削除しますか？')){ db.artists=db.artists.filter(a=>a!==n); db.lives=db.lives.filter(l=>l.artist!==n); save(); renderArtistManager(); } }
         function exportData() { const blob = new Blob([JSON.stringify(db)], {type:'application/json'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='livelog.json'; a.click(); }
         function importData(e) { const f = e.target.files[0]; const r = new FileReader(); r.onload = (ev) => { db = JSON.parse(ev.target.result); save(); location.reload(); }; r.readAsText(f); }
