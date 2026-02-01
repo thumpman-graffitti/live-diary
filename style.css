@@ -85,25 +85,49 @@ button {
 button:active { transform: translateY(2px); box-shadow: none; }
 
 /* タブバー */
-/* タブバー */
+/* タブバー自体の高さを強制固定 */
 .tab-bar {
-    position: fixed; bottom: 0; width: 100%; height: 50px;!important
+    position: fixed !important; 
+    bottom: 0 !important; 
+    width: 100% !important; 
+    height: 50px !important; /* 65pxから50pxへ大幅に短縮 */
     background-color: #007130 !important;
-    display: flex !important; z-index: 1000;
-    padding-bottom: 0 !important
-    border-top: 1px solid rgba(255, 255, 255, 0.3) !important; /* 境界線を少し明るく */
-}
-.tab-bar button {
-    flex: 1; background: none !important; border: none !important;
-    box-shadow: none !important; border-radius: 0 !important;
-    margin: 0 !important; display: flex !important;
-    flex-direction: column !important; align-items: center !important;
-    justify-content: center !important; color: #ffffff !important;
-    font-size: 0.65rem !important; width: 25% !important;
-    position: relative; /* 疑似要素の基準 */
+    display: flex !important; 
+    z-index: 1000 !important;
+    padding-bottom: 0 !important; /* 余計な隙間を排除 */
+    border-top: 1px solid rgba(255, 255, 255, 0.3) !important;
 }
 
-/* ボタンの間の線を、右側だけに0.5pxで引くことで「2本見え」を解消 */
+/* ボタンの中身を極限まで詰める */
+.tab-bar button {
+    flex: 1 !important; 
+    height: 50px !important; /* 親要素に合わせる */
+    background: none !important; 
+    border: none !important;
+    display: flex !important;
+    flex-direction: column !important; 
+    align-items: center !important;
+    justify-content: center !important; 
+    color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* アイコンサイズと下の余白をリセット */
+.tab-bar button span:first-child { 
+    font-size: 1.1rem !important; 
+    margin-bottom: 0px !important; 
+    line-height: 1 !important;
+}
+
+/* テキストのサイズを調整 */
+.tab-bar button span:not(:first-child) {
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+    margin-top: 2px !important;
+}
+
+/* 境界線の1本化を維持 */
 .tab-bar button:not(:last-child)::after {
     content: "";
     position: absolute;
@@ -113,9 +137,6 @@ button:active { transform: translateY(2px); box-shadow: none; }
     width: 0.5px;
     background-color: rgba(255, 255, 255, 0.4);
 }
-
-.tab-bar button.active { background-color: #004d21 !important; color: #ffcc00 !important; }
-.tab-bar button span:first-child { font-size: 1.1rem !important; margin-bottom: 3px !important; }
 
 
 /* 履歴スリムカード */
