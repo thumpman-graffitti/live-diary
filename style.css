@@ -302,6 +302,31 @@ button:active { transform: translateY(2px); box-shadow: none; }
     z-index: 10001 !important;
 }
 
+/* 日本地図のコンテナ */
+.japan-map-container {
+    width: 100%;
+    max-width: 500px;
+    margin: 20px auto;
+    padding: 10px;
+    background: #fff;
+    border-radius: 12px;
+}
+
+/* 都道府県ごとの基本色（未訪問） */
+.pref-path {
+    fill: #e0e0e0; /* 未訪問はグレー */
+    stroke: #ffffff;
+    stroke-width: 0.5;
+    transition: fill 0.3s;
+}
+
+/* 訪問済みの色（JRAグリーン） */
+.pref-visited {
+    fill: var(--primary-color) !important;
+}
+
+
+
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
