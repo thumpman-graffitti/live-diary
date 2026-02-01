@@ -137,6 +137,29 @@
                     </div>
                 </div>
             </div>
+            
+                    <div id="page-stats" class="tab-content">
+            <div class="card">
+                <div style="max-width: 200px; margin: 0 auto; position: relative;">
+                    <canvas id="artistChart"></canvas>
+                    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center;">
+                        <div style="font-size: 0.75rem; color: #8e8e93; font-weight: bold;">Total</div>
+                        <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="section-title">🗺 全国遠征マップ</span>
+                <div id="japan-map" class="japan-map-container">
+                    </div>
+                <div style="text-align: center; font-size: 0.8rem; color: #8e8e93; margin-top: 10px;">
+                    制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color);">0</span> / 47 都道府県
+                </div>
+            </div>
+            <div id="stats-ranking-list"></div>
+        </div>
+
             <div id="stats-ranking-list"></div>
         </div>
         <div id="page-settings" class="tab-content">
@@ -334,6 +357,24 @@
                 lastP = p[1];
             });
             document.getElementById('stats-ranking-list').innerHTML = html + '</div>';
+// renderStats関数内の最後の方に追加
+function updateMap(visitedPrefs) {
+    const mapContainer = document.getElementById('japan-map');
+    // 簡易的な日本地図SVG（簡略化した矩形レイアウト、または詳細なパスデータ）
+    // 今回は確実に動くよう、各都道府県のIDを持ったSVGパスを読み込む処理を想定
+    
+    document.querySelectorAll('.pref-path').forEach(path => {
+        const prefName = path.getAttribute('data-name');
+        if (visitedPrefs.includes(prefName)) {
+            path.classList.add('pref-visited');
+        } else {
+            path.classList.remove('pref-visited');
+        }
+    });
+    
+    document.getElementById('visited-pref-count').innerText = visitedPrefs.length;
+}
+
         }
 
 function renderArtistManager() {
