@@ -371,71 +371,54 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            const s = 22; // 基本サイズ
-            const ox = 45, oy = 20;
+            const s = 22; 
+            const ox = 50, oy = 20;
 
             const mapData = [
-                // 【北海道】(本州から離す)
-                {p:'北海道', x:ox+s*8, y:oy+s*0, w:s*2, h:s*2, big:true},
-                
-                // 【東北】(北海道と隙間をあける)
-                {p:'青森県', x:ox+s*8, y:oy+s*2.5, w:s, h:s},
-                {p:'秋田県', x:ox+s*7, y:oy+s*3.5, w:s, h:s}, 
-                {p:'岩手県', x:ox+s*8, y:oy+s*3.5, w:s, h:s*2}, 
-                {p:'山形県', x:ox+s*7, y:oy+s*4.5, w:s, h:s}, 
-                {p:'宮城県', x:ox+s*8, y:oy+s*5.5, w:s, h:s},
-                {p:'福島県', x:ox+s*7, y:oy+s*5.5, w:s, h:s*2},
+                // 【北海道】独立
+                {p:'北海道', x:ox+s*7, y:oy+s*0, w:s*2, h:s*2, big:true},
 
-                // 【北陸・中部】
-                {p:'新潟県', x:ox+s*6, y:oy+s*3.5, w:s, h:s*2}, 
-                {p:'富山県', x:ox+s*5, y:oy+s*4.5, w:s, h:s}, 
-                {p:'石川県', x:ox+s*4, y:oy+s*4.5, w:s, h:s},
-                {p:'長野県', x:ox+s*6, y:oy+s*5.5, w:s, h:s*2}, 
-                {p:'福井県', x:ox+s*4, y:oy+s*5.5, w:s, h:s}, 
-                {p:'岐阜県', x:ox+s*5, y:oy+s*5.5, w:s, h:s*2}, 
-                {p:'山梨県', x:ox+s*7, y:oy+s*7.5, w:s, h:s},
-                {p:'愛知県', x:ox+s*5, y:oy+s*7.5, w:s, h:s}, 
-                {p:'静岡県', x:ox+s*6, y:oy+s*7.5, w:s*2, h:s},
+                // 【東北】岩手を1x1にして右ラインを青森・宮城と揃える
+                {p:'青森県', x:ox+s*7, y:oy+s*3},
+                {p:'秋田県', x:ox+s*6, y:oy+s*4}, {p:'岩手県', x:ox+s*7, y:oy+s*4}, 
+                {p:'山形県', x:ox+s*6, y:oy+s*5}, {p:'宮城県', x:ox+s*7, y:oy+s*5},
+                {p:'福島県', x:ox+s*6, y:oy+s*6, w:s*2, h:s}, // 福島で東北の土台を固める
 
                 // 【関東】
-                {p:'栃木県', x:ox+s*8, y:oy+s*6.5, w:s, h:s}, 
-                {p:'群馬県', x:ox+s*7, y:oy+s*6.5, w:s, h:s},
-                {p:'茨城県', x:ox+s*9, y:oy+s*6.5, w:s, h:s*2}, 
-                {p:'埼玉県', x:ox+s*8, y:oy+s*7.5, w:s, h:s}, 
-                {p:'東京都', x:ox+s*9, y:oy+s*8.5, w:s, h:s},
-                {p:'千葉県', x:ox+s*10, y:oy+s*8.5, w:s, h:s*2}, 
-                {p:'神奈川県', x:ox+s*8, y:oy+s*8.5, w:s, h:s},
+                {p:'栃木県', x:ox+s*8, y:oy+s*6}, {p:'茨城県', x:ox+s*9, y:oy+s*6, w:s, h:s*2},
+                {p:'群馬県', x:ox+s*8, y:oy+s*7}, {p:'埼玉県', x:ox+s*8, y:oy+s*8}, {p:'千葉県', x:ox+s*9, y:oy+s*8, w:s, h:s*2},
+                {p:'東京都', x:ox+s*8, y:oy+s*9}, {p:'神奈川県', x:ox+s*7, y:oy+s*9},
+
+                // 【中部・北陸】
+                {p:'新潟県', x:ox+s*5, y:oy+s*4, w:s, h:s*2}, {p:'富山県', x:ox+s*4, y:oy+s*5}, {p:'石川県', x:ox+s*3, y:oy+s*5},
+                {p:'長野県', x:ox+s*5, y:oy+s*6, w:s, h:s*2}, {p:'岐阜県', x:ox+s*4, y:oy+s*6, w:s, h:s*2}, {p:'福井県', x:ox+s*3, y:oy+s*6},
+                {p:'山梨県', x:ox+s*6, y:oy+s*7}, {p:'愛知県', x:ox+s*5, y:oy+s*8}, {p:'静岡県', x:ox+s*6, y:oy+s*9, w:s*2, h:s},
 
                 // 【近畿】
-                {p:'滋賀県', x:ox+s*4, y:oy+s*6.5, w:s, h:s}, 
-                {p:'京都府', x:ox+s*3, y:oy+s*6.5, w:s, h:s}, 
-                {p:'三重県', x:ox+s*5, y:oy+s*8.5, w:s, h:s*2}, 
-                {p:'奈良県', x:ox+s*4, y:oy+s*7.5, w:s, h:s}, 
-                {p:'大阪府', x:ox+s*3, y:oy+s*7.5, w:s, h:s},
-                {p:'和歌山県', x:ox+s*3, y:oy+s*8.5, w:s, h:s*2}, 
-                {p:'兵庫県', x:ox+s*2, y:oy+s*6.5, w:s, h:s*2},
+                {p:'滋賀県', x:ox+s*4, y:oy+s*8}, {p:'三重県', x:ox+s*5, y:oy+s*9, w:s, h:s*2},
+                {p:'京都府', x:ox+s*3, y:oy+s*7}, {p:'奈良県', x:ox+s*4, y:oy+s*9}, 
+                {p:'大阪府', x:ox+s*3, y:oy+s*8}, {p:'和歌山県', x:ox+s*3, y:oy+s*9, w:s, h:s*2},
+                {p:'兵庫県', x:ox+s*2, y:oy+s*7, w:s, h:s*2},
 
                 // 【中国】
-                {p:'鳥取県', x:ox+s*1, y:oy+s*6.5, w:s, h:s}, 
-                {p:'島根県', x:ox+s*0, y:oy+s*6.5, w:s, h:s},
-                {p:'岡山県', x:ox+s*1, y:oy+s*7.5, w:s, h:s}, 
-                {p:'広島県', x:ox-s*1, y:oy+s*7.5, w:s*2, h:s}, 
-                {p:'山口県', x:ox-s*2, y:oy+s*7.5, w:s, h:s*2},
+                {p:'鳥取県', x:ox+s*1, y:oy+s*7}, {p:'島根県', x:ox+s*0, y:oy+s*7},
+                {p:'岡山県', x:ox+s*1, y:oy+s*8}, {p:'広島県', x:ox-s*1, y:oy+s*8, w:s*2, h:s},
+                {p:'山口県', x:ox-s*2, y:oy+s*8, w:s, h:s*2},
 
-                // 【四国】(海を隔てて独立 2x2)
-                {p:'愛媛県', x:ox+s*0, y:oy+s*9.5, w:s, h:s}, {p:'香川県', x:ox+s*1, y:oy+s*9.5, w:s, h:s},
-                {p:'高知県', x:ox+s*0, y:oy+s*10.5, w:s, h:s}, {p:'徳島県', x:ox+s*1, y:oy+s*10.5, w:s, h:s},
+                // 【四国】(島として独立 2x2)
+                {p:'愛媛県', x:ox+s*0, y:oy+s*10.5}, {p:'香川県', x:ox+s*1, y:oy+s*10.5},
+                {p:'高知県', x:ox+s*0, y:oy+s*11.5}, {p:'徳島県', x:ox+s*1, y:oy+s*11.5},
 
-                // 【九州】(海を隔てて独立 逆L字)
-                {p:'長崎県', x:ox-s*3, y:oy+s*10, w:s, h:s}, {p:'佐賀県', x:ox-s*2, y:oy+s*10, w:s, h:s}, {p:'福岡県', x:ox-s*1, y:oy+s*10, w:s, h:s},
-                {p:'熊本県', x:ox-s*1, y:oy+s*11, w:s, h:s*2}, {p:'大分県', x:ox+s*0, y:oy+s*11.5, w:s, h:s}, 
-                {p:'宮崎県', x:ox+s*0, y:oy+s*12.5, w:s, h:s}, {p:'鹿児島県', x:ox-s*1, y:oy+s*13, w:s*2, h:s},
-                
+                // 【九州】(島として独立 逆L字)
+                {p:'福岡県', x:ox-s*1, y:oy+s*11}, {p:'佐賀県', x:ox-s*2, y:oy+s*11}, {p:'長崎県', x:ox-s*3, y:oy+s*11},
+                {p:'大分県', x:ox+s*0, y:oy+s*12}, {p:'熊本県', x:ox-s*1, y:oy+s*12, w:s, h:s*2}, 
+                {p:'宮崎県', x:ox+s*0, y:oy+s*13}, {p:'鹿児島県', x:ox-s*2, y:oy+s*13, w:s*2, h:s},
+
                 // 【沖縄】
-                {p:'沖縄県', x:ox-s*3, y:oy+s*13, w:s, h:s}
+                {p:'沖縄県', x:ox-s*3, y:oy+s*14.5}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 320 380" width="100%" height="auto">
+            let svgHtml = `<svg viewBox="0 0 320 400" width="100%" height="auto">
                 <defs>
                     <linearGradient id="gradVisited" x1="0%" y1="0%" x2="100%" y2="100%">
                         <stop offset="0%" stop-color="#34c759" />
