@@ -371,55 +371,61 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // 基本の1マスのサイズ
-            const s = 22; 
-            // オフセット（全体の位置調整）
-            const ox = 20, oy = 20;
+            // 1ブロックの基本サイズ
+            const s = 18; 
+            const ox = 30, oy = 20;
 
             const mapData = [
-                // 北海道は特大（2x2マス分を想定して配置）
-                {p:'北海道', x:ox+s*11, y:oy+s*0, big: true},
+                // 北海道 (巨大ブロック)
+                {p:'北海道', x:ox+s*10, y:oy, w:s*2.5, h:s*2.5, big:true},
                 // 東北
-                {p:'青森県', x:ox+s*11, y:oy+s*2.5}, {p:'岩手県', x:ox+s*11, y:oy+s*3.5}, {p:'秋田県', x:ox+s*10, y:oy+s*3.5},
-                {p:'宮城県', x:ox+s*11, y:oy+s*4.5}, {p:'山形県', x:ox+s*10, y:oy+s*4.5}, {p:'福島県', x:ox+s*11, y:oy+s*5.5},
+                {p:'青森県', x:ox+s*10, y:oy+s*2.8}, {p:'岩手県', x:ox+s*10, y:oy+s*3.8}, {p:'秋田県', x:ox+s*9, y:oy+s*3.8},
+                {p:'宮城県', x:ox+s*10, y:oy+s*4.8}, {p:'山形県', x:ox+s*9, y:oy+s*4.8}, {p:'福島県', x:ox+s*10, y:oy+s*5.8},
                 // 関東
-                {p:'茨城県', x:ox+s*12, y:oy+s*6.5}, {p:'栃木県', x:ox+s*11, y:oy+s*6.5}, {p:'群馬県', x:ox+s*10, y:oy+s*6.5},
-                {p:'埼玉県', x:ox+s*10, y:oy+s*7.5}, {p:'東京都', x:ox+s*11, y:oy+s*7.5}, {p:'千葉県', x:ox+s*12, y:oy+s*7.5}, {p:'神奈川県', x:ox+s*11, y:oy+s*8.5},
+                {p:'茨城県', x:ox+s*11, y:oy+s*6.8}, {p:'栃木県', x:ox+s*10, y:oy+s*6.8}, {p:'群馬県', x:ox+s*9, y:oy+s*6.8},
+                {p:'埼玉県', x:ox+s*9, y:oy+s*7.8}, {p:'東京都', x:ox+s*10, y:oy+s*7.8}, {p:'千葉県', x:ox+s*11, y:oy+s*7.8}, {p:'神奈川県', x:ox+s*10, y:oy+s*8.8},
                 // 中部
-                {p:'新潟県', x:ox+s*9, y:oy+s*5}, {p:'富山県', x:ox+s*8, y:oy+s*5}, {p:'石川県', x:ox+s*7, y:oy+s*5},
-                {p:'福井県', x:ox+s*7, y:oy+s*6}, {p:'長野県', x:ox+s*9, y:oy+s*6}, {p:'山梨県', x:ox+s*9, y:oy+s*7.5},
-                {p:'岐阜県', x:ox+s*8, y:oy+s*6.5}, {p:'愛知県', x:ox+s*8, y:oy+s*7.5}, {p:'静岡県', x:ox+s*9, y:oy+s*8.5},
+                {p:'新潟県', x:ox+s*8, y:oy+s*5.3}, {p:'富山県', x:ox+s*7, y:oy+s*5.3}, {p:'石川県', x:ox+s*6, y:oy+s*5.3},
+                {p:'福井県', x:ox+s*6, y:oy+s*6.3}, {p:'長野県', x:ox+s*8, y:oy+s*6.3}, {p:'山梨県', x:ox+s*9, y:oy+s*8.8},
+                {p:'岐阜県', x:ox+s*7, y:oy+s*6.3}, {p:'愛知県', x:ox+s*8, y:oy+s*7.8}, {p:'静岡県', x:ox+s*9, y:oy+s*9.8},
                 // 近畿
-                {p:'滋賀県', x:ox+s*7, y:oy+s*7}, {p:'三重県', x:ox+s*7, y:oy+s*8}, {p:'京都府', x:ox+s*6, y:oy+s*6.5},
-                {p:'大阪府', x:ox+s*6, y:oy+s*7.5}, {p:'兵庫県', x:ox+s*5, y:oy+s*6.5}, {p:'奈良県', x:ox+s*6, y:oy+s*8.5}, {p:'和歌山県', x:ox+s*6, y:oy+s*9.5},
+                {p:'滋賀県', x:ox+s*7, y:oy+s*7.3}, {p:'三重県', x:ox+s*7, y:oy+s*8.3}, {p:'京都府', x:ox+s*6, y:oy+s*7.3},
+                {p:'大阪府', x:ox+s*6, y:oy+s*8.3}, {p:'兵庫県', x:ox+s*5, y:oy+s*7.3}, {p:'奈良県', x:ox+s*6, y:oy+s*9.3}, {p:'和歌山県', x:ox+s*6, y:oy+s*10.3},
                 // 中国
-                {p:'鳥取県', x:ox+s*4, y:oy+s*6.5}, {p:'島根県', x:ox+s*3, y:oy+s*6.5}, {p:'岡山県', x:ox+s*4, y:oy+s*7.5}, {p:'広島県', x:ox+s*3, y:oy+s*7.5}, {p:'山口県', x:ox+s*2, y:oy+s*7.5},
+                {p:'鳥取県', x:ox+s*4, y:oy+s*7.3}, {p:'島根県', x:ox+s*3, y:oy+s*7.3}, {p:'岡山県', x:ox+s*4, y:oy+s*8.3}, {p:'広島県', x:ox+s*3, y:oy+s*8.3}, {p:'山口県', x:ox+s*2, y:oy+s*8.3},
                 // 四国
-                {p:'香川県', x:ox+s*4, y:oy+s*9}, {p:'徳島県', x:ox+s*4, y:oy+s*10}, {p:'愛媛県', x:ox+s*3, y:oy+s*9}, {p:'高知県', x:ox+s*3, y:oy+s*10},
-                // 九州・沖縄
-                {p:'福岡県', x:ox+s*1, y:oy+s*8}, {p:'佐賀県', x:ox+s*0, y:oy+s*8}, {p:'長崎県', x:ox+s*0, y:oy+s*9},
-                {p:'大分県', x:ox+s*1, y:oy+s*9}, {p:'熊本県', x:ox+s*1, y:oy+s*10}, {p:'宮崎県', x:ox+s*1, y:oy+s*11}, {p:'鹿児島県', x:ox+s*0, y:oy+s*10.5},
-                {p:'沖縄県', x:ox+s*0, y:oy+s*12.5}
+                {p:'香川県', x:ox+s*4, y:oy+s*9.8}, {p:'愛媛県', x:ox+s*3, y:oy+s*9.8}, {p:'徳島県', x:ox+s*4, y:oy+s*10.8}, {p:'高知県', x:ox+s*3, y:oy+s*10.8},
+                // 九州
+                {p:'福岡県', x:ox+s*1, y:oy+s*9.3}, {p:'佐賀県', x:ox+s*0, y:oy+s*9.3}, {p:'長崎県', x:ox+s*0, y:oy+s*10.3},
+                {p:'大分県', x:ox+s*1, y:oy+s*10.3}, {p:'熊本県', x:ox+s*1, y:oy+s*11.3}, {p:'宮崎県', x:ox+s*1, y:oy+s*12.3}, {p:'鹿児島県', x:ox+s*0, y:oy+s*11.8},
+                {p:'沖縄県', x:ox+s*0, y:oy+s*13.8}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 350 320" width="100%" height="auto">`;
+            let svgHtml = `<svg viewBox="0 0 350 330" width="100%" height="auto" style="overflow:visible;">
+                <defs>
+                    <filter id="shadow" x="0" y="0" width="150%" height="150%">
+                        <feDropShadow dx="1.5" dy="1.5" stdDeviation="0.5" flood-opacity="0.2"/>
+                    </filter>
+                </defs>`;
             
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
-                const color = isVisited ? 'var(--primary-color)' : '#f2f2f7';
-                const textColor = isVisited ? '#ffffff' : '#8e8e93';
-                const size = d.big ? s * 1.8 : s * 0.9; // 北海道だけ大きく
-                const radius = d.big ? 8 : 4;
+                const color = isVisited ? 'var(--primary-color)' : '#e5e5ea';
+                const textColor = isVisited ? '#ffffff' : '#a1a1a6';
+                const w = d.w || s;
+                const h = d.h || s;
 
                 svgHtml += `
-                    <g>
-                        <rect x="${d.x}" y="${d.y}" width="${size}" height="${size}" fill="${color}" rx="${radius}" />
-                        <text x="${d.x + size/2}" y="${d.y + size/2 + 3}" font-size="${d.big ? 12 : 8}" font-weight="bold" text-anchor="middle" fill="${textColor}" style="pointer-events:none;">${d.p.charAt(0)}</text>
+                    <g filter="url(#shadow)">
+                        <rect x="${d.x}" y="${d.y}" width="${w}" height="${h}" fill="${color}" rx="3" stroke="#fff" stroke-width="0.5" />
+                        <rect x="${d.x+2}" y="${d.y+2}" width="${w-4}" height="2" fill="rgba(255,255,255,0.2)" rx="1" />
+                        <text x="${d.x + w/2}" y="${d.y + h/2 + 3.5}" font-size="${d.big ? 14 : 9}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family:sans-serif;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
+
 
 
 function renderArtistManager() {
