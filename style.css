@@ -128,130 +128,38 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
 .stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* --- モーダルを浮かせるための必須設定 --- */
-        .modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0,0,0,0.8) !important;
-    z-index: 1000000 !important; /* ← 0を1つ増やして100万にしてください */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-        .modal-content {
-            background: #fff;
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            border-radius: 20px;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 0;
-        }
-        
-        .modal-header {
-    padding: 15px 20px !important; /* 左右に20pxの余裕を持たせる */
-    border-bottom: 1px solid #eee !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    background: #fff !important;
-    width: 100% !important; /* 箱いっぱいに広げる */
-    box-sizing: border-box !important; /* 余白を計算に含める */
-}
-
-/* タイトル自体の余白もリセット */
-#modal-title {
-    margin: 0 !important;
-    padding: 0 !important;
-    flex: 1 !important; /* 可能な限り広がる */
-    text-align: left !important;
-}
-
-
-        .modal-body { padding: 20px; }
-
 
 .close-btn {
-    background: #e5e5ea !important; /* 濃いめのグレーに変更 */
-    color: #333 !important; /* 文字色をハッキリ */
-    border: none !important;
-    border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    font-size: 1.2rem !important;
-    font-weight: bold !important;
+    position: sticky; top: 12px; margin-left: auto; margin-right: 12px;
+    width: 32px; height: 32px; background: #f0f0f0; border-radius: 50%;
+    border: none; font-size: 18px; display: flex; align-items: center;
+    justify-content: center; z-index: 100;
 }
-
-.close-btn:active {
-    background: #d1d1d6 !important; /* 押した時にさらに濃く */
-}
+.modal-body { padding: 0 20px 20px 20px; }
 
 
-
-/* --- モーダル全体の背景（ポップアップを中央に浮かせる） --- */
+/* モーダルを「浮いているポップアップ」にするための設定 */
 .modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: rgba(0,0,0,0.7) !important; /* 背景を暗く */
-    z-index: 10000 !important; /* 最前面に */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    position: fixed;   /* 画面に対して固定して浮かせる */
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.7); /* 背景を暗くしてポップアップを目立たせる */
+    z-index: 10000;    /* タブバーよりも手前に表示 */
+    display: flex;     /* 中身を中央に寄せる */
+    align-items: center;
+    justify-content: center;
 }
 
-/* --- 白い箱のデザイン --- */
+/* ポップアップの白い箱の設定 */
 .modal-content {
-    background: #ffffff !important;
-    width: 90% !important;
-    max-width: 400px !important;
-    border-radius: 20px !important;
-    overflow: hidden !important;
-    position: relative !important;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
+    background: #fff;
+    width: 90%;
+    max-width: 400px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 }
-
-.modal-header {
-    padding: 15px 20px !important;
-    border-bottom: 1px solid #eee !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    background: #fff !important;
-}
-
-.modal-body {
-    padding: 20px !important;
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-    background: #fff !important;
-}
-
-.close-btn {
-    background: #f0f0f2 !important;
-    border: none !important;
-    border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-}
-
-
 
 /* 隠したい時に使う設定 */
 .hidden {
@@ -259,86 +167,19 @@ button:active { transform: translateY(2px); box-shadow: none; }
 }
 
 
+
+
+
+
 /* 管理画面 */
-/* アーティスト管理の行の設定 */
-/* ボタンを横に並べるための設定 */
-.artist-admin-row {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 12px 0 !important;
-    border-bottom: 1px solid #eee !important;
-}
-
-.btn-group {
-    display: flex !important;
-    gap: 8px !important; /* ボタンの隙間 */
-}
-
-/* 編集・削除ボタンの共通スタイル */
-.btn-mini {
-    width: 65px !important;
-    height: 32px !important;
-    font-size: 0.8rem !important;
-    padding: 0 !important;
-    border-radius: 6px !important;
-    box-shadow: none !important; /* 管理画面はスッキリさせる */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.btn-edit { background-color: #8e8e93 !important; }
+.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
+.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
+.btn-edit { background-color: #6e6e73 !important; }
 .btn-delete { background-color: #ff3b30 !important; }
-
-/* モーダルのバツボタン（目立たせる） */
-.close-btn {
-    background: #444 !important; /* 背景を思い切って暗く */
-    color: #fff !important; /* 文字を白に */
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 1.2rem !important;
-    opacity: 1 !important;
-    z-index: 10001 !important;
-}
-
-/* 日本地図のコンテナ */
-.japan-map-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 10px;
-    background: #fff;
-    border-radius: 12px;
-}
-
-/* 都道府県ごとの基本色（未訪問） */
-.pref-path {
-    fill: #e0e0e0; /* 未訪問はグレー */
-    stroke: #ffffff;
-    stroke-width: 0.5;
-    transition: fill 0.3s;
-}
-
-/* 訪問済みの色（JRAグリーン） */
-.pref-visited {
-    fill: var(--primary-color) !important;
-}
-
-
-
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
-
-
-
-
-
-
-
 
