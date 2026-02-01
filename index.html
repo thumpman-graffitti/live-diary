@@ -371,56 +371,59 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // グリッドをあえて円の直径より小さく設定し、隙間を消す
-            const s = 22.5; 
-            const ox = 40, oy = 30;
+            // 円の半径を11pxに固定。直径22px。
+            // グリッド間隔を23px〜24pxにすることで「重なりゼロ」と「高密度」を両立。
+            const r = 11;
+            const s = 23.5; 
+            const ox = 45, oy = 35;
 
             const mapData = [
-                // 北海道 (巨大化しつつ東北と繋げる)
-                {p:'北海道', x:ox+s*9.5, y:oy+s*0, r:25, big:true},
+                // 北海道 (最北端・シンボル)
+                {p:'北海道', x:ox+s*9.5, y:oy+s*0, r:22, big:true},
                 
-                // 東北 (隙間なく縦に連結)
+                // 東北 (美しい階段状の整列)
                 {p:'青森県', x:ox+s*9.5, y:oy+s*2.2},
-                {p:'秋田県', x:ox+s*8.5, y:oy+s*3.1}, {p:'岩手県', x:ox+s*9.5, y:oy+s*3.1},
-                {p:'山形県', x:ox+s*8.5, y:oy+s*4.0}, {p:'宮城県', x:ox+s*9.5, y:oy+s*4.0},
-                {p:'福島県', x:ox+s*9.0, y:oy+s*4.9},
+                {p:'秋田県', x:ox+s*8.5, y:oy+s*3.2}, {p:'岩手県', x:ox+s*9.5, y:oy+s*3.2},
+                {p:'山形県', x:ox+s*8.5, y:oy+s*4.2}, {p:'宮城県', x:ox+s*9.5, y:oy+s*4.2},
+                {p:'福島県', x:ox+s*9.0, y:oy+s*5.2},
                 
-                // 北陸・中部 (密集させて穴を埋める)
-                {p:'新潟県', x:ox+s*8.0, y:oy+s*4.0},
-                {p:'石川県', x:ox+s*6.0, y:oy+s*4.5}, {p:'富山県', x:ox+s*7.0, y:oy+s*4.5},
-                {p:'福井県', x:ox+s*6.0, y:oy+s*5.4}, {p:'長野県', x:ox+s*8.0, y:oy+s*5.4},
-                {p:'岐阜県', x:ox+s*7.0, y:oy+s*5.6}, {p:'山梨県', x:ox+s*8.0, y:oy+s*6.3},
-                {p:'愛知県', x:ox+s*7.0, y:oy+s*6.5}, {p:'静岡県', x:ox+s*8.0, y:oy+s*7.2},
+                // 関東 (密集させつつ東京を核に)
+                {p:'栃木県', x:ox+s*10.0, y:oy+s*6.2}, {p:'茨城県', x:ox+s*11.0, y:oy+s*6.2},
+                {p:'群馬県', x:ox+s*9.0,  y:oy+s*6.2}, {p:'埼玉県', x:ox+s*9.5,  y:oy+s*7.2},
+                {p:'東京都', x:ox+s*10.5, y:oy+s*7.2}, {p:'千葉県', x:ox+s*11.5, y:oy+s*7.2},
+                {p:'神奈川県', x:ox+s*10.0, y:oy+s*8.2},
 
-                // 関東 (東京を中心に密着)
-                {p:'群馬県', x:ox+s*9.0, y:oy+s*5.8}, {p:'栃木県', x:ox+s*10.0, y:oy+s*5.8}, {p:'茨城県', x:ox+s*11.0, y:oy+s*6.0},
-                {p:'埼玉県', x:ox+s*9.5, y:oy+s*6.7}, {p:'千葉県', x:ox+s*11.0, y:oy+s*6.9},
-                {p:'東京都', x:ox+s*10.0, y:oy+s*7.6}, {p:'神奈川県', x:ox+s*10.8, y:oy+s*8.3},
+                // 中部・北陸 (新潟から静岡までを整列)
+                {p:'新潟県', x:ox+s*8.0, y:oy+s*4.5},
+                {p:'富山県', x:ox+s*7.0, y:oy+s*5.0}, {p:'石川県', x:ox+s*6.0, y:oy+s*5.0},
+                {p:'長野県', x:ox+s*8.0, y:oy+s*5.7}, {p:'福井県', x:ox+s*6.0, y:oy+s*6.0},
+                {p:'岐阜県', x:ox+s*7.0, y:oy+s*6.5}, {p:'山梨県', x:ox+s*8.5, y:oy+s*7.5},
+                {p:'静岡県', x:ox+s*8.0, y:oy+s*8.5}, {p:'愛知県', x:ox+s*7.0, y:oy+s*7.5},
 
-                // 近畿 (大阪・奈良・和歌山の並びを地理に準拠)
-                {p:'滋賀県', x:ox+s*6.0, y:oy+s*6.3}, {p:'三重県', x:ox+s*6.8, y:oy+s*7.4},
-                {p:'京都府', x:ox+s*5.1, y:oy+s*6.3}, {p:'兵庫県', x:ox+s*4.2, y:oy+s*6.3},
-                {p:'大阪府', x:ox+s*5.1, y:oy+s*7.2}, {p:'奈良県', x:ox+s*6.0, y:oy+s*7.2},
-                {p:'和歌山県', x:ox+s*5.5, y:oy+s*8.1},
+                // 近畿 (大阪・奈良・和歌山を垂直に)
+                {p:'滋賀県', x:ox+s*6.0, y:oy+s*7.0}, {p:'三重県', x:ox+s*6.5, y:oy+s*8.2},
+                {p:'京都府', x:ox+s*5.0, y:oy+s*7.0}, {p:'大阪府', x:ox+s*5.0, y:oy+s*8.0},
+                {p:'兵庫県', x:ox+s*4.0, y:oy+s*7.0}, {p:'奈良県', x:ox+s*6.0, y:oy+s*8.0},
+                {p:'和歌山県', x:ox+s*5.5, y:oy+s*9.0},
 
                 // 中国
-                {p:'鳥取県', x:ox+s*3.3, y:oy+s*6.3}, {p:'島根県', x:ox+s*2.4, y:oy+s*6.3},
-                {p:'岡山県', x:ox+s*3.3, y:oy+s*7.2}, {p:'広島県', x:ox+s*2.4, y:oy+s*7.2},
-                {p:'山口県', x:ox+s*1.5, y:oy+s*7.2},
+                {p:'鳥取県', x:ox+s*3.0, y:oy+s*7.0}, {p:'島根県', x:ox+s*2.0, y:oy+s*7.0},
+                {p:'岡山県', x:ox+s*3.0, y:oy+s*8.0}, {p:'広島県', x:ox+s*2.0, y:oy+s*8.0},
+                {p:'山口県', x:ox+s*1.0, y:oy+s*8.0},
 
-                // 四国 (独立した2x2ブロック)
-                {p:'香川県', x:ox+s*3.3, y:oy+s*8.6}, {p:'愛媛県', x:ox+s*2.4, y:oy+s*8.6},
-                {p:'徳島県', x:ox+s*3.3, y:oy+s*9.5}, {p:'高知県', x:ox+s*2.4, y:oy+s*9.5},
+                // 四国 (独立した2x2正方形)
+                {p:'香川県', x:ox+s*3.0, y:oy+s*9.5}, {p:'徳島県', x:ox+s*3.0, y:oy+s*10.5},
+                {p:'愛媛県', x:ox+s*2.0, y:oy+s*9.5}, {p:'高知県', x:ox+s*2.0, y:oy+s*10.5},
 
-                // 九州・沖縄 (四国から海を隔てて配置)
-                {p:'福岡県', x:ox+s*1.0, y:oy+s*8.3}, {p:'佐賀県', x:ox+s*0.1, y:oy+s*8.3},
-                {p:'大分県', x:ox+s*1.0, y:oy+s*9.2}, {p:'長崎県', x:ox+s*0.1, y:oy+s*9.2},
-                {p:'熊本県', x:ox+s*0.5, y:oy+s*10.1}, 
-                {p:'宮崎県', x:ox+s*1.0, y:oy+s*11.0}, {p:'鹿児島県', x:ox+s*0.1, y:oy+s*11.0},
-                {p:'沖縄県', x:ox+s*0.0, y:oy+s*13.0}
+                // 九州 (美しく整列されたブロック)
+                {p:'福岡県', x:ox+s*0.5, y:oy+s*9.0}, {p:'佐賀県', x:ox-s*0.5, y:oy+s*9.0},
+                {p:'大分県', x:ox+s*0.5, y:oy+s*10.0}, {p:'長崎県', x:ox-s*0.5, y:oy+s*10.0},
+                {p:'熊本県', x:ox+s*0.0, y:oy+s*11.0}, {p:'宮崎県', x:ox+s*0.5, y:oy+s*12.0},
+                {p:'鹿児島県', x:ox-s*0.5, y:oy+s*12.0},
+                {p:'沖縄県', x:ox-s*0.5, y:oy+s*14.0}
             ];
 
-            let svgHtml = `<svg viewBox="0 0 350 350" width="100%" height="auto" style="filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));">
+            let svgHtml = `<svg viewBox="0 0 350 380" width="100%" height="auto">
                 <defs>
                     <radialGradient id="gradVisited" cx="40%" cy="40%" r="60%">
                         <stop offset="0%" stop-color="#34c759" />
@@ -430,22 +433,20 @@
             
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
-                const color = isVisited ? 'url(#gradVisited)' : '#e5e5ea';
+                const color = isVisited ? 'url(#gradVisited)' : '#f2f2f7';
                 const textColor = isVisited ? '#ffffff' : '#8e8e93';
-                const r = d.r || 12.5; // 円の半径
+                const currentR = d.r || r;
                 const fontSize = d.big ? 14 : 9;
                 
                 svgHtml += `
                     <g>
-                        <circle cx="${d.x}" cy="${d.y}" r="${r}" fill="${color}" stroke="#fff" stroke-width="0.5" />
+                        <circle cx="${d.x}" cy="${d.y}" r="${currentR}" fill="${color}" />
                         <text x="${d.x}" y="${d.y + (fontSize/2.8)}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
-
-
 
 
 function renderArtistManager() {
