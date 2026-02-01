@@ -371,36 +371,43 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // 都道府県の位置データ
+            // p:県名, x,y:位置, r:サイズ(半径)
+            // 北海道を大きく(r:22)、他を標準(r:10〜12)で調整
             const mapData = [
-                {p:'北海道', x:310, y:0}, {p:'青森県', x:310, y:55}, {p:'岩手県', x:310, y:75}, {p:'宮城県', x:310, y:95}, {p:'秋田県', x:290, y:75}, {p:'山形県', x:290, y:95}, {p:'福島県', x:310, y:115},
-                {p:'茨城県', x:330, y:140}, {p:'栃木県', x:310, y:140}, {p:'群馬県', x:290, y:140}, {p:'埼玉県', x:290, y:160}, {p:'千葉県', x:330, y:160}, {p:'東京都', x:310, y:160}, {p:'神奈川県', x:310, y:180},
-                {p:'新潟県', x:270, y:110}, {p:'富山県', x:250, y:110}, {p:'石川県', x:230, y:100}, {p:'福井県', x:230, y:130}, {p:'山梨県', x:270, y:160}, {p:'長野県', x:270, y:135}, {p:'岐阜県', x:250, y:145}, {p:'静岡県', x:270, y:180}, {p:'愛知県', x:250, y:165},
-                {p:'三重県', x:230, y:180}, {p:'滋賀県', x:230, y:155}, {p:'京都府', x:210, y:145}, {p:'大阪府', x:210, y:165}, {p:'兵庫県', x:190, y:145}, {p:'奈良県', x:210, y:185}, {p:'和歌山県', x:210, y:205},
-                {p:'鳥取県', x:170, y:145}, {p:'島根県', x:150, y:145}, {p:'岡山県', x:170, y:165}, {p:'広島県', x:150, y:165}, {p:'山口県', x:130, y:165},
-                {p:'徳島県', x:170, y:210}, {p:'香川県', x:170, y:190}, {p:'愛媛県', x:150, y:190}, {p:'高知県', x:150, y:210},
-                {p:'福岡県', x:95, y:175}, {p:'佐賀県', x:75, y:175}, {p:'長崎県', x:55, y:175}, {p:'熊本県', x:75, y:195}, {p:'大分県', x:95, y:195}, {p:'宮崎県', x:95, y:215}, {p:'鹿児島県', x:75, y:215}, {p:'沖縄県', x:10, y:215}
+                {p:'北海道', x:290, y:0, r:22}, 
+                {p:'青森県', x:305, y:65, r:11}, {p:'岩手県', x:315, y:85, r:11}, {p:'宮城県', x:315, y:105, r:11}, {p:'秋田県', x:290, y:85, r:11}, {p:'山形県', x:290, y:105, r:11}, {p:'福島県', x:305, y:125, r:11},
+                {p:'茨城県', x:330, y:155, r:10}, {p:'栃木県', x:310, y:150, r:10}, {p:'群馬県', x:290, y:150, r:10}, {p:'埼玉県', x:290, y:170, r:10}, {p:'千葉県', x:330, y:175, r:10}, {p:'東京都', x:310, y:170, r:11}, {p:'神奈川県', x:305, y:190, r:10},
+                {p:'新潟県', x:270, y:115, r:11}, {p:'富山県', x:250, y:120, r:10}, {p:'石川県', x:230, y:110, r:10}, {p:'福井県', x:225, y:135, r:10}, {p:'山梨県', x:275, y:175, r:10}, {p:'長野県', x:270, y:145, r:11}, {p:'岐阜県', x:250, y:150, r:11}, {p:'静岡県', x:280, y:195, r:10}, {p:'愛知県', x:255, y:175, r:11},
+                {p:'三重県', x:235, y:190, r:10}, {p:'滋賀県', x:235, y:160, r:10}, {p:'京都府', x:215, y:155, r:10}, {p:'大阪府', x:215, y:175, r:11}, {p:'兵庫県', x:195, y:160, r:11}, {p:'奈良県', x:220, y:195, r:10}, {p:'和歌山県', x:210, y:215, r:10},
+                {p:'鳥取県', x:170, y:155, r:10}, {p:'島根県', x:145, y:155, r:10}, {p:'岡山県', x:170, y:175, r:10}, {p:'広島県', x:145, y:175, r:11}, {p:'山口県', x:120, y:175, r:11},
+                {p:'徳島県', x:175, y:220, r:10}, {p:'香川県', x:175, y:200, r:10}, {p:'愛媛県', x:150, y:205, r:10}, {p:'高知県', x:155, y:225, r:10},
+                {p:'福岡県', x:85, y:185, r:12}, {p:'佐賀県', x:60, y:185, r:10}, {p:'長崎県', x:40, y:185, r:10}, {p:'熊本県', x:65, y:210, r:11}, {p:'大分県', x:90, y:205, r:10}, {p:'宮崎県', x:90, y:230, r:10}, {p:'鹿児島県', x:65, y:235, r:11}, {p:'沖縄県', x:15, y:240, r:10}
             ];
 
-            let svgHtml = `<svg viewBox="0 -5 365 245" width="100%" height="auto" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));">`;
+            let svgHtml = `<svg viewBox="0 -10 370 270" width="100%" height="auto">
+                <defs>
+                    <radialGradient id="gradVisited" cx="50%" cy="50%" r="50%">
+                        <stop offset="0%" stop-color="#34c759" />
+                        <stop offset="100%" stop-color="#007130" />
+                    </radialGradient>
+                </defs>`;
             
-            // 背景に薄い影用のブロックを敷く（奥行きを出す）
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
-                const bgColor = isVisited ? 'rgba(0, 113, 48, 0.1)' : '#f2f2f7';
-                const mainColor = isVisited ? 'var(--primary-color)' : '#e5e5ea';
-                const textColor = isVisited ? '#ffffff' : '#8e8e93';
-
+                const color = isVisited ? 'url(#gradVisited)' : '#e5e5ea';
+                const textColor = isVisited ? '#ffffff' : '#a1a1a6';
+                const fontSize = d.p === '北海道' ? 12 : 8; // 北海道だけ文字も大きく
+                
                 svgHtml += `
-                    <g style="transition: all 0.3s ease;">
-                        <rect x="${d.x}" y="${d.y + 1}" width="20" height="20" fill="${isVisited ? 'rgba(0,0,0,0.1)' : 'transparent'}" rx="5" />
-                        <rect x="${d.x}" y="${d.y}" width="20" height="20" fill="${mainColor}" rx="5" />
-                        <text x="${d.x + 10}" y="${d.y + 13}" font-size="7" font-weight="800" text-anchor="middle" fill="${textColor}" style="pointer-events:none; letter-spacing: -0.5px;">${d.p.substr(0, 2)}</text>
+                    <g opacity="${isVisited ? '1' : '0.8'}">
+                        <circle cx="${d.x}" cy="${d.y}" r="${d.r}" fill="${color}" stroke="${isVisited ? 'rgba(255,255,255,0.2)' : 'none'}" stroke-width="1" />
+                        <text x="${d.x}" y="${d.y + (fontSize/2.5)}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: sans-serif; letter-spacing:-0.5px;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
+
 
 
 function renderArtistManager() {
