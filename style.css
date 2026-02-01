@@ -14,7 +14,7 @@
 body {
     font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
     margin: 0;
-    padding: 0 0 100px 0;
+    padding: 0 0 80px 0; /* タブの高さに合わせて調整 */
     background-color: var(--bg-color);
     color: var(--text-main);
     line-height: 1.4;
@@ -31,14 +31,6 @@ header {
 
 h1 { margin: 0; font-size: 1.1rem; letter-spacing: 0.05em; }
 
-h2 {
-    font-size: 0.9rem;
-    color: var(--primary-color);
-    border-left: 4px solid var(--primary-color);
-    padding: 0 0 0 10px;
-    margin: 0 0 12px 0;
-}
-
 /* カード設定 */
 .card {
     background: var(--card-bg);
@@ -51,9 +43,7 @@ h2 {
 }
 
 /* フォーム要素 */
-.form-group input, 
-.form-group select, 
-textarea {
+input[type="text"], input[type="date"], select, textarea {
     display: block !important;
     width: 100% !important;
     max-width: 100% !important;
@@ -65,280 +55,64 @@ textarea {
     font-size: 16px;
     background-color: #f9f9f9;
 }
-
 textarea { height: auto !important; min-height: 80px; resize: none; }
 
-/* 日付入力のスマホ最適化 */
-#live-date, #edit-date { appearance: none; -webkit-appearance: none; position: relative; }
-input[type="date"]::-webkit-calendar-picker-indicator {
-    position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;
-}
-
 /* ボタン */
-button {
+button.primary-btn, button.accent-btn {
     width: 100%; padding: 12px;
     background: var(--primary-color); color: white;
     border: none; border-radius: 25px;
     font-size: 1rem; font-weight: bold;
     box-shadow: 0 3px 0 #004d21;
+    margin-bottom: 10px;
 }
 button:active { transform: translateY(2px); box-shadow: none; }
 
-/* タブバー */
+/* タブバー（高さ65px・境界線1本） */
 .tab-bar {
-    position: fixed; bottom: 0; width: 100%; height: 65px;
-    background-color: #007130 !important;
-    display: flex !important; z-index: 1000;
-    padding-bottom: env(safe-area-inset-bottom);
-    border-top: 1px solid #004d21 !important;
+    display: flex !important; position: fixed !important; bottom: 0; left: 0; right: 0;
+    height: 65px; background-color: var(--primary-color); z-index: 9999;
+    border-top: 1px solid rgba(255,255,255,0.3);
 }
 .tab-bar button {
-    flex: 1; background: none !important; border: none !important;
-    box-shadow: none !important; border-radius: 0 !important;
-    margin: 0 !important; display: flex !important;
-    flex-direction: column !important; align-items: center !important;
-    justify-content: center !important; color: #ffffff !important;
-    font-size: 0.7rem !important; width: 25% !important;
+    flex: 1; background: none; border: none; color: rgba(255,255,255,0.6);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative; padding: 0;
 }
-.tab-bar button:not(:last-child) { border-right: 1px solid rgba(255, 255, 255, 0.4) !important; }
+.tab-bar button:not(:last-child)::after {
+    content: ""; position: absolute; right: 0; top: 25%; height: 50%;
+    width: 0.5px; background-color: rgba(255,255,255,0.3);
+}
+.tab-bar .icon { font-size: 1.3rem; margin-bottom: 2px; filter: grayscale(1) brightness(2); }
+.tab-bar span:not(.icon) { font-size: 0.75rem; }
 .tab-bar button.active { background-color: #004d21 !important; color: #ffcc00 !important; }
-.tab-bar button span:first-child { font-size: 1.3rem !important; margin-bottom: 3px !important; }
 
-/* 履歴スリムカード */
-.live-item-detail {
-    padding: 8px 12px; margin: 4px 12px;
-    background: #f8f9fa; border-radius: 8px;
-    border-left: 4px solid #007130;
-    display: flex; align-items: center; gap: 12px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
-.live-date { font-size: 0.7rem; color: #888; width: 70px; flex-shrink: 0; }
-.live-info-text { display: flex; flex-direction: column; overflow: hidden; }
-.live-title { font-size: 0.9rem; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.live-venue { font-size: 0.75rem; color: #666; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-/* 統計ランキング */
-.stats-row {
-    display: flex; align-items: center; background: #fff;
-    margin-bottom: 8px; border-radius: 6px; overflow: hidden;
-    border: 1px solid #eee; height: 48px;
-}
-.stats-color-bar { width: 6px; height: 100%; flex-shrink: 0; }
-.stats-info { display: flex; align-items: center; width: 100%; padding: 0 12px; }
-.stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
-.stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-
-        /* --- モーダルを浮かせるための必須設定 --- */
-        .modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100vw !important;
-    height: 100vh !important;
-    background: rgba(0,0,0,0.8) !important;
-    z-index: 1000000 !important; /* ← 0を1つ増やして100万にしてください */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-        .modal-content {
-            background: #fff;
-            width: 90%;
-            max-width: 400px;
-            max-height: 80vh;
-            border-radius: 20px;
-            overflow-y: auto;
-            position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            padding: 0;
-        }
-        
-        .modal-header {
-    padding: 15px 20px !important; /* 左右に20pxの余裕を持たせる */
-    border-bottom: 1px solid #eee !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    background: #fff !important;
-    width: 100% !important; /* 箱いっぱいに広げる */
-    box-sizing: border-box !important; /* 余白を計算に含める */
-}
-
-/* タイトル自体の余白もリセット */
-#modal-title {
-    margin: 0 !important;
-    padding: 0 !important;
-    flex: 1 !important; /* 可能な限り広がる */
-    text-align: left !important;
-}
-
-
-        .modal-body { padding: 20px; }
-
-
-.close-btn {
-    background: #e5e5ea !important; /* 濃いめのグレーに変更 */
-    color: #333 !important; /* 文字色をハッキリ */
-    border: none !important;
-    border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    font-size: 1.2rem !important;
-    font-weight: bold !important;
-}
-
-.close-btn:active {
-    background: #d1d1d6 !important; /* 押した時にさらに濃く */
-}
-
-
-
-/* --- モーダル全体の背景（ポップアップを中央に浮かせる） --- */
+/* モーダル設定（最前面を保証） */
 .modal-overlay {
-    position: fixed !important;
-    top: 0 !important;
-    left: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    background: rgba(0,0,0,0.7) !important; /* 背景を暗く */
-    z-index: 10000 !important; /* 最前面に */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
+    position: fixed !important; top: 0 !important; left: 0 !important;
+    width: 100% !important; height: 100% !important;
+    background: rgba(0,0,0,0.7) !important;
+    z-index: 1000000 !important; 
+    display: flex !important; align-items: center !important; justify-content: center !important;
 }
-
-/* --- 白い箱のデザイン --- */
 .modal-content {
-    background: #ffffff !important;
-    width: 90% !important;
-    max-width: 400px !important;
-    border-radius: 20px !important;
-    overflow: hidden !important;
-    position: relative !important;
+    background: #ffffff !important; width: 90% !important; max-width: 400px !important;
+    border-radius: 20px !important; overflow: hidden !important; position: relative !important;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5) !important;
 }
-
 .modal-header {
-    padding: 15px 20px !important;
-    border-bottom: 1px solid #eee !important;
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    background: #fff !important;
+    padding: 15px 20px !important; border-bottom: 1px solid #eee !important;
+    display: flex !important; justify-content: space-between !important; align-items: center !important;
 }
-
-.modal-body {
-    padding: 20px !important;
-    max-height: 70vh !important;
-    overflow-y: auto !important;
-    background: #fff !important;
-}
-
 .close-btn {
-    background: #f0f0f2 !important;
-    border: none !important;
-    border-radius: 50% !important;
-    width: 32px !important;
-    height: 32px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
+    background: #444 !important; color: #fff !important;
+    border: none !important; border-radius: 50% !important;
+    width: 32px !important; height: 32px !important;
+    display: flex !important; align-items: center !important; justify-content: center !important;
+    font-weight: bold;
 }
 
-
-
-/* 隠したい時に使う設定 */
-.hidden {
-    display: none !important;
-}
-
-
-/* 管理画面 */
-/* アーティスト管理の行の設定 */
-/* ボタンを横に並べるための設定 */
-.artist-admin-row {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    padding: 12px 0 !important;
-    border-bottom: 1px solid #eee !important;
-}
-
-.btn-group {
-    display: flex !important;
-    gap: 8px !important; /* ボタンの隙間 */
-}
-
-/* 編集・削除ボタンの共通スタイル */
-.btn-mini {
-    width: 65px !important;
-    height: 32px !important;
-    font-size: 0.8rem !important;
-    padding: 0 !important;
-    border-radius: 6px !important;
-    box-shadow: none !important; /* 管理画面はスッキリさせる */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-}
-
-.btn-edit { background-color: #8e8e93 !important; }
-.btn-delete { background-color: #ff3b30 !important; }
-
-/* モーダルのバツボタン（目立たせる） */
-.close-btn {
-    background: #444 !important; /* 背景を思い切って暗く */
-    color: #fff !important; /* 文字を白に */
-    width: 32px !important;
-    height: 32px !important;
-    font-size: 1.2rem !important;
-    opacity: 1 !important;
-    z-index: 10001 !important;
-}
-
-/* 日本地図のコンテナ */
-.japan-map-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 20px auto;
-    padding: 10px;
-    background: #fff;
-    border-radius: 12px;
-}
-
-/* 都道府県ごとの基本色（未訪問） */
-.pref-path {
-    fill: #e0e0e0; /* 未訪問はグレー */
-    stroke: #ffffff;
-    stroke-width: 0.5;
-    transition: fill 0.3s;
-}
-
-/* 訪問済みの色（JRAグリーン） */
-.pref-visited {
-    fill: var(--primary-color) !important;
-}
-
-
-
-
-.accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
-
-/* タブの表示・非表示を制御する必須設定 */
+/* 隠し要素 */
+.hidden { display: none !important; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
-
-
-
-
-
-
-
-
