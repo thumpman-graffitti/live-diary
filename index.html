@@ -371,43 +371,55 @@
             const container = document.getElementById('japan-map');
             if (!container) return;
 
-            // p:県名, x,y:位置, r:サイズ(半径)
-            // 北海道を大きく(r:22)、他を標準(r:10〜12)で調整
+            // 基本の1マスのサイズ
+            const s = 22; 
+            // オフセット（全体の位置調整）
+            const ox = 20, oy = 20;
+
             const mapData = [
-                {p:'北海道', x:290, y:0, r:22}, 
-                {p:'青森県', x:305, y:65, r:11}, {p:'岩手県', x:315, y:85, r:11}, {p:'宮城県', x:315, y:105, r:11}, {p:'秋田県', x:290, y:85, r:11}, {p:'山形県', x:290, y:105, r:11}, {p:'福島県', x:305, y:125, r:11},
-                {p:'茨城県', x:330, y:155, r:10}, {p:'栃木県', x:310, y:150, r:10}, {p:'群馬県', x:290, y:150, r:10}, {p:'埼玉県', x:290, y:170, r:10}, {p:'千葉県', x:330, y:175, r:10}, {p:'東京都', x:310, y:170, r:11}, {p:'神奈川県', x:305, y:190, r:10},
-                {p:'新潟県', x:270, y:115, r:11}, {p:'富山県', x:250, y:120, r:10}, {p:'石川県', x:230, y:110, r:10}, {p:'福井県', x:225, y:135, r:10}, {p:'山梨県', x:275, y:175, r:10}, {p:'長野県', x:270, y:145, r:11}, {p:'岐阜県', x:250, y:150, r:11}, {p:'静岡県', x:280, y:195, r:10}, {p:'愛知県', x:255, y:175, r:11},
-                {p:'三重県', x:235, y:190, r:10}, {p:'滋賀県', x:235, y:160, r:10}, {p:'京都府', x:215, y:155, r:10}, {p:'大阪府', x:215, y:175, r:11}, {p:'兵庫県', x:195, y:160, r:11}, {p:'奈良県', x:220, y:195, r:10}, {p:'和歌山県', x:210, y:215, r:10},
-                {p:'鳥取県', x:170, y:155, r:10}, {p:'島根県', x:145, y:155, r:10}, {p:'岡山県', x:170, y:175, r:10}, {p:'広島県', x:145, y:175, r:11}, {p:'山口県', x:120, y:175, r:11},
-                {p:'徳島県', x:175, y:220, r:10}, {p:'香川県', x:175, y:200, r:10}, {p:'愛媛県', x:150, y:205, r:10}, {p:'高知県', x:155, y:225, r:10},
-                {p:'福岡県', x:85, y:185, r:12}, {p:'佐賀県', x:60, y:185, r:10}, {p:'長崎県', x:40, y:185, r:10}, {p:'熊本県', x:65, y:210, r:11}, {p:'大分県', x:90, y:205, r:10}, {p:'宮崎県', x:90, y:230, r:10}, {p:'鹿児島県', x:65, y:235, r:11}, {p:'沖縄県', x:15, y:240, r:10}
+                // 北海道は特大（2x2マス分を想定して配置）
+                {p:'北海道', x:ox+s*11, y:oy+s*0, big: true},
+                // 東北
+                {p:'青森県', x:ox+s*11, y:oy+s*2.5}, {p:'岩手県', x:ox+s*11, y:oy+s*3.5}, {p:'秋田県', x:ox+s*10, y:oy+s*3.5},
+                {p:'宮城県', x:ox+s*11, y:oy+s*4.5}, {p:'山形県', x:ox+s*10, y:oy+s*4.5}, {p:'福島県', x:ox+s*11, y:oy+s*5.5},
+                // 関東
+                {p:'茨城県', x:ox+s*12, y:oy+s*6.5}, {p:'栃木県', x:ox+s*11, y:oy+s*6.5}, {p:'群馬県', x:ox+s*10, y:oy+s*6.5},
+                {p:'埼玉県', x:ox+s*10, y:oy+s*7.5}, {p:'東京都', x:ox+s*11, y:oy+s*7.5}, {p:'千葉県', x:ox+s*12, y:oy+s*7.5}, {p:'神奈川県', x:ox+s*11, y:oy+s*8.5},
+                // 中部
+                {p:'新潟県', x:ox+s*9, y:oy+s*5}, {p:'富山県', x:ox+s*8, y:oy+s*5}, {p:'石川県', x:ox+s*7, y:oy+s*5},
+                {p:'福井県', x:ox+s*7, y:oy+s*6}, {p:'長野県', x:ox+s*9, y:oy+s*6}, {p:'山梨県', x:ox+s*9, y:oy+s*7.5},
+                {p:'岐阜県', x:ox+s*8, y:oy+s*6.5}, {p:'愛知県', x:ox+s*8, y:oy+s*7.5}, {p:'静岡県', x:ox+s*9, y:oy+s*8.5},
+                // 近畿
+                {p:'滋賀県', x:ox+s*7, y:oy+s*7}, {p:'三重県', x:ox+s*7, y:oy+s*8}, {p:'京都府', x:ox+s*6, y:oy+s*6.5},
+                {p:'大阪府', x:ox+s*6, y:oy+s*7.5}, {p:'兵庫県', x:ox+s*5, y:oy+s*6.5}, {p:'奈良県', x:ox+s*6, y:oy+s*8.5}, {p:'和歌山県', x:ox+s*6, y:oy+s*9.5},
+                // 中国
+                {p:'鳥取県', x:ox+s*4, y:oy+s*6.5}, {p:'島根県', x:ox+s*3, y:oy+s*6.5}, {p:'岡山県', x:ox+s*4, y:oy+s*7.5}, {p:'広島県', x:ox+s*3, y:oy+s*7.5}, {p:'山口県', x:ox+s*2, y:oy+s*7.5},
+                // 四国
+                {p:'香川県', x:ox+s*4, y:oy+s*9}, {p:'徳島県', x:ox+s*4, y:oy+s*10}, {p:'愛媛県', x:ox+s*3, y:oy+s*9}, {p:'高知県', x:ox+s*3, y:oy+s*10},
+                // 九州・沖縄
+                {p:'福岡県', x:ox+s*1, y:oy+s*8}, {p:'佐賀県', x:ox+s*0, y:oy+s*8}, {p:'長崎県', x:ox+s*0, y:oy+s*9},
+                {p:'大分県', x:ox+s*1, y:oy+s*9}, {p:'熊本県', x:ox+s*1, y:oy+s*10}, {p:'宮崎県', x:ox+s*1, y:oy+s*11}, {p:'鹿児島県', x:ox+s*0, y:oy+s*10.5},
+                {p:'沖縄県', x:ox+s*0, y:oy+s*12.5}
             ];
 
-            let svgHtml = `<svg viewBox="0 -10 370 270" width="100%" height="auto">
-                <defs>
-                    <radialGradient id="gradVisited" cx="50%" cy="50%" r="50%">
-                        <stop offset="0%" stop-color="#34c759" />
-                        <stop offset="100%" stop-color="#007130" />
-                    </radialGradient>
-                </defs>`;
+            let svgHtml = `<svg viewBox="0 0 350 320" width="100%" height="auto">`;
             
             mapData.forEach(d => {
                 const isVisited = visited.includes(d.p);
-                const color = isVisited ? 'url(#gradVisited)' : '#e5e5ea';
-                const textColor = isVisited ? '#ffffff' : '#a1a1a6';
-                const fontSize = d.p === '北海道' ? 12 : 8; // 北海道だけ文字も大きく
-                
+                const color = isVisited ? 'var(--primary-color)' : '#f2f2f7';
+                const textColor = isVisited ? '#ffffff' : '#8e8e93';
+                const size = d.big ? s * 1.8 : s * 0.9; // 北海道だけ大きく
+                const radius = d.big ? 8 : 4;
+
                 svgHtml += `
-                    <g opacity="${isVisited ? '1' : '0.8'}">
-                        <circle cx="${d.x}" cy="${d.y}" r="${d.r}" fill="${color}" stroke="${isVisited ? 'rgba(255,255,255,0.2)' : 'none'}" stroke-width="1" />
-                        <text x="${d.x}" y="${d.y + (fontSize/2.5)}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: sans-serif; letter-spacing:-0.5px;">${d.p.charAt(0)}</text>
+                    <g>
+                        <rect x="${d.x}" y="${d.y}" width="${size}" height="${size}" fill="${color}" rx="${radius}" />
+                        <text x="${d.x + size/2}" y="${d.y + size/2 + 3}" font-size="${d.big ? 12 : 8}" font-weight="bold" text-anchor="middle" fill="${textColor}" style="pointer-events:none;">${d.p.charAt(0)}</text>
                     </g>`;
             });
             
             container.innerHTML = svgHtml + `</svg>`;
         }
-
 
 
 function renderArtistManager() {
