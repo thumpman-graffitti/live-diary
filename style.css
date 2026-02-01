@@ -163,14 +163,27 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .stats-rank { font-size: 0.8rem; color: #888; width: 35px; }
 .stats-name { flex-grow: 1; font-weight: bold; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-
 .close-btn {
-    position: sticky; top: 12px; margin-left: auto; margin-right: 12px;
-    width: 32px; height: 32px; background: #f0f0f0; border-radius: 50%;
-    border: none; font-size: 18px; display: flex; align-items: center;
-    justify-content: center; z-index: 100;
+    position: sticky; 
+    top: 12px; 
+    margin-left: auto; 
+    margin-right: 12px;
+    width: 32px; height: 32px; 
+    background: #f0f0f0; 
+    border-radius: 50%;
+    border: none; 
+    font-size: 18px; 
+    display: flex; 
+    align-items: center;
+    justify-content: center; 
+    z-index: 101; /* bodyより上に */
 }
-.modal-body { padding: 0 20px 20px 20px; }
+
+.modal-body { padding: 0 20px 20px 20px;
+   /* --- 追加：スクロール設定 --- */
+    overflow-y: auto; /* 縦方向にスクロールさせる */
+    -webkit-overflow-scrolling: touch; /* iPhoneでのスクロールを滑らかにする */
+}
 
 
 /* モーダルを「浮いているポップアップ」にするための設定 */
@@ -194,6 +207,10 @@ button:active { transform: translateY(2px); box-shadow: none; }
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        /* --- 追加：はみ出し防止 --- */
+    max-height: 85vh; /* 画面の高さの85%を最大とする */
+    display: flex;
+    flex-direction: column;
 }
 
 /* 隠したい時に使う設定 */
