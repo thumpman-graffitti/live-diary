@@ -598,11 +598,12 @@ function renderArtistManager() {
             if(document.getElementById('page-history').classList.contains('active')) renderHistory();
         }
 
-let selectedThemeColor = '#007130'; // デフォルトはJRAグリーン
+// --- シェアレポート用：ここから ---
+let selectedThemeColor = '#007130'; 
 
 function openShareModal() {
     document.getElementById('share-modal').classList.remove('hidden');
-    toggleShareFilter(); // 初期表示の更新
+    toggleShareFilter();
 }
 
 function closeShareModal() {
@@ -611,23 +612,93 @@ function closeShareModal() {
 
 function setTheme(color) {
     selectedThemeColor = color;
-    // プレビューボタンなどの色をリアルタイムに変えても面白いです
+    // プレビューボタンの色を推し色に変える演出
+    const btn = document.querySelector('#share-modal .accent-btn');
+    if(btn) btn.style.background = color;
 }
 
 function toggleShareFilter() {
     const type = document.getElementById('share-type').value;
     const detail = document.getElementById('share-filter-detail');
+    if(!detail) return;
     detail.innerHTML = '';
 
     if (type === 'annual') {
         const years = [...new Set(db.lives.map(l => l.date.split('-')[0]))].sort().reverse();
-        detail.innerHTML = `<select id="filter-year">${years.map(y => `<option value="${y}">${y}年</option>`).join('')}</select>`;
+        detail.innerHTML = `<select id="filter-year" style="margin-top:10px;">${years.length ? years.map(y => `<option value="${y}">${y}年</option>`).join('') : '<option value="">履歴なし</option>'}</select>`;
     } else if (type === 'monthly') {
-        detail.innerHTML = `<input type="month" id="filter-month" value="${new Date().toISOString().slice(0, 7)}">`;
+        detail.innerHTML = `<input type="month" id="filter-month" value="${new Date().toISOString().slice(0, 7)}" style="margin-top:10px;">`;
     } else if (type === 'artist') {
-        detail.innerHTML = `<select id="filter-artist">${db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('')}</select>`;
+        detail.innerHTML = `<select id="filter-artist" style="margin-top:10px;">${db.artists.length ? db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('') : '<option value="">アーティストなし</option>'}</select>`;
     }
 }
+
+// プレビューボタンを押した時の処理
+function generateReport() {
+    const type = document.getElementById('share-type').value;
+    let filteredLives = [];
+
+    // フィルタリング
+    if (type === 'all') {
+        filteredLives = db.lives;
+    } else if (type === 'annual') {
+        const year = document.getElementById('filter-year').value;
+        filteredLives = db.lives.filter(l => l.date.startsWith(year));
+    } else if (type === 'monthly') {
+        const month = document.getElementById('filter-month').value;
+        filteredLives = db.lives.filter(l => l.date.startsWith(month));
+    } else if (type === 'artist') {
+        const artist = document.getElementById('filter-artist').value;
+        filteredLives = db.lives.filter(l => l.artist === artist);
+    }
+
+    if (filteredLives.length === 0) {
+        alert("選択された期間のデータがありません！");
+        return;
+    }
+
+    // データ集計
+    const stats = calculateReportStats(filteredLives);
+    
+    // まだレポートの見た目を作っていないので、一旦アラートで結果を出します
+    alert(`【集計結果】\n総公演数: ${stats.totalLives}回\n最も行った会場: ${stats.topVenue}`);
+}
+
+function calculateReportStats(lives) {
+    const songCounts = {};
+    let totalSongs = 0;
+    const venueCounts = {};
+    const prefCounts = {};
+    const artistCounts = {};
+
+    lives.forEach(l => {
+        // 会場
+        if(l.venue) venueCounts[l.venue] = (venueCounts[l.venue] || 0) + 1;
+        // 都道府県
+        if(l.pref) prefCounts[l.pref] = (prefCounts[l.pref] || 0) + 1;
+        // アーティスト
+        artistCounts[l.artist] = (artistCounts[l.artist] || 0) + 1;
+        // セットリスト曲
+        if (l.setlist) {
+            totalSongs += l.setlist.length;
+            l.setlist.forEach(s => songCounts[s] = (songCounts[s] || 0) + 1);
+        }
+    });
+
+    const getTop = (obj) => Object.entries(obj).sort((a,b) => b[1] - a[1])[0]?.[0] || "-";
+
+    return {
+        totalLives: lives.length,
+        totalSongs: totalSongs,
+        totalPrefs: Object.keys(prefCounts).length,
+        topSong: getTop(songCounts),
+        topVenue: getTop(venueCounts),
+        topPref: getTop(prefCounts),
+        topArtist: getTop(artistCounts)
+    };
+}
+// --- シェアレポート用：ここまで ---
+
 
 
         function deleteArtist(n) { if(confirm('削除しますか？')){ db.artists=db.artists.filter(a=>a!==n); db.lives=db.lives.filter(l=>l.artist!==n); save(); renderArtistManager(); } }
