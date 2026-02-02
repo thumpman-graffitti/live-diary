@@ -166,37 +166,40 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 /* --- 修正後：閉じるボタン（日付に被らないように配置） --- */
 .close-btn {
-    position: absolute !important; /* 箱の右上を基準にする */
-    top: 12px;
-    right: 12px;
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
     width: 30px !important;
     height: 30px !important;
-    background: var(--primary-color) !important; /* 画像の通り緑色にするならこれ */
-    color: #fff !important;
+    background: #f0f0f0 !important;
     border-radius: 50% !important;
     border: none !important;
-    font-size: 1.2rem !important;
+    font-size: 18px !important;
     display: flex !important;
     align-items: center;
     justify-content: center;
-    z-index: 10;
+    z-index: 10001 !important; /* 中身より上に */
     cursor: pointer;
 }
 
-/* --- 修正後：モーダルの中身（タイトル部分の余白を確保） --- */
-.modal-body {
-    padding: 45px 20px 20px 20px !important; /* 上の余白(45px)を増やして「ライブ詳細」やボタンと被らないようにする */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch;
+
+
+/* モーダル内のタイトル（ライブ詳細） */
+#modal-title {
+    display: block !important;
+    padding: 20px 20px 10px 20px !important; /* 上と左右に余白 */
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    color: var(--text-main);
+    text-align: left !important;
 }
 
-/* 「ライブ詳細」というタイトルの位置を調整 */
-#modal-title {
-    display: block;
-    font-weight: bold;
-    font-size: 1.1rem;
-    padding: 15px 20px 0 20px; /* 上と左に余裕を持たせる */
-    color: var(--text-main);
+/* フォーム全体 */
+.modal-body {
+    padding: 0 20px 20px 20px !important; /* 上の余白をリセット */
+    max-height: calc(85vh - 60px); /* タイトル分を除いた高さ */
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch;
 }
 
 
@@ -215,17 +218,16 @@ button:active { transform: translateY(2px); box-shadow: none; }
 /* ポップアップの白い箱の設定 */
 .modal-content {
     background: #fff;
-    width: 90%;
+    width: 95%; /* 少し広げて視認性をアップ */
     max-width: 400px;
     border-radius: 20px;
     overflow: hidden;
     position: relative;
     box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        /* --- 追加：はみ出し防止 --- */
-    max-height: 85vh; /* 画面の高さの85%を最大とする */
-    display: flex;
-    flex-direction: column;
+    max-height: 85vh;
+    display: block !important; /* flexから変更 */
 }
+
 
 /* 隠したい時に使う設定 */
 .hidden {
