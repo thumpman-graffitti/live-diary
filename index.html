@@ -100,7 +100,7 @@
 
 <body>
 
-    <header>LIVE DIARY4🍊</header>
+    <header>LIVE DIARY5🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -222,7 +222,13 @@
         const refinedColors = ['#007130', '#34c759', '#30b0c7', '#007aff', '#5856d6', '#ff3b30', '#ff9500'];
         const prefOrder = ["北海道","青森県","岩手県","宮城県","秋田県","山形県","福島県","茨城県","栃木県","群馬県","埼玉県","千葉県","東京都","神奈川県","新潟県","富山県","石川県","福井県","山梨県","長野県","岐阜県","静岡県","愛知県","三重県","滋賀県","京都府","大阪府","兵庫県","奈良県","和歌山県","鳥取県","島根県","岡山県","広島県","山口県","徳島県","香川県","愛媛県","高知県","福岡県","佐賀県","長崎県","熊本県","大分県","宮崎県","鹿児島県","沖縄県","海外"];
 
-        window.onload = () => { updateArtistSelect(); showPage('home'); document.getElementById('live-date').value = new Date().toISOString().split('T')[0]; };
+window.onload = () => { 
+    updateArtistSelect(); 
+    updateVenueSuggestions(); // ← これを追加
+    showPage('home'); 
+    document.getElementById('live-date').value = new Date().toISOString().split('T')[0]; 
+};
+
         function save() { localStorage.setItem('live_app_db', JSON.stringify(db)); }
 
         function showPage(id) {
@@ -252,7 +258,7 @@ function updateVenueSuggestions() {
     if (!venueListElement) return;
 
     // 全てのライブ履歴から会場名を取得し、重複を削除してソート
-    const venues = [...new Set(lives.map(live => live.venue))]
+    const venues = [...new Set(db.lives.map(live => live.venue))]
         .filter(venue => venue && venue.trim() !== "")
         .sort();
 
@@ -271,7 +277,8 @@ function updateVenueSuggestions() {
             const day = document.getElementById('live-date').value;
             if(!art || !day) return alert('入力不足');
             db.lives.push({ id:Date.now(), artist:art, date:day, name:document.getElementById('live-name').value, venue:document.getElementById('live-venue').value, pref:document.getElementById('live-pref').value, memo:document.getElementById('live-memo').value, setlist:[] });
-            save(); 
+            save();
+            updateVenueSuggestions(); // ← 登録後に最新の会場をリストに反映
                         // --- ここから入力エリアの初期化処理を追加 ---
             document.getElementById('live-artist-select').value = '';
             document.getElementById('live-name').value = '';
@@ -344,7 +351,9 @@ function updateVenueSuggestions() {
             l.venue = document.getElementById('edit-venue').value;
             l.memo = document.getElementById('edit-memo').value;
             l.setlist = document.getElementById('edit-setlist').value.split('\n').filter(s=>s.trim());
-            save(); closeModal(); renderHistory();
+            save();
+            updateVenueSuggestions(); // ← 編集した会場名をリストに反映
+            closeModal(); renderHistory();
         }
 
         function deleteLive() { if(confirm('削除しますか？')){ db.lives=db.lives.filter(x=>x.id!==currentId); save(); closeModal(); renderHistory(); } }
