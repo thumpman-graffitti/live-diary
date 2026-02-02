@@ -191,7 +191,10 @@ button:active { transform: translateY(2px); box-shadow: none; }
     right: 10px !important;
     width: 30px !important;
     height: 30px !important;
-    background: #f0f0f0 !important;
+        /* --- ここを修正：背景をメインカラーの緑に --- */
+    background-color: var(--primary-color) !important; 
+    color: #ffffff !important; /* バツ印を白に */
+    
     border-radius: 50% !important;
     border: none !important;
     font-size: 18px !important;
