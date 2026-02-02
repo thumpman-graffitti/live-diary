@@ -128,9 +128,16 @@
         </div>
 
         <div id="page-history" class="tab-content"><div id="history-list"></div></div>
-        
-        
         <div id="page-stats" class="tab-content">
+            
+            <div id="page-stats" class="tab-content">
+    <div class="card" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; margin-bottom: 20px;">
+        <button onclick="openShareModal()" style="width: 100%; background: none; border: none; color: #fff; font-weight: 800; font-size: 1.1rem; padding: 10px; cursor: pointer;">
+            ✨ シェア用レポートを生成する
+        </button>
+    </div>
+    
+            
     <div class="card">
         <div style="max-width: 200px; margin: 0 auto; position: relative;">
             <canvas id="artistChart"></canvas>
@@ -201,6 +208,40 @@
             </div>
         </div>
     </div>
+
+
+<div id="share-modal" class="modal-overlay hidden" onclick="closeShareModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <div class="modal-header">
+            <h3 style="margin:0;">レポート設定</h3>
+            <button onclick="closeShareModal()" class="close-btn">✕</button>
+        </div>
+        <div class="modal-body">
+            <span class="section-title">1. 集計範囲を選ぶ</span>
+            <select id="share-type" onchange="toggleShareFilter()">
+                <option value="all">全期間 (All Time)</option>
+                <option value="annual">年間 (Yearly)</option>
+                <option value="monthly">月間 (Monthly)</option>
+                <option value="artist">アーティスト別</option>
+            </select>
+            
+            <div id="share-filter-detail" style="margin-bottom: 15px;"></div>
+
+            <span class="section-title">2. 推し色（テーマ）を選ぶ</span>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;">
+                <button onclick="setTheme('#007130')" style="width:30px; height:30px; background:#007130; border-radius:50%; border:2px solid #fff;"></button>
+                <button onclick="setTheme('#ff3b30')" style="width:30px; height:30px; background:#ff3b30; border-radius:50%; border:2px solid #fff;"></button>
+                <button onclick="setTheme('#007aff')" style="width:30px; height:30px; background:#007aff; border-radius:50%; border:2px solid #fff;"></button>
+                <button onclick="setTheme('#ffcc00')" style="width:30px; height:30px; background:#ffcc00; border-radius:50%; border:2px solid #fff;"></button>
+                <button onclick="setTheme('#af52de')" style="width:30px; height:30px; background:#af52de; border-radius:50%; border:2px solid #fff;"></button>
+                <input type="color" id="custom-theme-color" onchange="setTheme(this.value)" style="width:30px; height:30px; padding:0; border:none; background:none;">
+            </div>
+
+            <button onclick="generateReport()" class="accent-btn" style="background: var(--primary-color);">プレビューを表示</button>
+        </div>
+    </div>
+</div>
+
 
 
     <nav class="tab-bar">
@@ -556,6 +597,38 @@ function renderArtistManager() {
             renderArtistManager();
             if(document.getElementById('page-history').classList.contains('active')) renderHistory();
         }
+
+let selectedThemeColor = '#007130'; // デフォルトはJRAグリーン
+
+function openShareModal() {
+    document.getElementById('share-modal').classList.remove('hidden');
+    toggleShareFilter(); // 初期表示の更新
+}
+
+function closeShareModal() {
+    document.getElementById('share-modal').classList.add('hidden');
+}
+
+function setTheme(color) {
+    selectedThemeColor = color;
+    // プレビューボタンなどの色をリアルタイムに変えても面白いです
+}
+
+function toggleShareFilter() {
+    const type = document.getElementById('share-type').value;
+    const detail = document.getElementById('share-filter-detail');
+    detail.innerHTML = '';
+
+    if (type === 'annual') {
+        const years = [...new Set(db.lives.map(l => l.date.split('-')[0]))].sort().reverse();
+        detail.innerHTML = `<select id="filter-year">${years.map(y => `<option value="${y}">${y}年</option>`).join('')}</select>`;
+    } else if (type === 'monthly') {
+        detail.innerHTML = `<input type="month" id="filter-month" value="${new Date().toISOString().slice(0, 7)}">`;
+    } else if (type === 'artist') {
+        detail.innerHTML = `<select id="filter-artist">${db.artists.sort().map(a => `<option value="${a}">${a}</option>`).join('')}</select>`;
+    }
+}
+
 
         function deleteArtist(n) { if(confirm('削除しますか？')){ db.artists=db.artists.filter(a=>a!==n); db.lives=db.lives.filter(l=>l.artist!==n); save(); renderArtistManager(); } }
         function exportData() { const blob = new Blob([JSON.stringify(db)], {type:'application/json'}); const a = document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='livelog.json'; a.click(); }
