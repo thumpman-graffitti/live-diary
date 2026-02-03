@@ -108,40 +108,46 @@
 .report-footer { margin-top: 25px; text-align: right; font-size: 0.7rem; font-weight: bold; opacity: 0.5; }
 
 /* --- モーダル内のレイアウト微調整 --- */
+/* モーダルヘッダー全体の高さを固定し、中身を中央に揃える */
 #share-modal .modal-header {
-    padding: 15px;
+    height: 60px; /* 高さをしっかり確保 */
+    padding: 0 16px; 
     border-bottom: 1px solid #eee;
     display: flex;
-    justify-content: center; /* タイトルを中央に */
-    align-items: center;
-    position: relative; /* ✕ボタンの基準にする */
+    align-items: center;    /* 縦方向の中央 */
+    justify-content: center; /* 横方向の中央 */
+    position: relative;
+    box-sizing: border-box;
 }
 
+/* タイトルの余白をリセット */
 #share-modal .modal-header h3 {
     margin: 0;
+    line-height: 1; /* 行の高さを揃える */
     font-size: 1.1rem;
-    font-weight: 800;
-    color: #333;
 }
 
+/* バツボタンをヘッダーの高さの真ん中に配置 */
 #share-modal .close-btn {
-    position: absolute; /* 右端に固定 */
+    position: absolute;
     right: 12px;
     top: 50%;
-    transform: translateY(-50%);
-    background: #f0f0f5; /* JRA風の薄いグレーの円 */
+    transform: translateY(-50%); /* これで垂直中央になります */
+    background: #f0f0f5;
     border: none;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #8e8e93;
-    font-size: 1rem;
+    font-size: 1.2rem;
     cursor: pointer;
     padding: 0;
+    line-height: 1;
 }
+
 
 #share-modal .modal-body {
     padding: 24px 20px; /* 全体的にゆとりを持たせる */
