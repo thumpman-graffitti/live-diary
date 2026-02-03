@@ -169,7 +169,7 @@
 
 <body>
 
-    <header>LIVE DIARY2🍊</header>
+    <header>LIVE DIARY3🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -278,26 +278,25 @@
     </div>
 
 
-
 <div id="share-modal" class="modal-overlay hidden" onclick="closeShareModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
             <h3>レポート設定</h3>
-            <button onclick="closeShareModal()" class="close-btn">✕</button>
+            <button onclick="closeShareModal()" class="close-btn">×</button>
         </div>
         
         <div class="modal-body">
-            <span class="section-title">1. 集計範囲を選ぶ</span>
-            <select id="share-type" onchange="toggleShareFilter()">
-                <option value="all">全期間 (All Time)</option>
-                <option value="annual">年間 (Yearly)</option>
-                <option value="monthly">月間 (Monthly)</option>
-                <option value="artist">アーティスト別</option>
-            </select>
+            <span class="section-title">1. 集計期間（Period）</span>
+            <select id="share-period-type">
+                <option value="all">ALL TIME（全期間）</option>
+                </select>
             
-            <div id="share-filter-detail" style="margin-bottom: 15px;"></div>
+            <span class="section-title" style="margin-top:15px;">2. アーティスト（Artist）</span>
+            <select id="share-artist-type">
+                <option value="all">ALL Artists（全対象）</option>
+                </select>
 
-            <span class="section-title">2. 推し色（テーマ）を選ぶ</span>
+            <span class="section-title" style="margin-top:20px;">3. 推し色（テーマ）を選ぶ</span>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; justify-content: flex-start; align-items: center;">
                 <button onclick="setTheme('#007130')" style="width:34px; height:34px; background:#007130; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
                 <button onclick="setTheme('#ff3b30')" style="width:34px; height:34px; background:#ff3b30; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
@@ -314,6 +313,7 @@
         </div>
     </div>
 </div>
+
 
 
 <div id="report-preview-overlay" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
@@ -677,10 +677,27 @@ function renderArtistManager() {
 // --- シェアレポート用：ここから ---
 let selectedThemeColor = '#007130'; 
 
+// モーダルを開く際に選択肢を最新にする
 function openShareModal() {
+    // 期間（年）の選択肢を自動生成
+    const periodSelect = document.getElementById('share-period-type');
+    const years = [...new Set(db.lives.map(l => l.date.split('-')[0]))].sort().reverse();
+    
+    periodSelect.innerHTML = '<option value="all">ALL TIME（全期間）</option>';
+    years.forEach(y => {
+        if(y) periodSelect.innerHTML += `<option value="${y}">${y}年 (Yearly)</option>`;
+    });
+
+    // アーティストの選択肢を自動生成
+    const artistSelect = document.getElementById('share-artist-type');
+    artistSelect.innerHTML = '<option value="all">ALL Artists（全対象）</option>';
+    db.artists.sort().forEach(a => {
+        artistSelect.innerHTML += `<option value="${a}">${a}</option>`;
+    });
+
     document.getElementById('share-modal').classList.remove('hidden');
-    toggleShareFilter();
 }
+
 
 function closeShareModal() {
     document.getElementById('share-modal').classList.add('hidden');
@@ -710,39 +727,39 @@ function toggleShareFilter() {
 }
 
 // プレビューボタンを押した時の処理
+// フィルタリングしてレポートを生成
 function generateReport() {
-    const type = document.getElementById('share-type').value;
-    let filteredLives = [];
+    const selectedYear = document.getElementById('share-period-type').value;
+    const selectedArtist = document.getElementById('share-artist-type').value;
+    
+    let filteredLives = db.lives;
 
-    // フィルタリング
-    if (type === 'all') {
-        filteredLives = db.lives;
-    } else if (type === 'annual') {
-        const year = document.getElementById('filter-year').value;
-        filteredLives = db.lives.filter(l => l.date.startsWith(year));
-    } else if (type === 'monthly') {
-        const month = document.getElementById('filter-month').value;
-        filteredLives = db.lives.filter(l => l.date.startsWith(month));
-    } else if (type === 'artist') {
-        const artist = document.getElementById('filter-artist').value;
-        filteredLives = db.lives.filter(l => l.artist === artist);
+    // 期間で絞り込み
+    if (selectedYear !== 'all') {
+        filteredLives = filteredLives.filter(l => l.date.startsWith(selectedYear));
+    }
+
+    // アーティストで絞り込み
+    if (selectedArtist !== 'all') {
+        filteredLives = filteredLives.filter(l => l.artist === selectedArtist);
     }
 
     if (filteredLives.length === 0) {
-        alert("選択された期間のデータがありません！");
+        alert("該当するデータがありません！");
         return;
     }
 
-    // データ集計
     const stats = calculateReportStats(filteredLives);
-    // --- ここから書き換え ---
     const container = document.getElementById('report-card-container');
-    const periodText = document.getElementById('share-type').options[document.getElementById('share-type').selectedIndex].text;
+    
+    // カード内のテキスト表示用
+    const periodDisplay = selectedYear === 'all' ? 'ALL TIME' : selectedYear;
+    const artistDisplay = selectedArtist === 'all' ? 'ALL ARTISTS' : selectedArtist;
 
     container.innerHTML = `
         <div class="report-header" style="border-color: ${selectedThemeColor}">
             <div class="report-title" style="color: ${selectedThemeColor}">LIVE REPORT</div>
-            <div class="report-period">${periodText} の記録</div>
+            <div class="report-period">${periodDisplay} / ${artistDisplay}</div>
         </div>
         <div class="report-grid">
             <div class="report-item"><span class="report-label">公演数</span><span class="report-value">${stats.totalLives}回</span></div>
