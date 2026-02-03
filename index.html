@@ -306,7 +306,7 @@
     <button onclick="setTheme('#34c759')" title="黄緑" style="width:34px; height:34px; background:#34c759; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
     <button onclick="setTheme('#ff2d55')" title="ピンク" style="width:34px; height:34px; background:#ff2d55; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
     <button onclick="setTheme('#ffcc00')" title="黄色" style="width:34px; height:34px; background:#ffcc00; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-    <button onclick="setTheme('#ffffff')" title="白" style="width:34px; height:34px; background:#ffffff; border-radius:50%; border:2px solid #ddd; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#ffffff')" title="白" style="width:34px; height:34px; background:#ffffff; border-radius:50%; border:1px solid #c7c7cc; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1), 0 2px 4px rgba(0,0,0,0.1);"></button>
 
     <div style="display:flex; flex-direction:column; align-items:center; margin-left:5px; border-left:1px solid #eee; padding-left:10px;">
         <input type="color" id="custom-theme-color" onchange="setTheme(this.value)" style="width:34px; height:34px; padding:0; border:none; background:none; cursor:pointer;">
@@ -710,9 +710,23 @@ function closeShareModal() {
 
 function setTheme(color) {
     selectedThemeColor = color;
-    // プレビューボタンの色を推し色に変える演出
     const btn = document.querySelector('#share-modal .accent-btn');
-    if(btn) btn.style.background = color;
+    if(btn) {
+        btn.style.background = color;
+        
+        // 色の明るさを判定して、文字色を黒か白に自動で切り替える
+        const c = color.replace('#', '');
+        const r = parseInt(c.substr(0,2), 16);
+        const g = parseInt(c.substr(2,2), 16);
+        const b = parseInt(c.substr(4,2), 16);
+        const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+        
+        // 明るい色のときは文字を黒(#333)、暗い色のときは白に
+        btn.style.color = brightness > 150 ? '#333' : '#fff';
+        
+        // 白のときだけボタンに薄い枠線をつける（プレビューボタン用）
+        btn.style.border = brightness > 240 ? '1px solid #ccc' : 'none';
+    }
 }
 
 function toggleShareFilter() {
@@ -763,7 +777,9 @@ function generateReport() {
 
     container.innerHTML = `
         <div class="report-header" style="border-color: ${selectedThemeColor}">
-            <div class="report-title" style="color: ${selectedThemeColor}">LIVE REPORT</div>
+        // generateReport関数内の、container.innerHTML の一部を修正
+            <div class="report-title" style="color: ${selectedThemeColor}; filter: brightness(0.8);">LIVE REPORT</div>
+
             <div class="report-period">${periodDisplay} / ${artistDisplay}</div>
         </div>
         <div class="report-grid">
