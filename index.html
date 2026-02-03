@@ -107,18 +107,20 @@
 .report-value { font-size: 1.1rem; font-weight: 800; color: #333; }
 .report-footer { margin-top: 25px; text-align: right; font-size: 0.7rem; font-weight: bold; opacity: 0.5; }
 
-/* --- モーダル内のレイアウト微調整 --- */
-/* モーダルヘッダー全体の高さを固定し、中身を中央に揃える */
+
+/* モーダルヘッダー自体の高さを広げて、バツボタンを「内側」に収容する */
 #share-modal .modal-header {
-    height: 60px; /* 高さをしっかり確保 */
-    padding: 0 16px; 
+    height: 70px; /* 60から70に広げて余裕を持たせる */
+    padding: 0 16px;
     border-bottom: 1px solid #eee;
     display: flex;
-    align-items: center;    /* 縦方向の中央 */
-    justify-content: center; /* 横方向の中央 */
+    align-items: center;    /* 文字を縦中央に */
+    justify-content: center; /* 文字を横中央に */
     position: relative;
+    background: white;
     box-sizing: border-box;
 }
+
 
 /* タイトルの余白をリセット */
 #share-modal .modal-header h3 {
@@ -127,26 +129,27 @@
     font-size: 1.1rem;
 }
 
-/* バツボタンをヘッダーの高さの真ん中に配置 */
+/* バツボタンの設定 */
 #share-modal .close-btn {
     position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%); /* これで垂直中央になります */
+    right: 15px;
+    /* top: 50% をやめて、上からの距離を直接指定して固定する */
+    top: 20px; 
     background: #f0f0f5;
     border: none;
-    width: 32px;
-    height: 32px;
+    width: 30px;
+    height: 30px;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: #8e8e93;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     cursor: pointer;
     padding: 0;
     line-height: 1;
 }
+
 
 
 #share-modal .modal-body {
