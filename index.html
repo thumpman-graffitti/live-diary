@@ -296,18 +296,23 @@
                 <option value="all">ALL Artists（全対象）</option>
                 </select>
 
-            <span class="section-title" style="margin-top:20px;">3. 推し色（テーマ）を選ぶ</span>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; justify-content: flex-start; align-items: center;">
-                <button onclick="setTheme('#007130')" style="width:34px; height:34px; background:#007130; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-                <button onclick="setTheme('#ff3b30')" style="width:34px; height:34px; background:#ff3b30; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-                <button onclick="setTheme('#007aff')" style="width:34px; height:34px; background:#007aff; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-                <button onclick="setTheme('#ffcc00')" style="width:34px; height:34px; background:#ffcc00; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-                <button onclick="setTheme('#af52de')" style="width:34px; height:34px; background:#af52de; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
-                <div style="display:flex; flex-direction:column; align-items:center;">
-                    <input type="color" id="custom-theme-color" onchange="setTheme(this.value)" style="width:34px; height:34px; padding:0; border:none; background:none; cursor:pointer;">
-                    <span style="font-size:0.6rem; color:#8e8e93;">自由色</span>
-                </div>
-            </div>
+
+<span class="section-title" style="margin-top:20px;">3. 推し色（テーマ）を選ぶ</span>
+<div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 25px; justify-content: flex-start; align-items: center;">
+    <button onclick="setTheme('#af52de')" title="紫" style="width:34px; height:34px; background:#af52de; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#ff3b30')" title="赤" style="width:34px; height:34px; background:#ff3b30; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#007130')" title="緑" style="width:34px; height:34px; background:#007130; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#5ac8fa')" title="水色" style="width:34px; height:34px; background:#5ac8fa; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#34c759')" title="黄緑" style="width:34px; height:34px; background:#34c759; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#ff2d55')" title="ピンク" style="width:34px; height:34px; background:#ff2d55; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#ffcc00')" title="黄色" style="width:34px; height:34px; background:#ffcc00; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+    <button onclick="setTheme('#ffffff')" title="白" style="width:34px; height:34px; background:#ffffff; border-radius:50%; border:2px solid #ddd; box-shadow:0 2px 4px rgba(0,0,0,0.1);"></button>
+
+    <div style="display:flex; flex-direction:column; align-items:center; margin-left:5px; border-left:1px solid #eee; padding-left:10px;">
+        <input type="color" id="custom-theme-color" onchange="setTheme(this.value)" style="width:34px; height:34px; padding:0; border:none; background:none; cursor:pointer;">
+        <span style="font-size:0.6rem; color:#8e8e93;">自由色</span>
+    </div>
+</div>
 
             <button onclick="generateReport()" class="accent-btn" style="background: var(--primary-color); height: 50px; font-size: 1.1rem;">レポートを表示</button>
         </div>
