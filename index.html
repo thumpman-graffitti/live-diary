@@ -336,6 +336,34 @@
 .report-theme-dark .best-count-badge { background: rgba(255, 255, 255, 0.2); color: #fff; }
 .report-theme-light .best-count-badge { background: rgba(0, 0, 0, 0.1); color: #333; }
 
+/* 1. 項目ラベル（脇役）を小さく、薄くする */
+.best-content .report-label {
+    font-size: 0.6rem !important; /* 最小限のサイズに */
+    opacity: 0.5;                /* 透明度を下げて存在感を消す */
+    font-weight: 600;
+    letter-spacing: 0.5px;       /* 少し字間を空けて上品に */
+    margin-bottom: 1px;
+}
+
+/* 2. アーティスト名・曲名（主役）を圧倒的に目立たせる */
+.report-value-long {
+    font-size: 1.15rem !important; /* サイズを大幅アップ */
+    font-weight: 900 !important;   /* 最太のデザインに */
+    line-height: 1.1;              /* 行間を詰めて塊感を出す */
+    letter-spacing: -0.02em;       /* わずかに字間を詰めて力強く */
+    display: block;
+    color: #ffffff;                /* 常にパキッと白く */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* わずかな影で浮かせる */
+}
+
+/* 3. 同率の「他n件」も邪魔しないように調整 */
+.report-value-long small {
+    font-size: 0.65rem;
+    font-weight: normal;
+    opacity: 0.8;
+    margin-left: 6px;
+    vertical-align: middle;
+}
 
 
 
@@ -346,7 +374,7 @@
 
 <body>
 
-    <header>LIVE DIARY3🍊</header>
+    <header>LIVE DIARY🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
