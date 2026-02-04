@@ -146,14 +146,6 @@
     display: block;
 }
 
-
-
-/* レポートカード内部の調整 */
-#report-card-container {
-    padding: 20px;
-    border: 8px double #eee; /* 少し高級感のある枠線 */
-}
-
 .report-section-label {
     font-size: 0.65rem;
     font-weight: 900;
@@ -232,6 +224,56 @@
     text-overflow: ellipsis; /* 長い名前は「...」にする */
     color: #333;
 }
+
+
+
+
+/* レポートカード全体 */
+#report-card-container {
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: none; /* 以前の二重線を消してスッキリ */
+}
+
+/* 文字色：暗い背景用 */
+.report-theme-dark { color: #ffffff; }
+.report-theme-dark .report-label { color: rgba(255,255,255,0.7); }
+.report-theme-dark .report-value, .report-theme-dark .report-value-long { color: #ffffff; }
+.report-theme-dark .report-section-label { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.2); }
+.report-theme-dark .report-item, .report-theme-dark .best-entry { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+.report-theme-dark .best-icon { background: rgba(255,255,255,0.2); color: white; }
+
+/* 文字色：明るい背景用（白・黄など） */
+.report-theme-light { color: #333333; }
+.report-theme-light .report-label { color: rgba(0,0,0,0.5); }
+.report-theme-light .report-value, .report-theme-light .report-value-long { color: #000000; }
+.report-theme-light .report-section-label { color: rgba(0,0,0,0.4); border-color: rgba(0,0,0,0.1); }
+.report-theme-light .report-item, .report-theme-light .best-entry { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.05); backdrop-filter: blur(5px); }
+.report-theme-light .best-icon { background: rgba(0,0,0,0.1); color: #333; }
+
+/* 共通パーツの微調整 */
+.report-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.report-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+}
+
+.report-grid-mini .report-item {
+    padding: 10px 5px;
+}
+
+.best-entry {
+    padding: 12px;
+}
+
 
 
 
@@ -883,9 +925,23 @@ function generateReport() {
     const container = document.getElementById('report-card-container');
     const periodDisplay = selectedYear === 'all' ? 'ALL TIME' : selectedYear + ' YEAR';
 
+    // 背景の明るさを判定して文字色を決定
+    const hex = selectedThemeColor.replace('#', '');
+    const r = parseInt(hex.substr(0,2), 16);
+    const g = parseInt(hex.substr(2,2), 16);
+    const b = parseInt(hex.substr(4,2), 16);
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+    const isLight = brightness > 180;
+
+    // カード全体の文字色クラスを切り替え
+    container.className = isLight ? 'report-theme-light' : 'report-theme-dark';
+    
+    // グラデーション背景を適用（推し色 → 少し濃い色への斜めグラデ）
+    container.style.background = `linear-gradient(135deg, ${selectedThemeColor} 0%, ${adjustColor(selectedThemeColor, -30)} 100%)`;
+
     container.innerHTML = `
-        <div class="report-header" style="border-color: ${selectedThemeColor}">
-            <div class="report-title" style="color: ${selectedThemeColor}">LIVE PERFORMANCE RECORD</div>
+        <div class="report-header">
+            <div class="report-title">LIVE PERFORMANCE RECORD</div>
             <div class="report-period">${periodDisplay} / ${selectedArtist === 'all' ? 'ALL ARTISTS' : selectedArtist}</div>
         </div>
         
@@ -901,21 +957,21 @@ function generateReport() {
         <div class="report-section-label" style="margin-top:15px;">TOP RECORDS</div>
         <div class="report-best-list">
             <div class="best-entry">
-                <span class="best-icon" style="background:${selectedThemeColor}">人</span>
+                <span class="best-icon">人</span>
                 <div class="best-content">
                     <span class="report-label">ベストアーティスト</span>
                     <span class="report-value-long">${stats.topArtist}</span>
                 </div>
             </div>
             <div class="best-entry">
-                <span class="best-icon" style="background:${selectedThemeColor}">音</span>
+                <span class="best-icon">音</span>
                 <div class="best-content">
                     <span class="report-label">ベストミュージック</span>
                     <span class="report-value-long">${stats.topSong}</span>
                 </div>
             </div>
             <div class="best-entry">
-                <span class="best-icon" style="background:${selectedThemeColor}">地</span>
+                <span class="best-icon">地</span>
                 <div class="best-content">
                     <span class="report-label">ベストプレイス</span>
                     <span class="report-value-long">${stats.topVenue} <small>(${stats.topPref})</small></span>
@@ -929,6 +985,17 @@ function generateReport() {
     document.getElementById('report-preview-overlay').classList.remove('hidden');
     closeShareModal();
 }
+
+// 色を暗くする補助関数
+function adjustColor(color, percent) {
+    const num = parseInt(color.replace('#',''),16),
+    amt = Math.round(2.55 * percent),
+    R = (num >> 16) + amt,
+    G = (num >> 8 & 0x00FF) + amt,
+    B = (num & 0x0000FF) + amt;
+    return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
+}
+
 
 // --- シェアレポート用：ここまで ---
 
