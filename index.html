@@ -91,22 +91,6 @@
 
         .hidden { display: none !important; }
         
-        /* レポートカードのデザイン */
-#report-card-container {
-    width: 90%; max-width: 350px;
-    background: white; border-radius: 20px;
-    padding: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-    position: relative; overflow: hidden;
-}
-.report-header { border-bottom: 2px solid; padding-bottom: 10px; margin-bottom: 15px; }
-.report-title { font-size: 1.4rem; font-weight: 900; }
-.report-period { font-size: 0.8rem; opacity: 0.8; }
-.report-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
-.report-item { display: flex; flex-direction: column; }
-.report-label { font-size: 0.7rem; font-weight: bold; color: #8e8e93; }
-.report-value { font-size: 1.1rem; font-weight: 800; color: #333; }
-.report-footer { margin-top: 25px; text-align: right; font-size: 0.7rem; font-weight: bold; opacity: 0.5; }
-
 
 /* モーダルヘッダー自体の高さを広げて、バツボタンを「内側」に収容する */
 #share-modal .modal-header {
@@ -161,6 +145,100 @@
     margin-top: 15px;
     display: block;
 }
+
+
+
+/* レポートカード内部の調整 */
+#report-card-container {
+    padding: 20px;
+    border: 8px double #eee; /* 少し高級感のある枠線 */
+}
+
+.report-section-label {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #8e8e93;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+/* 総数エリア：小さなタイル状に並べる */
+.report-grid-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.report-grid-mini .report-item {
+    background: #f8f8f8;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.report-grid-mini .report-value {
+    font-size: 1.1rem;
+    display: block;
+}
+
+.report-grid-mini .report-value small {
+    font-size: 0.6rem;
+    margin-left: 2px;
+}
+
+/* ベストレコードエリア：横長のリスト形式 */
+.report-best-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.best-entry {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    padding: 8px;
+    border-radius: 10px;
+}
+
+.best-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.best-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.report-value-long {
+    font-size: 0.95rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 長い名前は「...」にする */
+    color: #333;
+}
+
+
+
+
+
+
+
 
 
     </style>
