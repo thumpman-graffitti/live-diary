@@ -171,13 +171,14 @@
 }
 
 .report-grid-mini .report-value {
-    font-size: 1.1rem;
-    display: block;
+    font-size: 1.25rem;
+    font-weight: 900;
+    line-height: 1.1;
 }
 
 .report-grid-mini .report-value small {
-    font-size: 0.6rem;
-    margin-left: 2px;
+    font-size: 0.65rem;
+    margin-left: 1px;
 }
 
 /* ベストレコードエリア：横長のリスト形式 */
@@ -276,11 +277,12 @@
 
 /* 総数エリアのラベル（総アーティスト、総ライブ数など）の設定 */
 .report-grid-mini .report-label {
-    font-size: 0.55rem !important; /* 文字を少し小さく */
+    font-size: 0.75rem !important; /* 文字を少し小さく */
+    font-weight: 800;
     white-space: nowrap !important; /* ←これが「改行させない」という命令です */
     display: block;                /* 確実に1行を占有させる */
     margin-bottom: 2px;
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 
@@ -297,7 +299,7 @@
 
 <body>
 
-    <header>LIVE DIARY2🍊</header>
+    <header>LIVE DIARY3🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -955,10 +957,10 @@ function generateReport() {
         
         <div class="report-section-label">TOTAL STATS</div>
         <div class="report-grid-mini">
-            <div class="report-item"><span class="report-label">総ライブ数</span><span class="report-value">${stats.totalLives}<small>回</small></span></div>
-            <div class="report-item"><span class="report-label">総アーティスト</span><span class="report-value">${stats.totalArtists}<small>名</small></span></div>
-            <div class="report-item"><span class="report-label">総曲数</span><span class="report-value">${stats.totalSongs}<small>曲</small></span></div>
-            <div class="report-item"><span class="report-label">総会場数</span><span class="report-value">${stats.totalVenues}<small>所</small></span></div>
+            <div class="report-item"><span class="report-label">ライブ数</span><span class="report-value">${stats.totalLives}<small>回</small></span></div>
+            <div class="report-item"><span class="report-label">アーティスト</span><span class="report-value">${stats.totalArtists}<small>名</small></span></div>
+            <div class="report-item"><span class="report-label">曲数</span><span class="report-value">${stats.totalSongs}<small>曲</small></span></div>
+            <div class="report-item"><span class="report-label">会場数</span><span class="report-value">${stats.totalVenues}<small>所</small></span></div>
             <div class="report-item"><span class="report-label">制覇都道府県</span><span class="report-value">${stats.totalPrefs}<small>/47</small></span></div>
         </div>
 
