@@ -947,19 +947,22 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
         const rankText = entry[1] === lastVal ? '' : currentRank + '位';
         lastVal = entry[1];
         
-        // 【ここがポイント】11位以降は display:none にしつつ、JSで探せるようにクラスを付ける
-        const isHidden = currentRank > 10 ? 'style="display:none;" class="stats-list-item rank-item-hidden"' : 'class="stats-list-item"';
+        // 【修正ポイント】11位以降にも必ず 'stats-list-item' クラスを入れる
+        const displayStyle = currentRank > 10 ? 'display:none;' : 'display:flex;';
+        const hiddenClass = currentRank > 10 ? 'rank-item-hidden' : '';
         const action = isArtistRank ? `onclick="switchStatsTarget('${entry[0]}')"` : '';
         
+        // 全ての行で style="display:..." を直接制御し、横並び(flex)を担保する
         html += `
-            <div ${isHidden} data-group="${id}">
-                <div class="rank-num">${rankText}</div>
-                <div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis;" ${action}>${entry[0]}</div>
-                <div style="font-weight:bold; color:var(--primary-color); margin-left:10px;">${entry[1]}<small>${unit}</small></div>
+            <div class="stats-list-item ${hiddenClass}" data-group="${id}" style="${displayStyle} align-items:center; width:100%;">
+                <div class="rank-num" style="min-width:45px; flex-shrink:0;">${rankText}</div>
+                <div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; ${isArtistRank ? 'color:var(--primary-color); text-decoration:underline; cursor:pointer;' : ''}" ${action}>${entry[0]}</div>
+                <div style="font-weight:bold; color:var(--primary-color); margin-left:10px; flex-shrink:0;">
+                    ${entry[1]}<small style="font-size:0.6rem;">${unit}</small>
+                </div>
             </div>`;
     });
 
-    // ボタンに ID を振っておき、JSから操作しやすくする
     if (sorted.length > 10) {
         html += `<button id="${id}-btn" class="show-more-btn" onclick="toggleRankingNew('${id}')">もっと見る ▼</button>`;
     }
@@ -968,23 +971,19 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
     container.innerHTML = html;
 }
 
+
 function toggleRankingNew(id) {
-    // そのランキンググループの「11位以降」の要素をすべて取得
     const items = document.querySelectorAll(`[data-group="${id}"].rank-item-hidden`);
     const btn = document.getElementById(id + '-btn');
-    
-    // 現在のボタンの文字で「開くべきか閉じるべきか」を判定
     const isOpening = btn.innerText.includes('もっと見る');
 
     items.forEach(item => {
-        // 表示を flex にすることで横並びを維持したまま出す
-        item.style.display = isOpening ? 'flex' : 'none';
+        // blockではなく、絶対に flex を指定
+        item.style.setProperty('display', isOpening ? 'flex' : 'none', 'important');
     });
 
-    // 【重要】ボタンの背景色（CSS）はそのままに、文字だけを切り替える
     btn.innerText = isOpening ? '閉じる ▲' : 'もっと見る ▼';
 }
-
 
 
 
