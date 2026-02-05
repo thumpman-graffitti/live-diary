@@ -268,20 +268,23 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 
 /* 「もっと見る」ボタンを緑色に変更 */
+/* 「もっと見る」ボタンのデザインを完全に固定 */
 .show-more-btn {
-    width: calc(100% - 20px); /* 左右に少し余白 */
-    margin: 10px auto;
-    display: block;
-    padding: 12px;
-    background-color: var(--primary-color); /* あなたの設定しているメインの緑色 */
-    color: #ffffff; /* 文字は白 */
-    font-size: 0.9rem;
-    font-weight: bold;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px; /* 角を丸くしてキャッチーに */
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 少し立体感 */
-    transition: opacity 0.2s;
+    width: calc(100% - 24px) !important; /* カードの内側に収まる幅 */
+    margin: 12px auto !important;
+    display: block !important;
+    padding: 12px !important;
+    background-color: var(--primary-color) !important; /* あなたの選んだ緑色 */
+    color: #ffffff !important; /* 文字は絶対に白 */
+    font-size: 0.9rem !important;
+    font-weight: bold !important;
+    border: none !important;
+    border-radius: 10px !important;
+    cursor: pointer !important;
+    text-align: center !important;
+    /* 文字が消えないように高さを確保 */
+    line-height: 1.2 !important;
+    min-height: 44px !important; 
 }
 
 .show-more-btn:active {
