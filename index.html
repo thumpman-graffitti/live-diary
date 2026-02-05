@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>LIVE LOG</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css"> 
 <style>
         :root {
@@ -485,7 +486,25 @@
     padding: 6px 4px;
 }
 
+/* 保存ボタンエリアのレイアウト */
+.report-action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 30px; /* 画面下部との余白 */
+}
 
+/* 保存ボタン自体の微調整（JRAグリーンより少し明るい色で目立たせる） */
+.report-action-buttons .primary-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important; /* 目立つオレンジ/ゴールド */
+    color: #000 !important; /* 文字は黒で視認性確保 */
+    border: none;
+    font-size: 1rem;
+    padding: 15px;
+    border-radius: 30px; /* 角丸でモダンに */
+}
 
 
     </style>
@@ -658,8 +677,16 @@
 
 
 
+
+
+
 <div id="report-preview-overlay" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
-    <div id="report-card-container"></div>
+    <div id="report-card-container" onclick="event.stopPropagation()"></div>
+    
+    <div class="report-action-buttons" onclick="event.stopPropagation()">
+        <button onclick="saveReportImage()" class="primary-btn" style="margin-top:20px; width:200px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">画像を保存する</button>
+        <button onclick="document.getElementById('report-preview-overlay').classList.add('hidden')" style="background:none; border:none; color:white; margin-top:15px; text-decoration:underline; font-size:0.9rem; opacity:0.8;">閉じる</button>
+    </div>
 </div>
 
     <nav class="tab-bar">
@@ -1233,6 +1260,41 @@ function adjustColor(color, percent) {
     B = (num & 0x0000FF) + amt;
     return "#" + (0x1000000 + (R<255?R<0?0:R:255)*0x10000 + (G<255?G<0?0:G:255)*0x100 + (B<255?B<0?0:B:255)).toString(16).slice(1);
 }
+
+
+// --- 画像保存ロジック（html2canvasを使用） ---
+function saveReportImage() {
+    const card = document.getElementById('report-card-container');
+    
+    // 1. 保存用の高画質設定のため、一時的にスケーリング（縮小）を解除
+    const originalTransform = card.style.transform;
+    card.style.transform = 'scale(1)';
+
+    // 2. 実行
+    html2canvas(card, {
+        backgroundColor: null, // 背景透過を許可
+        scale: 2,             // 2倍の解像度で書き出し（綺麗になります）
+        useCORS: true,        // 外部画像対策
+        logging: false
+    }).then(canvas => {
+        // 3. スケーリングを元に戻す
+        card.style.transform = originalTransform;
+
+        // 4. ダウンロード処理
+        const link = document.createElement('a');
+        const now = new Date();
+        const dateStr = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
+        
+        link.download = `LIVE_REPORT_${dateStr}.png`;
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+        
+        // 5. 完了通知（モバイルでも分かりやすく）
+        setTimeout(() => alert("画像を保存しました！"), 500);
+    });
+}
+
+
 
 
 // --- シェアレポート用：ここまで ---
