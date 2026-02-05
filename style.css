@@ -258,10 +258,6 @@ button:active { transform: translateY(2px); box-shadow: none; }
 }
 
 
-
-
-
-
 /* 管理画面 */
 .artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
 .btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
@@ -269,6 +265,28 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .btn-delete { background-color: #ff3b30 !important; }
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
+
+/* 「もっと見る」ボタンのスタイル */
+.show-more-btn {
+    width: 100%;
+    padding: 10px;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: bold;
+    cursor: pointer;
+    border-top: 1px solid #f2f2f7;
+    margin-top: 5px;
+}
+
+/* 11位以降を隠すためのクラス */
+.hidden-ranks {
+    display: none;
+}
+
+
+
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
