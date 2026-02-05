@@ -997,11 +997,15 @@ function toggleRanking(id) {
     if (others.style.display === 'block') {
         others.style.display = 'none';
         btn.innerText = 'もっと見る ▼';
+        // 背景がもし変わってしまう場合はここで再指定
+        btn.style.backgroundColor = 'var(--primary-color)'; 
     } else {
         others.style.display = 'block';
         btn.innerText = '閉じる ▲';
     }
 }
+
+
 
 // アーティストランキングから個別の統計に飛ばす関数
 function switchStatsTarget(name) {
