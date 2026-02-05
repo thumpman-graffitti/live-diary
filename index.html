@@ -513,7 +513,7 @@
 
 <body>
 
-    <header>LIVE DIARY2🍊</header>
+    <header>LIVE DIARY3🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -929,7 +929,8 @@ function renderStats() {
     renderRanking('stats-pref-ranking', '📍 都道府県', counts.pref, '回');
 }
 
-// 汎用ランキング描画ツール
+
+// 汎用ランキング描画ツール（もっと見る対応版）
 function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
     const container = document.getElementById(id);
     const sorted = Object.entries(dataObj)
@@ -942,22 +943,57 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
     }
 
     let html = `<div class="card"><span class="section-title">${title}ランキング</span>`;
+    
+    // 10位までと11位以降に分ける
+    const top10 = sorted.slice(0, 10);
+    const others = sorted.slice(10);
+
     let lastVal = -1;
-    sorted.slice(0, 10).forEach((entry, i) => {
+
+    // 共通のアイテム生成関数
+    const createItemHtml = (entry, i) => {
         const rank = entry[1] === lastVal ? '' : (i + 1) + '位';
-        // アーティストランキングの場合、タップでその人の統計に切り替えられるようにする
+        lastVal = entry[1];
         const action = isArtistRank ? `onclick="switchStatsTarget('${entry[0]}')" style="cursor:pointer; color:var(--primary-color); text-decoration:underline;"` : '';
-        
-        html += `
+        return `
             <div class="stats-list-item">
                 <div class="rank-num">${rank}</div>
                 <div style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" ${action}>${entry[0]}</div>
                 <div style="font-weight:bold; color:var(--primary-color); margin-left:10px;">${entry[1]}<small style="font-size:0.6rem; margin-left:1px;">${unit}</small></div>
             </div>`;
-        lastVal = entry[1];
+    };
+
+    // 10位までの表示
+    top10.forEach((entry, i) => {
+        html += createItemHtml(entry, i);
     });
+
+    // 11位以降がある場合
+    if (others.length > 0) {
+        html += `<div id="${id}-others" class="hidden-ranks">`;
+        others.forEach((entry, i) => {
+            html += createItemHtml(entry, i + 10);
+        });
+        html += `</div>`;
+        html += `<button id="${id}-btn" class="show-more-btn" onclick="toggleRanking('${id}')">もっと見る ▼</button>`;
+    }
+
     html += '</div>';
     container.innerHTML = html;
+}
+
+// 開閉切り替え関数
+function toggleRanking(id) {
+    const others = document.getElementById(id + '-others');
+    const btn = document.getElementById(id + '-btn');
+    
+    if (others.style.display === 'block') {
+        others.style.display = 'none';
+        btn.innerText = 'もっと見る ▼';
+    } else {
+        others.style.display = 'block';
+        btn.innerText = '閉じる ▲';
+    }
 }
 
 // アーティストランキングから個別の統計に飛ばす関数
