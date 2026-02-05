@@ -267,37 +267,32 @@ button:active { transform: translateY(2px); box-shadow: none; }
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
 
-/* 「もっと見る」ボタンを緑色に変更 */
-/* 「もっと見る」ボタンのデザインを完全に固定 */
-.show-more-btn {
-    width: calc(100% - 24px) !important; /* カードの内側に収まる幅 */
-    margin: 12px auto !important;
-    display: block !important;
-    padding: 12px !important;
-    background-color: var(--primary-color) !important; /* あなたの選んだ緑色 */
-    color: #ffffff !important; /* 文字は絶対に白 */
-    font-size: 0.9rem !important;
-    font-weight: bold !important;
-    border: none !important;
-    border-radius: 10px !important;
-    cursor: pointer !important;
-    text-align: center !important;
-    /* 文字が消えないように高さを確保 */
-    line-height: 1.2 !important;
-    min-height: 44px !important; 
-}
-
 .show-more-btn:active {
     opacity: 0.8; /* 押した時に少し沈む演出 */
 }
-
 
 /* 11位以降を隠すためのクラス */
 .hidden-ranks {
     display: none;
 }
 
+.show-more-btn {
+    width: calc(100% - 24px) !important;
+    margin: 12px auto !important;
+    padding: 12px !important;
+    background-color: var(--primary-color) !important; /* 緑色 */
+    color: #ffffff !important; /* 白文字 */
+    border: none !important;
+    border-radius: 10px !important;
+    font-weight: bold !important;
+    display: block !important;
+}
 
+/* 順位の数字が縦にならないよう幅を固定 */
+.rank-num {
+    width: 45px !important;
+    display: inline-block !important;
+}
 
 
 /* タブの表示・非表示を制御する必須設定 */
