@@ -1263,38 +1263,57 @@ function adjustColor(color, percent) {
 
 
 // --- 画像保存ロジック（html2canvasを使用） ---
-function saveReportImage() {
+// 画像保存・共有ロジックの修正版
+async function saveReportImage() {
     const card = document.getElementById('report-card-container');
     
-    // 1. 保存用の高画質設定のため、一時的にスケーリング（縮小）を解除
+    // 1. キャプチャ用にスケーリングを一時解除
     const originalTransform = card.style.transform;
     card.style.transform = 'scale(1)';
 
-    // 2. 実行
-    html2canvas(card, {
-        backgroundColor: null, // 背景透過を許可
-        scale: 2,             // 2倍の解像度で書き出し（綺麗になります）
-        useCORS: true,        // 外部画像対策
-        logging: false
-    }).then(canvas => {
-        // 3. スケーリングを元に戻す
+    try {
+        const canvas = await html2canvas(card, {
+            backgroundColor: null,
+            scale: 2,
+            useCORS: true,
+            logging: false
+        });
+
+        // スケーリングを元に戻す
         card.style.transform = originalTransform;
 
-        // 4. ダウンロード処理
-        const link = document.createElement('a');
-        const now = new Date();
-        const dateStr = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0');
-        
-        link.download = `LIVE_REPORT_${dateStr}.png`;
-        link.href = canvas.toDataURL("image/png");
-        link.click();
-        
-        // 5. 完了通知（モバイルでも分かりやすく）
-        setTimeout(() => alert("画像を保存しました！"), 500);
-    });
+        // 2. Blob（データのかたまり）に変換
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], "LIVE_REPORT.png", { type: "image/png" });
+
+            // 3. Web Share API を使用して共有メニューを呼び出す（iPhone/Android用）
+            if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                try {
+                    await navigator.share({
+                        files: [file],
+                        title: 'LIVE REPORT',
+                    });
+                } catch (err) {
+                    // ユーザーがキャンセルした場合は何もしない
+                    if (err.name !== 'AbortError') console.error("共有失敗:", err);
+                }
+            } else {
+                // 4. PCや未対応ブラウザ用のフォールバック（従来のダウンロード）
+                const link = document.createElement('a');
+                const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
+                link.download = `LIVE_REPORT_${dateStr}.png`;
+                link.href = canvas.toDataURL("image/png");
+                link.click();
+                alert("共有機能が未対応のため、ダウンロードフォルダに保存しました。");
+            }
+        }, 'image/png');
+
+    } catch (e) {
+        console.error("生成エラー:", e);
+        card.style.transform = originalTransform;
+        alert("画像の生成に失敗しました。");
+    }
 }
-
-
 
 
 // --- シェアレポート用：ここまで ---
