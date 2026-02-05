@@ -266,19 +266,28 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
-/* 「もっと見る」ボタンのスタイル */
+
+/* 「もっと見る」ボタンを緑色に変更 */
 .show-more-btn {
-    width: 100%;
-    padding: 10px;
-    background: none;
-    border: none;
-    color: var(--primary-color);
-    font-size: 0.85rem;
+    width: calc(100% - 20px); /* 左右に少し余白 */
+    margin: 10px auto;
+    display: block;
+    padding: 12px;
+    background-color: var(--primary-color); /* あなたの設定しているメインの緑色 */
+    color: #ffffff; /* 文字は白 */
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
-    border-top: 1px solid #f2f2f7;
-    margin-top: 5px;
+    border: none;
+    border-radius: 10px; /* 角を丸くしてキャッチーに */
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* 少し立体感 */
+    transition: opacity 0.2s;
 }
+
+.show-more-btn:active {
+    opacity: 0.8; /* 押した時に少し沈む演出 */
+}
+
 
 /* 11位以降を隠すためのクラス */
 .hidden-ranks {
