@@ -950,18 +950,25 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
 
     let lastVal = -1;
 
-    // 共通のアイテム生成関数
+    // 共通のアイテム生成関数（ここを差し替え）
     const createItemHtml = (entry, i) => {
-        const rank = entry[1] === lastVal ? '' : (i + 1) + '位';
+        const currentRankNum = i + 1;
+        const rankText = entry[1] === lastVal ? '' : currentRankNum + '位';
         lastVal = entry[1];
+        
         const action = isArtistRank ? `onclick="switchStatsTarget('${entry[0]}')" style="cursor:pointer; color:var(--primary-color); text-decoration:underline;"` : '';
+        
+        // stats-list-item クラスを必ず付与し、flex-nowrapで横一行を維持します
         return `
-            <div class="stats-list-item">
-                <div class="rank-num">${rank}</div>
-                <div style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" ${action}>${entry[0]}</div>
-                <div style="font-weight:bold; color:var(--primary-color); margin-left:10px;">${entry[1]}<small style="font-size:0.6rem; margin-left:1px;">${unit}</small></div>
+            <div class="stats-list-item" style="display: flex; align-items: center; width: 100%; white-space: nowrap;">
+                <div class="rank-num" style="min-width: 45px; flex-shrink: 0; font-size: 0.85rem; color: #8e8e93;">${rankText}</div>
+                <div style="flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; ${action}">${entry[0]}</div>
+                <div style="font-weight: bold; color: var(--primary-color); margin-left: 10px; flex-shrink: 0;">
+                    ${entry[1]}<small style="font-size: 0.6rem; margin-left: 1px;">${unit}</small>
+                </div>
             </div>`;
     };
+
 
     // 10位までの表示
     top10.forEach((entry, i) => {
