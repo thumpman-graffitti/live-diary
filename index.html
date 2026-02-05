@@ -541,29 +541,38 @@
         </div>
 
         <div id="page-history" class="tab-content"><div id="history-list"></div></div>
+        
+        
         <div id="page-stats" class="tab-content">
-            
-    <div class="card" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; margin-bottom: 20px;">
+    <div class="card" style="background: linear-gradient(135deg, #FFD700, #FFA500); border: none; margin-bottom: 15px;">
         <button onclick="openShareModal()" style="width: 100%; background: none; border: none; color: #fff; font-weight: 800; font-size: 1.1rem; padding: 10px; cursor: pointer;">
             レポートを生成する
         </button>
     </div>
-    
-            
+
+    <div class="card" style="margin-bottom: 15px;">
+        <span class="section-title">📊 表示対象</span>
+        <select id="stats-filter-artist" onchange="renderStats()" style="margin-bottom:0;">
+            <option value="all">すべてのアーティスト</option>
+        </select>
+    </div>
+
     <div class="card">
         <div style="max-width: 200px; margin: 0 auto; position: relative;">
             <canvas id="artistChart"></canvas>
             <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -40%); text-align: center;">
-                <div style="font-size: 0.75rem; color: #8e8e93; font-weight: bold;">Total</div>
+                <div style="font-size: 0.75rem; color: #8e8e93; font-weight: bold;" id="stats-total-label">Total</div>
                 <div id="total-count-display" style="font-size: 1.8rem; font-weight: bold; color: var(--primary-color);">0</div>
             </div>
         </div>
     </div>
 
     <div id="stats-artist-ranking"></div>
+    <div id="stats-song-ranking"></div>
+    <div id="stats-venue-ranking"></div>
 
     <div class="card" style="padding: 20px; border: 1px solid #f2f2f7;">
-        <span class="section-title">🗺 全国遠征マップ</span>
+        <span class="section-title">🗺 <span id="map-target-name">全国</span>遠征マップ</span>
         <div id="japan-map" style="margin: 15px 0;"></div>
         <div style="text-align: center; font-size: 0.85rem; color: #8e8e93; margin-top: 10px; background: #f9f9fb; padding: 8px; border-radius: 8px;">
             制覇: <span id="visited-pref-count" style="font-weight:bold; color:var(--primary-color); font-size: 1.1rem;">0</span> <span style="font-size: 0.7rem;">/ 47 都道府県</span>
@@ -573,7 +582,6 @@
     <div id="stats-pref-ranking"></div>
 </div>
 
-        
         <div id="page-settings" class="tab-content">
             <div class="card">
                 <span class="section-title">データのバックアップ・復元</span>
@@ -854,50 +862,109 @@ function saveEdit() {
         function closeModal() { document.getElementById('modal-overlay').classList.add('hidden'); document.getElementById('modal-view').classList.remove('hidden'); document.getElementById('modal-edit').classList.add('hidden'); }
 
 
+
+// アーティスト選択肢を更新（統計タブを開くたびに最新にする）
+function updateStatsFilter() {
+    const s = document.getElementById('stats-filter-artist');
+    const current = s.value;
+    // 重複なしでソートされたアーティスト一覧
+    s.innerHTML = '<option value="all">すべてのアーティスト</option>' + 
+                  [...db.artists].sort().map(a => `<option value="${a}">${a}</option>`).join('');
+    s.value = current || 'all';
+}
+
+// 統計描画のメイン関数
 function renderStats() {
-    const countMap = {}; 
-    db.lives.forEach(l => countMap[l.artist] = (countMap[l.artist] || 0) + 1);
-    const aSorted = Object.entries(countMap).sort((a,b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ja'));
+    updateStatsFilter();
+    const filterArtist = document.getElementById('stats-filter-artist').value;
+    const isAll = filterArtist === 'all';
+
+    // フィルタリング
+    const targetLives = isAll ? db.lives : db.lives.filter(l => l.artist === filterArtist);
+
+    // 集計用データ初期化
+    const counts = { artist: {}, song: {}, venue: {}, pref: {} };
+
+    targetLives.forEach(l => {
+        counts.artist[l.artist] = (counts.artist[l.artist] || 0) + 1;
+        counts.venue[l.venue] = (counts.venue[l.venue] || 0) + 1;
+        counts.pref[l.pref] = (counts.pref[l.pref] || 0) + 1;
+        if (l.setlist && Array.isArray(l.setlist)) {
+            l.setlist.forEach(s => counts.song[s] = (counts.song[s] || 0) + 1);
+        }
+    });
+
+    // [グラフ描画]
+    document.getElementById('total-count-display').innerText = targetLives.length;
+    document.getElementById('stats-total-label').innerText = isAll ? "Total" : "Lives";
     
-    // [1] チャート描画
-    document.getElementById('total-count-display').innerText = db.lives.length;
+    const sortedArtEntries = Object.entries(counts.artist).sort((a,b) => b[1]-a[1]);
     if(chart) chart.destroy();
     chart = new Chart(document.getElementById('artistChart'), { 
         type: 'doughnut', 
-        data: { labels: aSorted.map(s=>s[0]), datasets: [{ data: aSorted.map(s=>s[1]), backgroundColor: refinedColors, borderWidth: 0 }] }, 
+        data: { 
+            labels: sortedArtEntries.map(s=>s[0]), 
+            datasets: [{ data: sortedArtEntries.map(s=>s[1]), backgroundColor: refinedColors, borderWidth: 0 }] 
+        }, 
         options: { cutout: '80%', plugins: { legend: { display: false } } } 
     });
 
-    // [2] アーティストランキングを「専用の箱」に表示
-    let artistHtml = '<div class="card"><span class="section-title">🏆 アーティスト別公演回数</span>';
-    let lastA = -1;
-    aSorted.forEach((s, i) => {
-        const showRank = s[1] === lastA ? '' : (i + 1) + '位';
-        artistHtml += `<div class="stats-list-item"><div class="color-dot" style="background:${refinedColors[i%refinedColors.length]}"></div><div class="rank-num">${showRank}</div><div style="flex:1;">${s[0]}</div><div style="font-weight:bold; color:var(--primary-color);">${s[1]}回</div></div>`;
-        lastA = s[1];
-    });
-    artistHtml += '</div>';
-    document.getElementById('stats-artist-ranking').innerHTML = artistHtml;
+    // [各ランキングの描画]
+    // アーティストランキング（全体表示の時のみ表示）
+    if(isAll) {
+        renderRanking('stats-artist-ranking', '🏆 アーティスト', counts.artist, '回', true);
+    } else {
+        document.getElementById('stats-artist-ranking').innerHTML = '';
+    }
 
-    // [3] 地図を描画（配置データはそのまま維持されます）
-    const visited = [...new Set(db.lives.map(l => l.pref).filter(p => p && p !== '海外'))];
+    renderRanking('stats-song-ranking', '🎵 曲', counts.song, '回');
+    renderRanking('stats-venue-ranking', '🏟 会場', counts.venue, '回');
+    
+    // [地図描画]
+    const visited = [...new Set(targetLives.map(l => l.pref).filter(p => p && p !== '海外' && p !== ''))];
     renderJapanMap(visited);
     document.getElementById('visited-pref-count').innerText = visited.length;
+    document.getElementById('map-target-name').innerText = isAll ? '全国' : filterArtist;
 
-    // [4] 都道府県ランキングを「専用の箱」に表示
-    const pMap = {}; 
-    db.lives.forEach(l => { if(l.pref) pMap[l.pref] = (pMap[l.pref] || 0) + 1; });
-    const pSorted = Object.entries(pMap).sort((a,b) => b[1] - a[1] || prefOrder.indexOf(a[0]) - prefOrder.indexOf(b[0]));
+    renderRanking('stats-pref-ranking', '📍 都道府県', counts.pref, '回');
+}
+
+// 汎用ランキング描画ツール
+function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
+    const container = document.getElementById(id);
+    const sorted = Object.entries(dataObj)
+        .filter(e => e[0] && e[0] !== 'undefined' && e[0] !== '')
+        .sort((a,b) => b[1]-a[1] || a[0].localeCompare(b[0], 'ja'));
     
-    let prefHtml = '<div class="card"><span class="section-title">📍 都道府県別公演回数</span>';
-    let lastP = -1;
-    pSorted.forEach((p, i) => {
-        const showRank = p[1] === lastP ? '' : (i + 1) + '位';
-        prefHtml += `<div class="stats-list-item"><div class="rank-num">${showRank}</div><div style="flex:1;">${p[0]}</div><div style="font-weight:bold; color:var(--primary-color);">${p[1]}回</div></div>`;
-        lastP = p[1];
+    if (sorted.length === 0) {
+        container.innerHTML = ''; 
+        return;
+    }
+
+    let html = `<div class="card"><span class="section-title">${title}ランキング</span>`;
+    let lastVal = -1;
+    sorted.slice(0, 10).forEach((entry, i) => {
+        const rank = entry[1] === lastVal ? '' : (i + 1) + '位';
+        // アーティストランキングの場合、タップでその人の統計に切り替えられるようにする
+        const action = isArtistRank ? `onclick="switchStatsTarget('${entry[0]}')" style="cursor:pointer; color:var(--primary-color); text-decoration:underline;"` : '';
+        
+        html += `
+            <div class="stats-list-item">
+                <div class="rank-num">${rank}</div>
+                <div style="flex:1; min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" ${action}>${entry[0]}</div>
+                <div style="font-weight:bold; color:var(--primary-color); margin-left:10px;">${entry[1]}<small style="font-size:0.6rem; margin-left:1px;">${unit}</small></div>
+            </div>`;
+        lastVal = entry[1];
     });
-    prefHtml += '</div>';
-    document.getElementById('stats-pref-ranking').innerHTML = prefHtml;
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// アーティストランキングから個別の統計に飛ばす関数
+function switchStatsTarget(name) {
+    document.getElementById('stats-filter-artist').value = name;
+    renderStats();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
         // 地図を生成する専用関数
