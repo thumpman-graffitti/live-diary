@@ -943,6 +943,7 @@ function renderStats() {
 }
 
 // 年別専用の描画関数
+// 年別専用の描画関数（この内容に丸ごと差し替えてください）
 function renderYearlyRanking(id, dataObj) {
     const container = document.getElementById(id);
     // 年を降順（新しい順）にソート
@@ -962,16 +963,25 @@ function renderYearlyRanking(id, dataObj) {
         const isHidden = i >= 10 ? `style="display:none;" class="stats-list-item rank-item-hidden" data-group="${id}"` : `class="stats-list-item"`;
 
         html += `
-            <div ${isHidden} style="padding: 12px 0;">
-                <div class="year-text">${year}</div>
-                <div class="yearly-bar-container">
-                    <div class="yearly-bar-fill" style="width: ${barWidth}%"></div>
+            <div ${isHidden} style="padding: 12px 0; align-items:center; display:${i >= 10 ? 'none' : 'flex'}; width:100%;">
+                <div class="year-text" style="width:50px; flex-shrink:0;">${year}</div>
+                <div class="yearly-bar-container" style="flex:1; height:8px; background:#f2f2f7; border-radius:4px; margin:0 10px; overflow:hidden;">
+                    <div class="yearly-bar-fill" style="width: ${barWidth}%; height:100%; background:linear-gradient(90deg, #ff9500, #ffcc00); border-radius:4px;"></div>
                 </div>
                 <div style="font-weight:bold; color:var(--primary-color); min-width:35px; text-align:right;">
                     ${count}<small style="font-size:0.6rem;">回</small>
                 </div>
             </div>`;
     });
+
+    // 「もっと見る」ボタンの追加（ここが途切れていました）
+    if (sortedYears.length > 10) {
+        html += `<button id="${id}-btn" class="show-more-btn" onclick="toggleRankingNew('${id}')">もっと見る ▼</button>`;
+    }
+
+    html += '</div>';
+    container.innerHTML = html;
+}
 
 
 
