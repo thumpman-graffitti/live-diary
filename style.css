@@ -294,6 +294,34 @@ button:active { transform: translateY(2px); box-shadow: none; }
     display: inline-block !important;
 }
 
+/* 年別ランキング専用のバーデザイン */
+.yearly-bar-container {
+    flex: 1;
+    height: 8px;
+    background: #f2f2f7;
+    border-radius: 4px;
+    margin: 0 10px;
+    overflow: hidden;
+    position: relative;
+}
+
+.yearly-bar-fill {
+    height: 100%;
+    /* 🍊をイメージしたオシャレなグラデーション */
+    background: linear-gradient(90deg, #ff9500, #ffcc00);
+    border-radius: 4px;
+    transition: width 1s ease-out;
+}
+
+.year-text {
+    font-weight: bold;
+    font-family: 'Avenir Next', sans-serif;
+    color: #48484a;
+    width: 50px;
+}
+
+
+
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
