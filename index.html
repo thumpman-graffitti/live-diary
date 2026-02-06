@@ -513,7 +513,7 @@
 
 <body>
 
-    <header>LIVE DIARY4🍊</header>
+    <header>LIVE DIARY🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -886,11 +886,26 @@ function renderStats() {
     const targetLives = isAll ? db.lives : db.lives.filter(l => l.artist === filterArtist);
 
     // 1. 年別データの集計
+    // --- 年別集計ロジック（0件補完版） ---
     const yearlyCounts = {};
-    targetLives.forEach(l => {
-        const year = new Date(l.date).getFullYear();
-        if (!isNaN(year)) yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
-    });
+    if (db.lives.length > 0) {
+        // 全データの中から「一番古い年」を取得
+        const yearsInData = db.lives.map(l => new Date(l.date).getFullYear()).filter(y => !isNaN(y));
+        const startYear = Math.min(...yearsInData);
+        // 「今年」を取得
+        const currentYear = new Date().getFullYear();
+
+        // 最初のライブの年から今年までを 0 で初期化（これで0件の年も埋まる）
+        for (let y = startYear; y <= currentYear; y++) {
+            yearlyCounts[y] = 0;
+        }
+
+        // 現在選択されているフィルタ（全対象 or 特定アーティスト）に一致する分をカウント
+        targetLives.forEach(l => {
+            const year = new Date(l.date).getFullYear();
+            if (!isNaN(year)) yearlyCounts[year]++;
+        });
+    }
 
     // 集計用データ初期化
     const counts = { artist: {}, song: {}, venue: {}, pref: {} };
@@ -943,38 +958,41 @@ function renderStats() {
 }
 
 // 年別専用の描画関数
-// 年別専用の描画関数（この内容に丸ごと差し替えてください）
 function renderYearlyRanking(id, dataObj) {
     const container = document.getElementById(id);
-    // 年を降順（新しい順）にソート
     const sortedYears = Object.entries(dataObj).sort((a, b) => b[0] - a[0]);
 
+    // 1件もデータ（年）がない場合
     if (sortedYears.length === 0) {
-        container.innerHTML = ''; return;
+        container.innerHTML = `<div class="card"><span class="section-title">📅 年別参戦数</span><div style="text-align:center; padding:20px; color:#8e8e93; font-size:0.9rem;">ライブを登録すると年表が表示されます</div></div>`;
+        return;
     }
 
-    const maxCount = Math.max(...Object.values(dataObj));
+    const maxCount = Math.max(...Object.values(dataObj), 1);
     let html = `<div class="card"><span class="section-title">📅 年別参戦数</span>`;
 
     sortedYears.forEach((entry, i) => {
         const year = entry[0];
         const count = entry[1];
         const barWidth = (count / maxCount) * 100;
-        const isHidden = i >= 10 ? `style="display:none;" class="stats-list-item rank-item-hidden" data-group="${id}"` : `class="stats-list-item"`;
+        
+        // 11位以降を隠す設定
+        const isHidden = i >= 10;
+        const displayStyle = isHidden ? 'none' : 'flex';
+        const hiddenClass = isHidden ? 'rank-item-hidden' : '';
 
         html += `
-            <div ${isHidden} style="padding: 12px 0; align-items:center; display:${i >= 10 ? 'none' : 'flex'}; width:100%;">
-                <div class="year-text" style="width:50px; flex-shrink:0;">${year}</div>
+            <div class="stats-list-item ${hiddenClass}" data-group="${id}" style="padding: 12px 0; align-items:center; display:${displayStyle}; width:100%;">
+                <div class="year-text" style="width:50px; flex-shrink:0; font-weight:bold; ${count === 0 ? 'opacity:0.3;' : ''}">${year}</div>
                 <div class="yearly-bar-container" style="flex:1; height:8px; background:#f2f2f7; border-radius:4px; margin:0 10px; overflow:hidden;">
-                    <div class="yearly-bar-fill" style="width: ${barWidth}%; height:100%; background:linear-gradient(90deg, #ff9500, #ffcc00); border-radius:4px;"></div>
+                    <div class="yearly-bar-fill" style="width: ${barWidth}%; height:100%; background:linear-gradient(90deg, #ff9500, #ffcc00); border-radius:4px; opacity:${count === 0 ? '0' : '1'};"></div>
                 </div>
-                <div style="font-weight:bold; color:var(--primary-color); min-width:35px; text-align:right;">
-                    ${count}<small style="font-size:0.6rem;">回</small>
+                <div style="font-weight:900; color:${count === 0 ? '#c7c7cc' : 'var(--primary-color)'}; min-width:35px; text-align:right;">
+                    ${count}<small style="font-size:0.6rem; font-weight:bold;">回</small>
                 </div>
             </div>`;
     });
 
-    // 「もっと見る」ボタンの追加（ここが途切れていました）
     if (sortedYears.length > 10) {
         html += `<button id="${id}-btn" class="show-more-btn" onclick="toggleRankingNew('${id}')">もっと見る ▼</button>`;
     }
@@ -982,8 +1000,6 @@ function renderYearlyRanking(id, dataObj) {
     html += '</div>';
     container.innerHTML = html;
 }
-
-
 
 // 統計描画内のランキング生成ロジック
 function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
