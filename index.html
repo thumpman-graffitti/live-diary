@@ -513,7 +513,7 @@
 
 <body>
 
-    <header>LIVE DIARY🍊</header>
+    <header>LIVE DIARY2🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -1018,19 +1018,26 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
         const rankText = entry[1] === lastVal ? '' : currentRank + '位';
         lastVal = entry[1];
         
-        // 【修正ポイント】11位以降にも必ず 'stats-list-item' クラスを入れる
-        const displayStyle = currentRank > 10 ? 'display:none;' : 'display:flex;';
-        const hiddenClass = currentRank > 10 ? 'rank-item-hidden' : '';
-        const action = isArtistRank ? `onclick="switchStatsTarget('${entry[0]}')"` : '';
+        const isHidden = currentRank > 10;
+        const displayStyle = isHidden ? 'none' : 'flex';
+        const hiddenClass = isHidden ? 'rank-item-hidden' : '';
         
-        // 全ての行で style="display:..." を直接制御し、横並び(flex)を担保する
+        // 詳細表示用のユニークIDを作成
+        const detailId = `detail-${id}-${i}`;
+
         html += `
-            <div class="stats-list-item ${hiddenClass}" data-group="${id}" style="${displayStyle} align-items:center; width:100%;">
-                <div class="rank-num" style="min-width:45px; flex-shrink:0;">${rankText}</div>
-                <div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; ${isArtistRank ? 'color:var(--primary-color); text-decoration:underline; cursor:pointer;' : ''}" ${action}>${entry[0]}</div>
-                <div style="font-weight:bold; color:var(--primary-color); margin-left:10px; flex-shrink:0;">
-                    ${entry[1]}<small style="font-size:0.6rem;">${unit}</small>
+            <div class="stats-list-item-container ${hiddenClass}" data-group="${id}" style="display:${displayStyle}; flex-direction:column; width:100%;">
+                <div class="stats-list-item" style="align-items:center; width:100%; border-bottom:1px solid #f2f2f7;">
+                    <div class="rank-num" style="min-width:45px; flex-shrink:0;">${rankText}</div>
+                    <div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; cursor:pointer; font-weight:500;" 
+                         onclick="${isArtistRank ? `switchStatsTarget('${entry[0]}')` : `toggleStatsDetail('${detailId}', '${id}', '${entry[0].replace(/'/g, "\\'")}')`}">
+                        ${entry[0]}
+                    </div>
+                    <div style="font-weight:bold; color:var(--primary-color); margin-left:10px; flex-shrink:0;">
+                        ${entry[1]}<small style="font-size:0.6rem;">${unit}</small>
+                    </div>
                 </div>
+                <div id="${detailId}" class="stats-detail-list hidden"></div>
             </div>`;
     });
 
@@ -1040,6 +1047,55 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
 
     html += '</div>';
     container.innerHTML = html;
+}
+
+function toggleStatsDetail(detailId, type, value) {
+    const detailDiv = document.getElementById(detailId);
+    
+    // すでに表示されている場合は閉じる（トグル）
+    if (!detailDiv.classList.contains('hidden')) {
+        detailDiv.classList.add('hidden');
+        return;
+    }
+
+    // 現在のフィルター状態を取得
+    const filterArtist = document.getElementById('stats-filter-artist').value;
+    const isFiltered = filterArtist !== 'all';
+
+    // 該当するライブを抽出
+    let filteredLives = db.lives.filter(l => {
+        const matchesArtist = isFiltered ? l.artist === filterArtist : true;
+        let matchesValue = false;
+        if (type === 'stats-song-ranking') matchesValue = l.setlist && l.setlist.includes(value);
+        if (type === 'stats-venue-ranking') matchesValue = l.venue === value;
+        if (type === 'stats-pref-ranking') matchesValue = l.pref === value;
+        return matchesArtist && matchesValue;
+    });
+
+    // 日付順（新しい順）にソート
+    filteredLives.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+    // HTML生成
+    let html = '';
+    filteredLives.forEach(l => {
+        const artistSpan = isFiltered ? '' : `<span class="stats-detail-artist">${l.artist}</span><br>`;
+        
+        let subInfo = '';
+        if (type === 'stats-song-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
+        if (type === 'stats-venue-ranking') subInfo = ` (${l.pref || '-'})`;
+        if (type === 'stats-pref-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
+
+        html += `
+            <div class="stats-detail-item">
+                <span class="stats-detail-date">${l.date}</span>
+                ${artistSpan}
+                <span style="color:#444;">${l.name || '(無題)'}</span>
+                <span style="color:#8e8e93; font-size:0.75rem;">${subInfo}</span>
+            </div>`;
+    });
+
+    detailDiv.innerHTML = html;
+    detailDiv.classList.remove('hidden');
 }
 
 
