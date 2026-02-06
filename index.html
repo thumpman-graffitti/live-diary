@@ -513,7 +513,7 @@
 
 <body>
 
-    <header>LIVE DIARY3🍊</header>
+    <header>LIVE DIARY4🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -885,6 +885,13 @@ function renderStats() {
     // フィルタリング
     const targetLives = isAll ? db.lives : db.lives.filter(l => l.artist === filterArtist);
 
+    // 1. 年別データの集計
+    const yearlyCounts = {};
+    targetLives.forEach(l => {
+        const year = new Date(l.date).getFullYear();
+        if (!isNaN(year)) yearlyCounts[year] = (yearlyCounts[year] || 0) + 1;
+    });
+
     // 集計用データ初期化
     const counts = { artist: {}, song: {}, venue: {}, pref: {} };
 
@@ -920,6 +927,9 @@ function renderStats() {
         document.getElementById('stats-artist-ranking').innerHTML = '';
     }
 
+    // 【新設】年別ランキングの描画
+    renderYearlyRanking('stats-yearly-ranking', yearlyCounts);
+
     renderRanking('stats-song-ranking', '🎵 曲', counts.song, '回');
     renderRanking('stats-venue-ranking', '🏟 会場', counts.venue, '回');
     
@@ -931,6 +941,38 @@ function renderStats() {
 
     renderRanking('stats-pref-ranking', '📍 都道府県', counts.pref, '回');
 }
+
+// 年別専用の描画関数
+function renderYearlyRanking(id, dataObj) {
+    const container = document.getElementById(id);
+    // 年を降順（新しい順）にソート
+    const sortedYears = Object.entries(dataObj).sort((a, b) => b[0] - a[0]);
+
+    if (sortedYears.length === 0) {
+        container.innerHTML = ''; return;
+    }
+
+    const maxCount = Math.max(...Object.values(dataObj));
+    let html = `<div class="card"><span class="section-title">📅 年別参戦数</span>`;
+
+    sortedYears.forEach((entry, i) => {
+        const year = entry[0];
+        const count = entry[1];
+        const barWidth = (count / maxCount) * 100;
+        const isHidden = i >= 10 ? `style="display:none;" class="stats-list-item rank-item-hidden" data-group="${id}"` : `class="stats-list-item"`;
+
+        html += `
+            <div ${isHidden} style="padding: 12px 0;">
+                <div class="year-text">${year}</div>
+                <div class="yearly-bar-container">
+                    <div class="yearly-bar-fill" style="width: ${barWidth}%"></div>
+                </div>
+                <div style="font-weight:bold; color:var(--primary-color); min-width:35px; text-align:right;">
+                    ${count}<small style="font-size:0.6rem;">回</small>
+                </div>
+            </div>`;
+    });
+
 
 
 // 統計描画内のランキング生成ロジック
