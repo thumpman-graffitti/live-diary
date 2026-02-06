@@ -6,6 +6,7 @@
     <title>LIVE LOG</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 <style>
         :root {
             --primary-color: #007130; /* JRAグリーン */
@@ -513,7 +514,19 @@
 
 <body>
 
-    <header>LIVE DIARY3🍊</header>
+<header class="app-header">
+    <div class="header-logo-area">
+        <i class="fas fa-compact-disc header-logo-icon"></i> <span class="header-title">LIVEDIARY</span>
+    </div>
+    
+    <div class="header-right-menu">
+        <button class="tab-button active" onclick="showTab('home')">ホーム</button>
+        <button class="tab-button" onclick="showTab('history')">履歴</button>
+        <button class="tab-button" onclick="showTab('stats')">統計</button>
+        <button class="tab-button" onclick="showTab('settings')">管理</button>
+    </div>
+</header>
+
 
     <main id="app">
         <div id="page-home" class="tab-content active">
