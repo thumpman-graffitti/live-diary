@@ -513,7 +513,7 @@
 
 <body>
 
-    <header>LIVE DIARY2🍊</header>
+    <header>LIVE DIARY3🍊</header>
 
     <main id="app">
         <div id="page-home" class="tab-content active">
@@ -1122,100 +1122,89 @@ function switchStatsTarget(name) {
 }
 
         // 地図を生成する専用関数
-        function renderJapanMap(visited) {
-            const container = document.getElementById('japan-map');
-            if (!container) return;
+function renderJapanMap(visited) {
+    const container = document.getElementById('japan-map');
+    if (!container) return;
 
-            const s = 22; // 1マスのサイズ
-            const ox = 75, oy = 20; // 九州を左側に収めるためのオフセット
+    // フィルタリングされた現在のライブデータから、各都道府県の訪問回数を集計
+    const filterArtist = document.getElementById('stats-filter-artist').value;
+    const targetLives = filterArtist === 'all' ? db.lives : db.lives.filter(l => l.artist === filterArtist);
+    
+    const counts = {};
+    targetLives.forEach(l => {
+        if (l.pref && l.pref !== '海外') {
+            counts[l.pref] = (counts[l.pref] || 0) + 1;
+        }
+    });
 
-            const mapData = [
-                // 【北海道】独立 (2x2)
-                {p:'北海道', x:ox+s*9, y:oy+s*0, w:s*3, h:s*2, big:true},
+    // 最大訪問回数を取得（色の濃さの基準にする）
+    const maxVisit = Math.max(...Object.values(counts), 0);
 
-                // --- 本州エリア (隙間・重なり一切なし) ---
-                // 東北
-                {p:'青森県', x:ox+s*9, y:oy+s*3, w:s*2, h:s},
-                {p:'秋田県', x:ox+s*9, y:oy+s*4}, {p:'岩手県', x:ox+s*10, y:oy+s*4},
-                {p:'山形県', x:ox+s*9, y:oy+s*5}, {p:'宮城県', x:ox+s*10, y:oy+s*5},
-                {p:'福島県', x:ox+s*9, y:oy+s*6, w:s*2, h:s}, // 2x1
+    const s = 22; 
+    const ox = 75, oy = 20;
 
-                // 北陸・中部 (新潟・長野・岐阜・静岡を1x2/2x1で隙間埋め)
-                {p:'新潟県', x:ox+s*7, y:oy+s*6, w:s*2, h:s}, // 1x2
-                {p:'富山県', x:ox+s*6, y:oy+s*6}, {p:'石川県', x:ox+s*5, y:oy+s*6},
-                {p:'長野県', x:ox+s*7, y:oy+s*7, w:s, h:s*2}, // 1x2
-                {p:'福井県', x:ox+s*5, y:oy+s*7},
-                {p:'岐阜県', x:ox+s*6, y:oy+s*7, w:s, h:s*2}, // 1x2
-                {p:'山梨県', x:ox+s*8, y:oy+s*8}, {p:'愛知県', x:ox+s*6, y:oy+s*9},
-                {p:'静岡県', x:ox+s*7, y:oy+s*9}, // 1x2
+    // 都道府県配置データ（既存のものをそのまま使用）
+    const mapData = [
+        {p:'北海道', x:ox+s*9, y:oy+s*0, w:s*3, h:s*2, big:true},
+        {p:'青森県', x:ox+s*9, y:oy+s*3, w:s*2, h:s},
+        {p:'秋田県', x:ox+s*9, y:oy+s*4}, {p:'岩手県', x:ox+s*10, y:oy+s*4},
+        {p:'山形県', x:ox+s*9, y:oy+s*5}, {p:'宮城県', x:ox+s*10, y:oy+s*5},
+        {p:'福島県', x:ox+s*9, y:oy+s*6, w:s*2, h:s},
+        {p:'新潟県', x:ox+s*7, y:oy+s*6, w:s*2, h:s},
+        {p:'富山県', x:ox+s*6, y:oy+s*6}, {p:'石川県', x:ox+s*5, y:oy+s*6},
+        {p:'長野県', x:ox+s*7, y:oy+s*7, w:s, h:s*2},
+        {p:'福井県', x:ox+s*5, y:oy+s*7},
+        {p:'岐阜県', x:ox+s*6, y:oy+s*7, w:s, h:s*2},
+        {p:'山梨県', x:ox+s*8, y:oy+s*8}, {p:'愛知県', x:ox+s*6, y:oy+s*9},
+        {p:'静岡県', x:ox+s*7, y:oy+s*9},
+        {p:'栃木県', x:ox+s*9, y:oy+s*7}, {p:'群馬県', x:ox+s*8, y:oy+s*7},
+        {p:'茨城県', x:ox+s*10, y:oy+s*7, w:s, h:s*2}, {p:'埼玉県', x:ox+s*9, y:oy+s*8},
+        {p:'千葉県', x:ox+s*10, y:oy+s*9, w:s, h:s*2},
+        {p:'東京都', x:ox+s*9, y:oy+s*9}, {p:'神奈川県', x:ox+s*8, y:oy+s*9},
+        {p:'滋賀県', x:ox+s*5, y:oy+s*8}, {p:'京都府', x:ox+s*4, y:oy+s*7},
+        {p:'大阪府', x:ox+s*4, y:oy+s*8}, {p:'奈良県', x:ox+s*4, y:oy+s*9},
+        {p:'三重県', x:ox+s*5, y:oy+s*9},
+        {p:'兵庫県', x:ox+s*3, y:oy+s*7, w:s, h:s*2},
+        {p:'和歌山県', x:ox+s*4, y:oy+s*10, w:s*2, h:s},
+        {p:'鳥取県', x:ox+s*2, y:oy+s*7}, {p:'島根県', x:ox+s*1, y:oy+s*7},
+        {p:'岡山県', x:ox+s*2, y:oy+s*8},
+        {p:'広島県', x:ox+s*1, y:oy+s*8},
+        {p:'山口県', x:ox+s*0, y:oy+s*7, w:s, h:s*2},
+        {p:'香川県', x:ox+s*1, y:oy+s*10}, {p:'徳島県', x:ox+s*2, y:oy+s*10},
+        {p:'愛媛県', x:ox+s*1, y:oy+s*11}, {p:'高知県', x:ox+s*2, y:oy+s*11},
+        {p:'福岡県', x:ox-s*2, y:oy+s*8}, {p:'佐賀県', x:ox-s*3, y:oy+s*8}, {p:'大分県', x:ox-s*2, y:oy+s*9},
+        {p:'長崎県', x:ox-s*3, y:oy+s*9}, {p:'熊本県', x:ox-s*3, y:oy+s*10}, {p:'宮崎県', x:ox-s*2, y:oy+s*10},
+        {p:'鹿児島県', x:ox-s*3, y:oy+s*11, w:s*2, h:s},
+        {p:'沖縄県', x:ox-s*3, y:oy+s*14}
+    ];
 
-                // 関東
-                {p:'栃木県', x:ox+s*9, y:oy+s*7}, {p:'群馬県', x:ox+s*8, y:oy+s*7},
-                {p:'茨城県', x:ox+s*10, y:oy+s*7, w:s, h:s*2}, {p:'埼玉県', x:ox+s*9, y:oy+s*8},
-                {p:'千葉県', x:ox+s*10, y:oy+s*9, w:s, h:s*2}, // 1x2
-                {p:'東京都', x:ox+s*9, y:oy+s*9}, {p:'神奈川県', x:ox+s*8, y:oy+s*9},
+    let svgHtml = `<svg viewBox="0 0 350 420" width="100%" height="auto">`;
 
-                // 近畿
-                {p:'滋賀県', x:ox+s*5, y:oy+s*8}, {p:'京都府', x:ox+s*4, y:oy+s*7},
-                {p:'大阪府', x:ox+s*4, y:oy+s*8}, {p:'奈良県', x:ox+s*4, y:oy+s*9},
-                {p:'三重県', x:ox+s*5, y:oy+s*9}, // 1x2
-                {p:'兵庫県', x:ox+s*3, y:oy+s*7, w:s, h:s*2}, // 1x2
-                {p:'和歌山県', x:ox+s*4, y:oy+s*10, w:s*2, h:s}, // 2x1
-
-                // 中国
-                {p:'鳥取県', x:ox+s*2, y:oy+s*7}, {p:'島根県', x:ox+s*1, y:oy+s*7},
-                {p:'岡山県', x:ox+s*2, y:oy+s*8}, // 1x2
-                {p:'広島県', x:ox+s*1, y:oy+s*8}, // 1x2
-                {p:'山口県', x:ox+s*0, y:oy+s*7, w:s, h:s*2}, // 1x2
-
-                // --- 独立島エリア (海を隔てる) ---
-                // 【四国】(2x2 正方形)
-                {p:'香川県', x:ox+s*1, y:oy+s*10}, {p:'徳島県', x:ox+s*2, y:oy+s*10},
-                {p:'愛媛県', x:ox+s*1, y:oy+s*11}, {p:'高知県', x:ox+s*2, y:oy+s*11},
-
-                // 【九州】(画像準拠・逆L字含む配置)
-                {p:'福岡県', x:ox-s*2, y:oy+s*8}, {p:'佐賀県', x:ox-s*3, y:oy+s*8}, {p:'大分県', x:ox-s*2, y:oy+s*9},
-                {p:'長崎県', x:ox-s*3, y:oy+s*9}, {p:'熊本県', x:ox-s*3, y:oy+s*10}, {p:'宮崎県', x:ox-s*2, y:oy+s*10},
-                {p:'鹿児島県', x:ox-s*3, y:oy+s*11, w:s*2, h:s}, // 2x1
-
-                // 【沖縄】
-                {p:'沖縄県', x:ox-s*3, y:oy+s*14}
-            ];
-
-            let svgHtml = `<svg viewBox="0 0 350 420" width="100%" height="auto">
-                <defs>
-                    <linearGradient id="gradVisited" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#34c759" />
-                        <stop offset="100%" stop-color="#007130" />
-                    </linearGradient>
-                </defs>`;
-                    mapData.forEach(d => {
-        const isVisited = visited.includes(d.p);
-        const color = isVisited ? 'url(#gradVisited)' : '#f2f2f7';
-        const textColor = isVisited ? '#ffffff' : '#8e8e93';
+    mapData.forEach(d => {
+        const count = counts[d.p] || 0;
+        const isVisited = count > 0;
+        
+        // 濃淡の計算: 回数が多いほど不透明度(opacity)を上げる (最小0.2, 最大1.0)
+        // 1回だけのときは少し薄く、回数が増えるほどパキッとした緑になります
+        const opacity = isVisited ? Math.max(0.2, count / maxVisit) : 1;
+        const color = isVisited ? `rgba(0, 113, 48, ${opacity})` : '#f2f2f7';
+        const textColor = isVisited ? (opacity > 0.5 ? '#ffffff' : '#007130') : '#8e8e93';
+        
         const w = d.w || s;
         const h = d.h || s;
-
-        // --- ここから書き換え ---
-        // 3レターコードを取得（辞書になければ漢字1文字）
         const displayCode = prefCodes[d.p] || d.p.charAt(0);
-        // 3文字が収まるようにサイズを調整（通常マスは7.5px、北海道などの大マスは11px）
         const fontSize = d.big ? 11 : 7.5;
         
         svgHtml += `
-            <g>
+            <g style="cursor:pointer;" onclick="toggleStatsDetail('detail-stats-pref-ranking-manual', 'stats-pref-ranking', '${d.p}')">
                 <rect x="${d.x}" y="${d.y}" width="${w}" height="${h}" rx="2" fill="${color}" stroke="#ffffff" stroke-width="0.5" />
-                <text x="${d.x + w/2}" y="${d.y + h/2 + 3}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif; letter-spacing: -0.2px;">${displayCode}</text>
+                <text x="${d.x + w/2}" y="${d.y + h/2 + 3}" font-size="${fontSize}" font-weight="900" text-anchor="middle" fill="${textColor}" style="pointer-events:none; font-family: -apple-system, sans-serif;">${displayCode}</text>
             </g>`;
-        // --- ここまで ---
     });
-            
-            container.innerHTML = svgHtml + `</svg>`;
-        }
-
-
-
-
+    
+    container.innerHTML = svgHtml + `</svg>
+    <div id="detail-stats-pref-ranking-manual" class="stats-detail-list hidden" style="margin-top:10px;"></div>`;
+}
 
 function renderArtistManager() {
     const q = document.getElementById('artist-search-input').value.toLowerCase();
