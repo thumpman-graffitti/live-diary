@@ -320,6 +320,34 @@ button:active { transform: translateY(2px); box-shadow: none; }
     width: 50px;
 }
 
+/* ランキング詳細リストのスタイル */
+.stats-detail-list {
+    background: #f9f9fb;
+    margin: 5px 10px 10px 45px; /* 順位の横から開始 */
+    border-radius: 8px;
+    font-size: 0.8rem;
+    overflow: hidden;
+    border: 1px solid #eee;
+}
+
+.stats-detail-item {
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+    line-height: 1.4;
+}
+
+.stats-detail-item:last-child { border-bottom: none; }
+
+.stats-detail-date {
+    color: #8e8e93;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.stats-detail-artist {
+    color: var(--primary-color);
+    font-weight: bold;
+}
 
 
 
