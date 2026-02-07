@@ -97,14 +97,13 @@
 <div id="page-settings" class="tab-content">
     <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 6.0.0</div>
 
-    <div class="card">
-        <span class="section-title">データのバックアップ・復元</span>
-        <div style="display: flex; gap: 10px;">
-            <button class="primary-btn" onclick="exportData()" style="flex: 1;">書出し</button>
-            <button class="accent-btn" onclick="document.getElementById('import-file').click()" style="flex: 1;">読込み</button>
-            <input type="file" id="import-file" style="display:none" onchange="importData(event)">
-        </div>
+<div class="settings-card">
+    <span class="section-title">データのバックアップ・復元</span>
+    <div class="backup-controls">
+        <button onclick="exportData()">書出し</button>
+        <button onclick="importData()">読込み</button>
     </div>
+</div>
 
     <div class="card">
         <span class="section-title">登録アーティストの管理</span>
