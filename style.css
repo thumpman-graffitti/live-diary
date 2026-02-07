@@ -87,7 +87,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 
 
-/* --- タブバー：全タブ黄色バー・一重境界線・隙間なし（最終修正版） --- */
+/* --- 2. タブバー：全タブ黄色バー・一重境界線・隙間なし（決定版修正） --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
@@ -98,16 +98,14 @@ button:active { transform: translateY(2px); box-shadow: none; }
     background-color: var(--primary-color) !important;
     z-index: 9999 !important;
     border-top: 1px solid rgba(255,255,255,0.2) !important;
-    border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
-    box-shadow: none !important;
     /* 下の隙間を埋める */
     outline: 100px solid var(--primary-color) !important;
     clip-path: inset(0px 0px -100px 0px) !important;
 }
 
-/* 各タブボタン */
+/* 各タブボタンの基本状態 */
 .tab-bar button {
     flex: 1 !important;
     height: 60px !important;
@@ -120,14 +118,12 @@ button:active { transform: translateY(2px); box-shadow: none; }
     justify-content: center !important;
     padding: 0 !important;
     margin: 0 !important;
-    color: rgba(255,255,255,0.6) !important;
+    color: rgba(255,255,255,0.5) !important; /* 未選択は半透明の白 */
     box-shadow: none !important;
     transform: none !important;
-    border-radius: 0 !important;
-    overflow: visible !important; /* バーを確実に出すために必要 */
 }
 
-/* 境界線：一重（疑似要素 ::before を使用） */
+/* 境界線：高さを24pxに制限し、二重にならないよう右側のみ描画 */
 .tab-bar button:not(:last-child)::before {
     content: "" !important;
     position: absolute !important;
@@ -136,17 +132,20 @@ button:active { transform: translateY(2px); box-shadow: none; }
     width: 1px !important;
     height: 24px !important;
     background-color: rgba(255, 255, 255, 0.2) !important;
-    z-index: 1 !important;
+    z-index: 5 !important;
 }
 
-/* 【全タブ共通】アクティブ時の「黄色文字」 */
-.tab-bar button.active {
+/* 【最優先】アクティブ時の黄色バーと文字色設定 */
+/* どのタブでも .active がつけばこのスタイルを強制します */
+.tab-bar button.active,
+.tab-bar button[class*="active"] { 
     color: #ffcc00 !important;
-    background-color: rgba(255,255,255,0.05) !important;
+    background-color: rgba(255,255,255,0.1) !important;
 }
 
-/* 【全タブ共通】黄色い上部バー（疑似要素 ::after を使用） */
-.tab-bar button.active::after {
+/* 黄色い上部バー：全タブ共通 */
+.tab-bar button.active::after,
+.tab-bar button[class*="active"]::after {
     content: '' !important;
     position: absolute !important;
     top: 0 !important;
@@ -154,18 +153,20 @@ button:active { transform: translateY(2px); box-shadow: none; }
     right: 0 !important;
     height: 3px !important;
     background-color: #ffcc00 !important;
-    z-index: 100 !important; /* 境界線より手前に出す */
+    z-index: 100 !important;
     display: block !important;
+    visibility: visible !important;
 }
 
-/* アイコンとテキストのスタイル固定（黄色を強制継承） */
-.tab-bar button i, 
-.tab-bar button svg,
-.tab-bar button .icon,
-.tab-bar button span {
-    color: inherit !important; /* 親(button.active)の黄色を確実に引き継ぐ */
+/* アイコンと文字の色を親の黄色に強制同期 */
+.tab-bar button.active i,
+.tab-bar button.active svg,
+.tab-bar button.active .icon,
+.tab-bar button.active span {
+    color: #ffcc00 !important;
 }
 
+/* アイコンとスパンのサイズ・配置固定 */
 .tab-bar button i, 
 .tab-bar button svg,
 .tab-bar button .icon {
