@@ -75,43 +75,15 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-/* --- ボタンデザインの統一：濃い緑・重厚スタイル --- */
-/* ライブ登録、保存など全ての主要ボタン */
-button:not(.close-btn):not(.btn-mini):not(.tab-bar button):not(.show-more-btn) {
-    width: 100% !important;
-    height: 48px !important;
-    padding: 0 12px !important;
-    background-color: var(--primary-color) !important; /* 濃い緑 #007130 */
-    color: white !important;
-    border: none !important;
-    border-radius: 8px !important; /* 角丸を8pxに統一（楕円を廃止） */
-    font-size: 1rem !important;
-    font-weight: bold !important;
-    box-shadow: 0 3px 0 #004d21 !important; /* 下側の立体感 */
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer;
-    margin-top: 8px !important;
-    transform: none !important;
+/* ボタン */
+button {
+    width: 100%; padding: 12px;
+    background: var(--primary-color); color: white;
+    border: none; border-radius: 25px;
+    font-size: 1rem; font-weight: bold;
+    box-shadow: 0 3px 0 #004d21;
 }
-
-/* ボタン押下時の沈み込み */
-button:not(.close-btn):not(.btn-mini):not(.tab-bar button):not(.show-more-btn):active {
-    transform: translateY(2px) !important;
-    box-shadow: 0 1px 0 #004d21 !important;
-}
-
-/* アーティスト追加ボタン（横並び専用） */
-.btn-add-inline {
-    width: 80px !important;
-    height: 44px !important; /* 入力欄と高さを同期 */
-    margin-top: 0 !important;
-    box-shadow: none !important; /* 横並びはフラットに */
-    border-radius: 6px !important;
-    flex-shrink: 0 !important;
-}
-
+button:active { transform: translateY(2px); box-shadow: none; }
 
 
 
@@ -1101,4 +1073,3 @@ button:not(.close-btn):not(.btn-mini):not(.tab-bar button):not(.show-more-btn):a
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
 .tab-content.active { display: block; }
-
