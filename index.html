@@ -14,15 +14,12 @@
             --bg-color: #f2f2f7;
         }
         body {
-            margin: 0;
-            padding-bottom: 110px !important;
-            background-color: var(--bg-color);
-            font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
-            position: relative; 
-        }
-
-
-
+    margin: 0;
+    /* タブバーが高くなった分、少しだけ余裕を持たせる */
+    padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
+    background-color: var(--bg-color);
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
 
         header {
             background-color: var(--primary-color);
