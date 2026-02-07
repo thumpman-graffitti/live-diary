@@ -75,24 +75,16 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 
-/* --- 1. レポート生成ボタン：画像（13:17）のデザインを完全再現 --- */
-.generate-report-btn {
-    width: calc(100% - 24px) !important;
-    margin: 15px 12px !important;
-    padding: 16px !important;
-    /* 綺麗なグラデーション：黒い線が出ないよう影を完全リセット */
-    background: linear-gradient(135deg, #ffcc00 0%, #ff9500 100%) !important;
-    color: #fff !important;
-    border: none !important;
-    border-radius: 12px !important;
-    font-size: 1rem !important;
-    font-weight: bold !important;
-    box-shadow: none !important; /* お椀型の黒い線を消すため影をゼロに */
-    text-shadow: none !important;
-    transform: none !important;
-    display: block !important;
-    -webkit-appearance: none;
+/* ボタン */
+button {
+    width: 100%; padding: 12px;
+    background: var(--primary-color); color: white;
+    border: none; border-radius: 25px;
+    font-size: 1rem; font-weight: bold;
+    box-shadow: 0 3px 0 #004d21;
 }
+button:active { transform: translateY(2px); box-shadow: none; }
+
 
 /* --- 2. タブバー：全タブ黄色バー・一重境界線・隙間なし --- */
 .tab-bar {
