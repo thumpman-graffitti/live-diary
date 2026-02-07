@@ -108,19 +108,57 @@ button:active { transform: translateY(2px); box-shadow: none; }
 }
 
 /* タブボタン：中身のせいで高さが広がらないように調整 */
+/* タブバー本体：高さ固定と隙間埋め */
+.tab-bar {
+    display: flex !important;
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60px !important;
+    background-color: var(--primary-color) !important;
+    z-index: 9999 !important;
+    border-top: 1px solid rgba(255,255,255,0.3) !important;
+    box-shadow: 0 50px 0 0 var(--primary-color) !important; /* 隙間埋め */
+}
+
+/* タブボタン：境界線を常に表示 */
 .tab-bar button {
     flex: 1 !important;
-    height: 60px !important; /* バーと同じ高さに固定 */
-    background: none !important;
+    height: 60px !important;
+    background: transparent !important; /* 背景で線を消さないよう透明に */
     border: none !important;
+    /* 右側に境界線を表示（最後のボタン以外） */
+    border-right: 1px solid rgba(255,255,255,0.2) !important; 
     padding: 0 !important;
     margin: 0 !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 0 !important; /* お椀型の原因を削除 */
     color: rgba(255,255,255,0.6) !important;
+}
+
+/* 最後のボタン（管理）の境界線は不要 */
+.tab-bar button:last-child {
+    border-right: none !important;
+}
+
+/* アクティブ時の文字とアイコン色 */
+.tab-bar button.active {
+    color: #ffffff !important;
+}
+
+/* アクティブ時の黄色い線（上部） */
+.tab-bar button.active::after {
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background-color: #ffd700 !important;
+    z-index: 2 !important;
 }
 
 /* アイコンと文字のサイズ・余白を以前の比率に調整 */
