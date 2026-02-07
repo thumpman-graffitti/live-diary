@@ -1142,6 +1142,21 @@ button.primary-btn:not(#generate-report-btn):active {
     color: white !important;
 }
 
+/* --- 履歴画面の見出し追加 --- */
+/* 履歴リストを表示する要素（#live-list など）の直前に見出しを表示 */
+#page-history::before {
+    content: "ライブ参戦履歴／セトリ登録";
+    display: block;
+    font-size: 0.9rem !important;
+    color: var(--primary-color) !important;
+    border-left: 4px solid var(--primary-color) !important;
+    padding: 0 0 0 10px !important;
+    margin: 10px 12px 15px 12px !important;
+    font-weight: bold !important;
+    line-height: 1.2;
+}
+
+
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
 .tab-content.active { display: block; }
