@@ -75,18 +75,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 
 /* ボタン */
-button {
-    width: 100%; padding: 12px;
-    background: var(--primary-color); color: white;
-    border: none; border-radius: 25px;
-    font-size: 1rem; font-weight: bold;
-    box-shadow: 0 3px 0 #004d21;
-}
-button:active { transform: translateY(2px); box-shadow: none; }
-
-
-/* --- タブバー：完全修正版（デグレ防止） --- */
-/* --- タブバー：最終統合修正（デグレ・二重線・バー消失を完全解決） --- */
+/* --- タブバー完全統合リセット（二重線・特定タブのみの不具合を解消） --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
@@ -98,23 +87,25 @@ button:active { transform: translateY(2px); box-shadow: none; }
     z-index: 9999 !important;
     border-top: 1px solid rgba(255,255,255,0.3) !important;
     
-    /* お椀型・不要な余白を完全リセット */
+    /* お椀型・不要な装飾を完全に排除 */
     border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
 
-    /* 下の隙間埋め：背景色を外側に拡張 */
+    /* 下の隙間（セーフエリア）を緑で塗りつぶす */
     outline: 100px solid var(--primary-color) !important;
     clip-path: inset(0px 0px -100px 0px) !important;
 }
 
-/* 各タブボタン：境界線を1本のみに固定 */
+/* 各タブボタン：境界線を一重（右側のみ）に固定 */
 .tab-bar button {
     flex: 1 !important;
     height: 60px !important;
     background: transparent !important;
     border: none !important;
+    /* 右側の境界線：これ以外の線（疑似要素など）は一切出さない */
+    border-right: 1px solid rgba(255,255,255,0.2) !important;
     position: relative !important;
     display: flex !important;
     flex-direction: column !important;
@@ -124,23 +115,22 @@ button:active { transform: translateY(2px); box-shadow: none; }
     padding: 0 !important;
     border-radius: 0 !important;
     color: rgba(255,255,255,0.6) !important;
-    /* 右側の境界線：これ1本に統一 */
-    border-right: 1px solid rgba(255,255,255,0.2) !important;
-    box-sizing: border-box !important;
+    box-shadow: none !important;
+    transform: none !important; /* 一般ボタンの浮き上がり演出を無効化 */
 }
 
-/* 最後のボタンの右線は不要 */
+/* 最後のボタン（管理）の右線は不要 */
 .tab-bar button:last-child {
     border-right: none !important;
 }
 
-/* 【全タブ共通】アクティブ時の文字色・アイコン色を黄色に */
+/* 【全タブ共通】アクティブ時の文字・アイコン色を黄色に固定 */
 .tab-bar button.active {
     color: #ffcc00 !important;
     background-color: rgba(255,255,255,0.1) !important;
 }
 
-/* 【全タブ共通】アクティブ時の黄色い上部バーを復活 */
+/* 【全タブ共通】アクティブ時の黄色い上部バー（直線） */
 .tab-bar button.active::after {
     content: '' !important;
     position: absolute !important;
@@ -152,22 +142,28 @@ button:active { transform: translateY(2px); box-shadow: none; }
     z-index: 10 !important;
 }
 
-/* アイコンとスパンのスタイル固定 */
-.tab-bar button .icon,
-.tab-bar button i,
-.tab-bar button svg {
+/* アイコンと文字のスタイルを全ボタンで統一 */
+.tab-bar button i, 
+.tab-bar button svg, 
+.tab-bar button span.icon {
     font-size: 20px !important;
     margin-bottom: 2px !important;
     display: block !important;
-    color: inherit !important; /* ボタンの文字色(黄色)を継承 */
+    color: inherit !important; /* ボタンの active 色（黄色）を強制継承 */
 }
 
 .tab-bar button span:not(.icon) {
     font-size: 10px !important;
     line-height: 1 !important;
     display: block !important;
+    color: inherit !important;
 }
-/* --- 修正ここまで --- */
+
+/* 以前の古い境界線ロジックが残っていた場合、ここで完全に無効化 */
+.tab-bar button::before { content: none !important; }
+.tab-bar button:not(:last-child)::after { display: none; } /* 非アクティブ時の余計な線を削除 */
+.tab-bar button.active::after { display: block !important; } /* アクティブ時の黄色バーのみ許可 */
+
 
 /* 履歴スリムカード */
 .live-item-detail {
