@@ -7,9 +7,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <link rel="stylesheet" href="style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-<style>
-
-
+　　　<style>
 
     </style>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,15 +24,14 @@
     <div class="header-title">LIVEDIARY</div>
 </header>
 
-    <main id="app">
-        <div id="page-home" class="tab-content active">
-            <div class="card">
-                <span class="section-title">アーティスト新規追加</span>
-                <div style="display: flex; gap: 8px;">
-                    <input type="text" id="new-artist-name" placeholder="名前を入力" style="margin-bottom:0;">
-                    <button onclick="addArtist()" class="primary-btn" style="width: auto; padding: 0 20px;">追加</button>
-                </div>
+<main id="app">
+    <div id="page-home" class="tab-content active">
+        <div class="card">
+            <h2>アーティスト新規追加</h2> <div class="add-artist-form">
+                <input type="text" id="new-artist-name" placeholder="名前を入力">
+                <button onclick="addArtist()" class="btn-add-inline">追加</button>
             </div>
+        </div>
             <div class="card">
                 <span class="section-title">新しいライブの記録</span>
                 <select id="live-artist-select"><option value="">アーティストを選択</option></select>
