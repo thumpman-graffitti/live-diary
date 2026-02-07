@@ -1087,6 +1087,46 @@ button.primary-btn:not(#generate-report-btn):active {
     transform: translateY(1px) !important;
 }
 
+/* --- レポート保存ボタン：黄色の楕円デザインを復元 --- */
+.report-action-buttons .primary-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important;
+    color: #000 !important;
+    border-radius: 30px !important; /* 楕円形に戻す */
+    height: 48px !important;
+    width: 200px !important; /* 横幅を適切に制限 */
+    margin: 10px auto !important;
+    box-shadow: 0 3px 0 #b37700 !important;
+    font-size: 1rem !important;
+    border: none !important;
+}
+
+/* --- 管理画面：バックアップ・復元ボタンの横並びロジック --- */
+/* 書き出し・読み込みボタンを囲む親要素に適用してください */
+.backup-controls {
+    display: flex !important;
+    gap: 10px !important;
+    margin-top: 10px !important;
+}
+
+/* 書き出し・読み込みボタン共通 */
+.backup-controls button {
+    flex: 1 !important; /* 50%ずつ均等に */
+    height: 48px !important; /* 高さを統一 */
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 8px !important;
+    font-size: 0.9rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-shadow: 0 3px 0 #004d21 !important;
+}
+
+/* 読み込みボタン（右側）の特定色修正 */
+button[onclick*="import"], 
+button#import-btn {
+    background-color: var(--primary-color) !important; /* 左と同じ濃い緑に統一 */
+}
 
 
 
