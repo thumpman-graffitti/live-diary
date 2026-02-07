@@ -1237,13 +1237,13 @@ function renderArtistManager() {
         .filter(a => a.toLowerCase().includes(q))
         .sort()
         .map(a => `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #f2f2f7;">
-                <span style="font-weight: 500;">${a}</span>
-                <div style="display: flex; gap: 8px;">
-                    <button onclick="editArtistName('${a}')" style="background: #f0f0f5; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; color: #555;">編集</button>
-                    <button onclick="deleteArtist('${a}')" style="background: #fff; border: 1px solid #ff3b30; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; color: #ff3b30;">削除</button>
+            <div class="artist-admin-row">
+                <span class="artist-name-text">${a}</span>
+                <div class="admin-btn-group">
+                    <button onclick="editArtistName('${a}')" class="btn-mini btn-edit">編集</button>
+                    <button onclick="deleteArtist('${a}')" class="btn-mini btn-delete">削除</button>
                 </div>
-            </div>`).join('') || '<div style="padding:20px; text-align:center; color:#8e8e93;">該当するアーティストがいません</div>';
+            </div>`).join('') || '<div style="padding:20px; text-align:center; color:#8e8e93;">該当なし</div>';
 }
 
 // showPage関数内のID指定を修正（page-settingsに合わせて）
