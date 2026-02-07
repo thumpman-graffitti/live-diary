@@ -420,6 +420,42 @@ button:active { transform: translateY(2px); box-shadow: none; }
     }
 }
 
+/* 管理タブ内のカードスタイル */
+.settings-card {
+    background: #ffffff;
+    border-radius: 15px;
+    padding: 20px;
+    margin: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* アーティストリストのスクロールエリア */
+.artist-list-container {
+    max-height: 300px; /* ここで高さを制限。アーティストが増えてもこれ以上伸びません */
+    overflow-y: auto;  /* 縦スクロールを有効に */
+    margin-top: 10px;
+    padding-right: 5px;
+}
+
+/* バージョン情報のスタイル */
+.app-version-info {
+    text-align: center;
+    font-size: 12px;
+    color: #8e8e93;
+    margin-top: 10px;
+    letter-spacing: 1px;
+}
+
+/* スクロールバーを少しオシャレに（任意） */
+.artist-list-container::-webkit-scrollbar {
+    width: 4px;
+}
+.artist-list-container::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px;
+}
+
+
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
