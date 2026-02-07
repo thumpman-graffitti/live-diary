@@ -593,19 +593,29 @@
     <div id="stats-pref-ranking"></div>
 </div>
 
-        <div id="page-settings" class="tab-content">
-            <div class="card">
-                <span class="section-title">データのバックアップ・復元</span>
-                <div style="display: flex; gap: 10px; margin-bottom: 20px;">
-                    <button onclick="exportData()" style="flex:1; background:#8e8e93; color:white; border:none; padding:12px; border-radius:10px;">書出し</button>
-                    <button onclick="document.getElementById('import-file').click()" style="flex:1; background:var(--primary-color); color:white; border:none; padding:12px; border-radius:10px;">読込み</button>
-                </div>
-                <input type="file" id="import-file" accept=".json" style="display:none;" onchange="importData(event)">
-                <span class="section-title" style="margin-top:20px; border-top: 1px solid #eee; padding-top: 20px;">登録アーティストの管理</span>
-                <input type="text" id="artist-search-input" placeholder="🔍 名前で検索" oninput="filterArtists()">
-                <div id="artist-manager-list"></div>
-            </div>
+
+<div id="tab-settings" class="tab-content">
+    <div class="app-version-info">Ver 6.0.0</div>
+
+    <div class="settings-card">
+        <h3 style="font-size: 14px; color: #666; margin-bottom: 15px;">データのバックアップ・復元</h3>
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-primary" onclick="exportData()" style="flex: 1;">書出し</button>
+            <button class="btn-secondary" onclick="importData()" style="flex: 1;">読込み</button>
         </div>
+    </div>
+
+    <div class="settings-card">
+        <h3 style="font-size: 14px; color: #666; margin-bottom: 15px;">登録アーティストの管理</h3>
+        
+        <div class="search-box">
+            <input type="text" id="artist-search" placeholder="名前で検索" oninput="filterArtistList()">
+        </div>
+
+        <div class="artist-list-container" id="manage-artist-list">
+            </div>
+    </div>
+</div>
     </main>
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
