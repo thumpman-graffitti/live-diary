@@ -85,50 +85,65 @@ button {
 button:active { transform: translateY(2px); box-shadow: none; }
 
 /* タブバー */
-/* タブバーの修正：お椀型を消して直線のデザインに戻す */
+/* タブバー本体：高さを60pxに強制固定し、お椀型をリセット */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    /* 高さを以前の 65px 前後に戻しつつ、背景色だけ下に伸ばす */
-    height: 65px; 
-    background-color: var(--primary-color);
-    z-index: 9999;
-    border-top: 1px solid rgba(255,255,255,0.3);
+    bottom: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 60px !important; /* 高さを以前のサイズに固定 */
+    background-color: var(--primary-color) !important;
+    z-index: 9999 !important;
+    border-top: 1px solid rgba(255,255,255,0.3) !important;
     
-    /* 下の隙間を背景色で塗りつぶすための設定 */
-    box-shadow: 0 0 0 100px var(--primary-color); /* 下方向に背景色を無限に伸ばす */
-    clip-path: inset(-100px 0px 0px 0px); /* 上方向の影だけ見えないようにカット */
+    /* 余計な装飾を全て排除 */
+    border-radius: 0 !important; 
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+
+    /* 下の隙間（セーフエリア）を同じ色で埋める */
+    box-shadow: 0 50px 0 0 var(--primary-color) !important;
 }
 
-/* タブボタン：位置を以前の状態に固定 */
+/* タブボタン：中身のせいで高さが広がらないように調整 */
 .tab-bar button {
-    flex: 1;
-    background: none;
-    border: none;
-    color: rgba(255,255,255,0.6);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 65px; /* タブバーと同じ高さに固定 */
-    padding: 0;
-    margin: 0;
-    position: relative;
-    border-radius: 0; /* 角丸によるアーチ効果を無効化 */
+    flex: 1 !important;
+    height: 60px !important; /* バーと同じ高さに固定 */
+    background: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 0 !important; /* お椀型の原因を削除 */
+    color: rgba(255,255,255,0.6) !important;
 }
 
-/* アクティブなタブのバー（上にある黄色い線） */
+/* アイコンと文字のサイズ・余白を以前の比率に調整 */
+.tab-bar button i, 
+.tab-bar button svg {
+    font-size: 20px !important;
+    margin-bottom: 2px !important;
+}
+
+.tab-bar button span {
+    font-size: 10px !important;
+    line-height: 1 !important;
+}
+
+/* アクティブ時の黄色い線（直線） */
 .tab-bar button.active::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 10%;
-    right: 10%;
-    height: 3px;
-    background-color: #ffd700;
+    content: '' !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 3px !important;
+    background-color: #ffd700 !important;
 }
 
 
