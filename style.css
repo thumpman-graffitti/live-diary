@@ -1087,48 +1087,60 @@ button.primary-btn:not(#generate-report-btn):active {
     transform: translateY(1px) !important;
 }
 
-/* --- レポート保存ボタン：黄色の楕円デザインを復元 --- */
+/* --- 1. レポート保存ボタン：黄色の楕円を最優先で復元 --- */
+/* 他の緑色設定に負けないよう詳細に指定します */
+#report-preview-overlay .primary-btn,
+#report-preview-overlay button.primary-btn,
 .report-action-buttons .primary-btn {
     background: linear-gradient(135deg, #FFD700, #FFA500) !important;
     color: #000 !important;
-    border-radius: 30px !important; /* 楕円形に戻す */
+    border-radius: 30px !important; /* 楕円形 */
+    width: 240px !important;
     height: 48px !important;
-    width: 200px !important; /* 横幅を適切に制限 */
-    margin: 10px auto !important;
+    margin: 15px auto !important;
     box-shadow: 0 3px 0 #b37700 !important;
     font-size: 1rem !important;
     border: none !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
 }
 
-/* --- 管理画面：バックアップ・復元ボタンの横並びロジック --- */
-/* 書き出し・読み込みボタンを囲む親要素に適用してください */
-.backup-controls {
+/* --- 2. 管理画面：バックアップボタンを左右に並べる --- */
+/* ボタンを囲んでいる親要素を横並び(flex)にします */
+.settings-card .backup-controls,
+.settings-card div:has(> button[onclick*="export"]) {
     display: flex !important;
     gap: 10px !important;
+    width: 100% !important;
     margin-top: 10px !important;
 }
 
-/* 書き出し・読み込みボタン共通 */
-.backup-controls button {
-    flex: 1 !important; /* 50%ずつ均等に */
-    height: 48px !important; /* 高さを統一 */
-    padding: 0 !important;
-    margin: 0 !important;
+/* 左右のボタン共通設定（高さを揃える） */
+.settings-card button[onclick*="export"],
+.settings-card button[onclick*="import"] {
+    flex: 1 !important; /* これで50%ずつになります */
+    height: 48px !important;
     border-radius: 8px !important;
+    font-weight: bold !important;
     font-size: 0.9rem !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    box-shadow: 0 3px 0 #004d21 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: 0 3px 0 rgba(0,0,0,0.2) !important;
 }
 
-/* 読み込みボタン（右側）の特定色修正 */
-button[onclick*="import"], 
-button#import-btn {
-    background-color: var(--primary-color) !important; /* 左と同じ濃い緑に統一 */
+/* 書出しボタン（左）：濃い緑 */
+.settings-card button[onclick*="export"] {
+    background-color: #004d21 !important;
+    color: white !important;
 }
 
-
+/* 読込みボタン（右）：少し明るい緑 */
+.settings-card button[onclick*="import"] {
+    background-color: #34c759 !important; /* 明るめの緑で色を変える */
+    color: white !important;
+}
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
