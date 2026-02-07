@@ -259,10 +259,71 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 
 /* 管理画面 */
-.artist-admin-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #eee; }
-.btn-mini { width: 60px !important; height: 32px !important; font-size: 0.75rem !important; border-radius: 8px !important; }
-.btn-edit { background-color: #6e6e73 !important; }
-.btn-delete { background-color: #ff3b30 !important; }
+/* アーティスト管理リストの1行分 */
+.artist-admin-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f2f2f7;
+}
+
+/* アーティスト名のテキスト */
+.artist-name-text {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #333;
+    flex: 1;
+    margin-right: 10px;
+}
+
+/* ボタンを横並びにするグループ */
+.admin-btn-group {
+    display: flex;
+    gap: 8px; /* ボタン同士の隙間 */
+    flex-shrink: 0;
+}
+
+/* 編集・削除ボタン共通 */
+.btn-mini {
+    padding: 8px 16px; /* 横に広めのパディング */
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    min-width: 60px; /* 最低限の横幅を確保 */
+    text-align: center;
+    white-space: nowrap; /* 改行を禁止 */
+}
+
+/* 編集ボタン（グレー系） */
+.btn-edit {
+    background-color: #636366;
+    color: #ffffff;
+}
+
+/* 削除ボタン（赤系） */
+.btn-delete {
+    background-color: #ff3b30;
+    color: #ffffff;
+}
+
+/* リストコンテナのスクロール設定 */
+.artist-list-container {
+    max-height: 350px; /* ここで高さを制限 */
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+
+
+
+
+
+
+
+
 
 .accordion-header { display: flex; justify-content: space-between; padding: 16px; border-bottom: 1px solid var(--border-color); }
 
