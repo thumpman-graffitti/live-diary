@@ -604,10 +604,29 @@ button:active { transform: translateY(2px); box-shadow: none; }
         .tab-bar .icon { font-size: 1.6rem; margin-bottom: 4px; filter: grayscale(1) brightness(2); }
         .tab-bar span:not(.icon) { font-size: 0.8rem; }
 
-        button.primary-btn {
-            width: 100%; background: linear-gradient(135deg, var(--primary-color), #008f3d);
-            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
-        }
+/* --- ライブ登録ボタンの個別修正（ピンポイント） --- */
+button.primary-btn:not(#generate-report-btn) {
+    width: 100% !important;
+    height: 48px !important;
+    background: var(--primary-color) !important; /* 濃い緑 #007130 */
+    color: white !important;
+    border: none !important;
+    border-radius: 8px !important; /* アーティスト追加ボタンと同じ角丸 */
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    box-shadow: 0 3px 0 #004d21 !important; /* 重厚感のある影 */
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-top: 15px !important;
+    padding: 0 !important;
+}
+
+/* 押した時の演出 */
+button.primary-btn:not(#generate-report-btn):active {
+    transform: translateY(2px) !important;
+    box-shadow: 0 1px 0 #004d21 !important;
+}
         button.accent-btn {
             width: 100%; background: linear-gradient(135deg, #34c759, #28a745);
             color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
