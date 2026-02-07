@@ -74,8 +74,23 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     position: absolute; width: 100%; height: 100%; opacity: 0; cursor: pointer;
 }
 
-/* ボタン */
-/* --- タブバー完全統合リセット（二重線・特定タブのみの不具合を解消） --- */
+
+/* --- 1. レポート生成ボタン（デザイン復元） --- */
+.generate-report-btn {
+    width: calc(100% - 24px) !important;
+    margin: 15px 12px !important;
+    padding: 16px !important;
+    background: linear-gradient(135deg, #ffcc00, #ff9500) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 15px !important;
+    font-size: 1.1rem !important;
+    font-weight: bold !important;
+    box-shadow: 0 4px 10px rgba(255, 150, 0, 0.3) !important;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.1) !important;
+}
+
+/* --- 2. タブバー（境界線・黄色バー・隙間埋め 全修正） --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
@@ -85,27 +100,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 60px !important;
     background-color: var(--primary-color) !important;
     z-index: 9999 !important;
-    border-top: 1px solid rgba(255,255,255,0.3) !important;
-    
-    /* お椀型・不要な装飾を完全に排除 */
+    border-top: 1px solid rgba(255,255,255,0.2) !important;
     border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
-    box-shadow: none !important;
 
     /* 下の隙間（セーフエリア）を緑で塗りつぶす */
     outline: 100px solid var(--primary-color) !important;
     clip-path: inset(0px 0px -100px 0px) !important;
 }
 
-/* 各タブボタン：境界線を一重（右側のみ）に固定 */
+/* 各タブボタン：共通設定 */
 .tab-bar button {
     flex: 1 !important;
     height: 60px !important;
     background: transparent !important;
     border: none !important;
-    /* 右側の境界線：これ以外の線（疑似要素など）は一切出さない */
-    border-right: 1px solid rgba(255,255,255,0.2) !important;
     position: relative !important;
     display: flex !important;
     flex-direction: column !important;
@@ -113,24 +123,29 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     justify-content: center !important;
     margin: 0 !important;
     padding: 0 !important;
-    border-radius: 0 !important;
-    color: rgba(255,255,255,0.6) !important;
-    box-shadow: none !important;
-    transform: none !important; /* 一般ボタンの浮き上がり演出を無効化 */
+    color: rgba(255,255,255,0.5) !important; /* 未選択時は白の半透明 */
+    transition: none !important;
 }
 
-/* 最後のボタン（管理）の右線は不要 */
-.tab-bar button:last-child {
-    border-right: none !important;
+/* 境界線：高さを半分（24px）にして、縦長すぎる問題を解消 */
+.tab-bar button:not(:last-child)::before {
+    content: "" !important;
+    position: absolute !important;
+    right: 0 !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    width: 1px !important;
+    height: 24px !important; /* 縦長すぎないサイズに固定 */
+    background-color: rgba(255, 255, 255, 0.2) !important;
 }
 
-/* 【全タブ共通】アクティブ時の文字・アイコン色を黄色に固定 */
+/* 【重要】全タブ共通のアクティブ状態（黄色文字・黄色バー） */
 .tab-bar button.active {
     color: #ffcc00 !important;
-    background-color: rgba(255,255,255,0.1) !important;
+    background-color: rgba(255,255,255,0.05) !important;
 }
 
-/* 【全タブ共通】アクティブ時の黄色い上部バー（直線） */
+/* アクティブ時の黄色い上部バー（直線・3px厚） */
 .tab-bar button.active::after {
     content: '' !important;
     position: absolute !important;
@@ -142,28 +157,22 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     z-index: 10 !important;
 }
 
-/* アイコンと文字のスタイルを全ボタンで統一 */
+/* アイコンと文字の微調整 */
 .tab-bar button i, 
-.tab-bar button svg, 
-.tab-bar button span.icon {
+.tab-bar button svg,
+.tab-bar button .icon {
     font-size: 20px !important;
     margin-bottom: 2px !important;
-    display: block !important;
-    color: inherit !important; /* ボタンの active 色（黄色）を強制継承 */
-}
-
-.tab-bar button span:not(.icon) {
-    font-size: 10px !important;
-    line-height: 1 !important;
     display: block !important;
     color: inherit !important;
 }
 
-/* 以前の古い境界線ロジックが残っていた場合、ここで完全に無効化 */
-.tab-bar button::before { content: none !important; }
-.tab-bar button:not(:last-child)::after { display: none; } /* 非アクティブ時の余計な線を削除 */
-.tab-bar button.active::after { display: block !important; } /* アクティブ時の黄色バーのみ許可 */
-
+.tab-bar button span:last-child {
+    font-size: 10px !important;
+    line-height: 1 !important;
+    font-weight: bold !important;
+}
+/* --- 修正ここまで --- */
 
 /* 履歴スリムカード */
 .live-item-detail {
