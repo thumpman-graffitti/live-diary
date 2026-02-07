@@ -87,7 +87,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
 
 
 
-/* --- 2. タブバー：全タブ黄色バー・一重境界線・隙間なし（決定版修正） --- */
+/* --- タブバー：楕円除去・全タブ黄色バー完全版 --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
@@ -100,17 +100,18 @@ button:active { transform: translateY(2px); box-shadow: none; }
     border-top: 1px solid rgba(255,255,255,0.2) !important;
     padding: 0 !important;
     margin: 0 !important;
-    /* 下の隙間を埋める */
+    /* 隙間埋め */
     outline: 100px solid var(--primary-color) !important;
     clip-path: inset(0px 0px -100px 0px) !important;
 }
 
-/* 各タブボタンの基本状態 */
+/* 各タブボタン：楕円と影を徹底排除 */
 .tab-bar button {
     flex: 1 !important;
     height: 60px !important;
     background: transparent !important;
     border: none !important;
+    border-radius: 0 !important; /* これで楕円を消します */
     position: relative !important;
     display: flex !important;
     flex-direction: column !important;
@@ -118,12 +119,14 @@ button:active { transform: translateY(2px); box-shadow: none; }
     justify-content: center !important;
     padding: 0 !important;
     margin: 0 !important;
-    color: rgba(255,255,255,0.5) !important; /* 未選択は半透明の白 */
+    color: rgba(255,255,255,0.6) !important;
     box-shadow: none !important;
     transform: none !important;
+    outline: none !important;
+    -webkit-tap-highlight-color: transparent !important; /* スマホのタップ時の色を消す */
 }
 
-/* 境界線：高さを24pxに制限し、二重にならないよう右側のみ描画 */
+/* 境界線：高さを24pxに抑える */
 .tab-bar button:not(:last-child)::before {
     content: "" !important;
     position: absolute !important;
@@ -132,20 +135,16 @@ button:active { transform: translateY(2px); box-shadow: none; }
     width: 1px !important;
     height: 24px !important;
     background-color: rgba(255, 255, 255, 0.2) !important;
-    z-index: 5 !important;
 }
 
-/* 【最優先】アクティブ時の黄色バーと文字色設定 */
-/* どのタブでも .active がつけばこのスタイルを強制します */
-.tab-bar button.active,
-.tab-bar button[class*="active"] { 
+/* 【重要】アクティブ状態：黄色い文字とバーを全タブで出す */
+.tab-bar button.active {
     color: #ffcc00 !important;
-    background-color: rgba(255,255,255,0.1) !important;
+    background-color: transparent !important; /* 背景の変な色を消す */
 }
 
-/* 黄色い上部バー：全タブ共通 */
-.tab-bar button.active::after,
-.tab-bar button[class*="active"]::after {
+/* 黄色い上部バー：全ての active クラスに強制適用 */
+.tab-bar button.active::after {
     content: '' !important;
     position: absolute !important;
     top: 0 !important;
@@ -155,24 +154,21 @@ button:active { transform: translateY(2px); box-shadow: none; }
     background-color: #ffcc00 !important;
     z-index: 100 !important;
     display: block !important;
-    visibility: visible !important;
 }
 
-/* アイコンと文字の色を親の黄色に強制同期 */
-.tab-bar button.active i,
-.tab-bar button.active svg,
-.tab-bar button.active .icon,
-.tab-bar button.active span {
-    color: #ffcc00 !important;
+/* アイコンとスパンの色・配置固定 */
+.tab-bar button i, 
+.tab-bar button svg,
+.tab-bar button .icon,
+.tab-bar button span {
+    color: inherit !important; /* 親(button.active)の黄色を継承 */
 }
 
-/* アイコンとスパンのサイズ・配置固定 */
 .tab-bar button i, 
 .tab-bar button svg,
 .tab-bar button .icon {
     font-size: 20px !important;
     margin-bottom: 2px !important;
-    display: block !important;
 }
 
 .tab-bar button span:not(.icon) {
@@ -180,6 +176,7 @@ button:active { transform: translateY(2px); box-shadow: none; }
     font-weight: bold !important;
     line-height: 1 !important;
 }
+
 
 /* 履歴スリムカード */
 .live-item-detail {
