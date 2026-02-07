@@ -538,7 +538,501 @@ button:active { transform: translateY(2px); box-shadow: none; }
     border-radius: 10px;
 }
 
+        :root {
+            --primary-color: #007130; /* JRAグリーン */
+            --accent-color: #34c759;
+            --bg-color: #f2f2f7;
+        }
+        body {
+    margin: 0;
+    /* タブバーが高くなった分、少しだけ余裕を持たせる */
+    padding-bottom: calc(110px + env(safe-area-inset-bottom)) !important;
+    background-color: var(--bg-color);
+    font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Arial, sans-serif;
+}
 
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tab-content { display: none; padding: 16px; }
+        .tab-content.active { display: block; }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .section-title {
+            font-size: 0.85rem;
+            color: #8e8e93;
+            margin-bottom: 12px;
+            font-weight: bold;
+            display: block;
+        }
+
+        input[type="text"], input[type="date"], select, textarea { 
+            display: block; width: 100% !important; max-width: 100% !important;
+            padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 1rem;
+            box-sizing: border-box; margin-bottom: 12px; appearance: none; -webkit-appearance: none;
+        }
+
+        /* JRA風タブバー（白抜きアイコン・日本語） */
+        .tab-bar {
+            display: flex !important; position: fixed !important; bottom: 0; left: 0; right: 0;
+            height: 85px; background-color: var(--primary-color); z-index: 9999;
+            border-top: 1px solid rgba(255,255,255,0.3);
+        }
+        .tab-bar button {
+            flex: 1; background: none; border: none; color: rgba(255,255,255,0.6);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            position: relative;
+        }
+        .tab-bar button:not(:last-child)::after {
+            content: ""; position: absolute; right: 0; top: 20%; height: 60%;
+            width: 1px; background-color: rgba(255,255,255,0.3);
+        }
+        .tab-bar button.active { color: #ffffff; font-weight: bold; background: rgba(255,255,255,0.1); }
+        .tab-bar .icon { font-size: 1.6rem; margin-bottom: 4px; filter: grayscale(1) brightness(2); }
+        .tab-bar span:not(.icon) { font-size: 0.8rem; }
+
+        button.primary-btn {
+            width: 100%; background: linear-gradient(135deg, var(--primary-color), #008f3d);
+            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
+        }
+        button.accent-btn {
+            width: 100%; background: linear-gradient(135deg, #34c759, #28a745);
+            color: white; border: none; border-radius: 10px; padding: 14px; font-weight: bold;
+        }
+
+        .stats-list-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
+        .color-dot { width: 4px; height: 16px; border-radius: 2px; margin-right: 10px; }
+        .rank-num { width: 35px; font-weight: bold; color: #8e8e93; }
+
+        .hidden { display: none !important; }
+        
+
+/* モーダルヘッダー自体の高さを広げて、バツボタンを「内側」に収容する */
+#share-modal .modal-header {
+    height: 70px; /* 60から70に広げて余裕を持たせる */
+    padding: 0 16px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;    /* 文字を縦中央に */
+    justify-content: center; /* 文字を横中央に */
+    position: relative;
+    background: white;
+    box-sizing: border-box;
+}
+
+
+/* タイトルの余白をリセット */
+#share-modal .modal-header h3 {
+    margin: 0;
+    line-height: 1; /* 行の高さを揃える */
+    font-size: 1.1rem;
+}
+
+/* バツボタンの設定 */
+#share-modal .close-btn {
+    position: absolute;
+    right: 15px;
+    /* top: 50% をやめて、上からの距離を直接指定して固定する */
+    top: 20px; 
+    background: #f0f0f5;
+    border: none;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #8e8e93;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+}
+
+
+
+#share-modal .modal-body {
+    padding: 24px 20px; /* 全体的にゆとりを持たせる */
+}
+
+/* 項目ごとの隙間を調整 */
+#share-modal .section-title {
+    margin-top: 15px;
+    display: block;
+}
+
+.report-section-label {
+    font-size: 0.65rem;
+    font-weight: 900;
+    color: #8e8e93;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+/* 総数エリア：小さなタイル状に並べる */
+.report-grid-mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin-bottom: 15px;
+}
+
+.report-grid-mini .report-item {
+    background: #f8f8f8;
+    padding: 8px;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.report-grid-mini .report-value {
+    font-size: 1.25rem;
+    font-weight: 900;
+    line-height: 1.1;
+}
+
+.report-grid-mini .report-value small {
+    font-size: 0.65rem;
+    margin-left: 1px;
+}
+
+/* ベストレコードエリア：横長のリスト形式 */
+.report-best-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+
+
+
+.best-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.best-content {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.report-value-long {
+    font-size: 0.95rem;
+    font-weight: 800;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; /* 長い名前は「...」にする */
+    color: #333;
+}
+
+/* レポートカード全体 */
+
+#report-card-container {
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border: none; /* 以前の二重線を消してスッキリ */
+}
+
+/* 文字色：暗い背景用 */
+.report-theme-dark { color: #ffffff; }
+.report-theme-dark .report-label { color: rgba(255,255,255,0.7); }
+.report-theme-dark .report-value, .report-theme-dark .report-value-long { color: #ffffff; }
+.report-theme-dark .report-section-label { color: rgba(255,255,255,0.5); border-color: rgba(255,255,255,0.2); }
+.report-theme-dark .report-item, .report-theme-dark .best-entry { background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+.report-theme-dark .best-icon { background: rgba(255,255,255,0.2); color: white; }
+
+/* 文字色：明るい背景用（白・黄など） */
+.report-theme-light { color: #333333; }
+.report-theme-light .report-label { color: rgba(0,0,0,0.5); }
+.report-theme-light .report-value, .report-theme-light .report-value-long { color: #000000; }
+.report-theme-light .report-section-label { color: rgba(0,0,0,0.4); border-color: rgba(0,0,0,0.1); }
+.report-theme-light .report-item, .report-theme-light .best-entry { background: rgba(255,255,255,0.5); border: 1px solid rgba(0,0,0,0.05); backdrop-filter: blur(5px); }
+.report-theme-light .best-icon { background: rgba(0,0,0,0.1); color: #333; }
+
+/* 共通パーツの微調整 */
+.report-title {
+    font-size: 1.2rem;
+    font-weight: 900;
+    letter-spacing: 1px;
+    margin-bottom: 2px;
+}
+
+.report-header {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid rgba(255,255,255,0.3);
+}
+
+.report-grid-mini .report-item {
+    padding: 10px 5px;
+}
+
+.best-content {
+    flex-grow: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* 総数エリアのラベル（総アーティスト、総ライブ数など）の設定 */
+.report-grid-mini .report-label {
+    font-size: 0.75rem !important; /* 文字を少し小さく */
+    font-weight: 800;
+    white-space: nowrap !important; /* ←これが「改行させない」という命令です */
+    display: block;                /* 確実に1行を占有させる */
+    margin-bottom: 2px;
+    opacity: 0.9;
+}
+
+
+
+/* ベスト項目のコンテンツ幅を広げる */
+.best-content {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.report-value-long {
+    font-size: 0.9rem !important;
+    font-weight: 800;
+    line-height: 1.3;
+    display: block;
+    white-space: normal !important; /* 同率時の改行を許可 */
+    overflow: visible !important;
+    text-overflow: clip !important;
+}
+
+
+/* 回数バッジのスタイル */
+.best-count-badge {
+    background: rgba(0, 0, 0, 0.1);
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    margin-left: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.report-theme-dark .best-count-badge {
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+/* プレイスの都道府県( )が見えにくくならないよう調整 */
+.report-value-long small {
+    display: inline-block;
+}
+
+/* 回数バッジ */
+.best-count-badge {
+    padding: 3px 10px;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 900;
+    margin-left: 10px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+/* テーマ別バッジ色 */
+.report-theme-dark .best-count-badge { background: rgba(255, 255, 255, 0.2); color: #fff; }
+.report-theme-light .best-count-badge { background: rgba(0, 0, 0, 0.1); color: #333; }
+
+/* 1. 項目ラベル（脇役）を小さく、薄くする */
+.best-content .report-label {
+    font-size: 0.6rem !important; /* 最小限のサイズに */
+    opacity: 0.5;                /* 透明度を下げて存在感を消す */
+    font-weight: 600;
+    letter-spacing: 0.5px;       /* 少し字間を空けて上品に */
+    margin-bottom: 1px;
+}
+
+/* 2. アーティスト名・曲名（主役）を圧倒的に目立たせる */
+.report-value-long {
+    font-size: 1.15rem !important; /* サイズを大幅アップ */
+    font-weight: 900 !important;   /* 最太のデザインに */
+    line-height: 1.1;              /* 行間を詰めて塊感を出す */
+    letter-spacing: -0.02em;       /* わずかに字間を詰めて力強く */
+    display: block;
+    color: #ffffff;                /* 常にパキッと白く */
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1); /* わずかな影で浮かせる */
+}
+
+/* 3. 同率の「他n件」も邪魔しないように調整 */
+.report-value-long small {
+    font-size: 0.65rem;
+    font-weight: normal;
+    opacity: 0.8;
+    margin-left: 6px;
+    vertical-align: middle;
+}
+
+/* ベスト項目の外枠：縦長の中央揃えレイアウト */
+.best-entry {
+    display: flex;
+    flex-direction: column;
+    position: relative; /* ラベルを左上に固定するため */
+    padding: 25px 15px 15px 15px !important; /* 上にラベル用の余白 */
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    margin-bottom: 12px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* 項目ラベル（BEST ARTISTなど）：左上に小さく配置 */
+.best-entry .report-label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 0.5rem !important;
+    font-weight: 900;
+    letter-spacing: 0.15em;
+    opacity: 0.5;
+    text-transform: uppercase;
+}
+
+/* 中央コンテンツエリア */
+.best-main-content {
+    text-align: center; /* すべて中央揃え */
+    width: 100%;
+}
+
+/* 主役のアーティスト名・曲名：大きく、太く */
+.report-value-long {
+    font-size: 1.4rem !important; /* さらに大きく */
+    font-weight: 900 !important;
+    line-height: 1.2;
+    margin-bottom: 4px;
+    word-break: break-word; /* 長い名前でも折り返す */
+}
+
+/* 同率の他n件：目立たせず、スタイリッシュに */
+.report-others-count {
+    font-size: 0.6rem;
+    opacity: 0.6;
+    margin-bottom: 4px;
+}
+
+/* 回数表示：バッジを廃止し、名前の下にシンプルに配置 */
+.best-count-display {
+    font-size: 0.9rem;
+    font-weight: 800;
+    opacity: 0.9;
+    letter-spacing: 0.05em;
+}
+
+.best-count-display small {
+    font-size: 0.6rem;
+    margin-left: 2px;
+    font-weight: normal;
+}
+
+/* 映え要素：カードに微かな光彩を追加（テーマ別） */
+.report-theme-dark .best-entry {
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: inset 0 0 15px rgba(255,255,255,0.05);
+}
+
+.report-theme-light .best-entry {
+    background: rgba(255, 255, 255, 0.4);
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.02);
+}
+
+
+
+
+
+
+/* レポートを表示する外側のオーバーレイを調整 */
+#report-preview-overlay {
+    padding-top: env(safe-area-inset-top); /* iPhoneのノッチ対策 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start; /* 上詰めにすることでスケーリングしやすくする */
+    overflow-y: auto;
+}
+
+/* カード全体の余白を少し詰める */
+#report-card-container {
+    padding: 20px 16px !important; 
+    margin: 10px auto;
+    width: 90%;
+    max-width: 360px;
+    box-sizing: border-box;
+}
+
+/* TOP RECORDSの各セルをさらにコンパクトに */
+.best-entry {
+    padding: 20px 10px 12px 10px !important;
+    margin-bottom: 8px; /* 隙間を詰める */
+}
+
+/* アーティスト名をより強調しつつ、高さを抑える */
+.report-value-long {
+    font-size: 1.5rem !important; /* ドカンと大きく */
+    letter-spacing: -0.03em;
+    margin: 5px 0;
+}
+
+/* 回数表示を名前のすぐ下に配置 */
+.best-count-display {
+    font-size: 1rem;
+    margin-top: -2px;
+}
+
+/* TOTAL STATSのタイルも少し小さくして縦幅を稼ぐ */
+.report-grid-mini .report-item {
+    padding: 6px 4px;
+}
+
+/* 保存ボタンエリアのレイアウト */
+.report-action-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    margin-top: 10px;
+    padding-bottom: 30px; /* 画面下部との余白 */
+}
+
+/* 保存ボタン自体の微調整（JRAグリーンより少し明るい色で目立たせる） */
+.report-action-buttons .primary-btn {
+    background: linear-gradient(135deg, #FFD700, #FFA500) !important; /* 目立つオレンジ/ゴールド */
+    color: #000 !important; /* 文字は黒で視認性確保 */
+    border: none;
+    font-size: 1rem;
+    padding: 15px;
+    border-radius: 30px; /* 角丸でモダンに */
+}
 
 /* タブの表示・非表示を制御する必須設定 */
 .tab-content { display: none; }
