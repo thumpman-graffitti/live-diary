@@ -285,16 +285,22 @@ button:active { transform: translateY(2px); box-shadow: none; }
 }
 
 /* 編集・削除ボタン共通 */
+/* 編集・削除ボタン共通の修正 */
 .btn-mini {
-    padding: 8px 16px; /* 横に広めのパディング */
+    display: inline-flex;  /* Flexboxを有効化 */
+    align-items: center;    /* 垂直方向（上下）の中央揃え */
+    justify-content: center; /* 水平方向（左右）の中央揃え */
+    padding: 8px 16px;
     border-radius: 8px;
     font-size: 0.85rem;
     font-weight: bold;
     border: none;
     cursor: pointer;
-    min-width: 60px; /* 最低限の横幅を確保 */
+    min-width: 60px;
     text-align: center;
-    white-space: nowrap; /* 改行を禁止 */
+    white-space: nowrap;
+    line-height: 1;         /* 行間の影響をリセットしてズレを防止 */
+    height: 34px;          /* 高さを固定するとより安定します（お好みで調整） */
 }
 
 /* 編集ボタン（グレー系） */
