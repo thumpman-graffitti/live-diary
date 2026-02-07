@@ -84,30 +84,31 @@ button {
 }
 button:active { transform: translateY(2px); box-shadow: none; }
 
-/* --- タブバー：統合修正ロジック --- */
+
+/* --- タブバー：完全修正版（デグレ防止） --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
     bottom: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 60px !important; /* 高さを60pxに固定 */
+    height: 60px !important;
     background-color: var(--primary-color) !important;
     z-index: 9999 !important;
     border-top: 1px solid rgba(255,255,255,0.3) !important;
     
-    /* お椀型を完全に殺す設定 */
+    /* お椀型を徹底排除 */
     border-radius: 0 !important;
     padding: 0 !important;
     margin: 0 !important;
     box-shadow: none !important;
 
-    /* 下の隙間を埋める（背景色を外側に100px分拡張） */
+    /* 下の隙間（セーフエリア）を同じ緑で塗りつぶす */
     outline: 100px solid var(--primary-color) !important;
-    clip-path: inset(0px 0px -100px 0px) !important; 
+    clip-path: inset(0px 0px -100px 0px) !important;
 }
 
-/* タブボタン：境界線を常に表示 */
+/* 各タブボタン：境界線を一重に固定 */
 .tab-bar button {
     flex: 1 !important;
     height: 60px !important;
@@ -122,22 +123,23 @@ button:active { transform: translateY(2px); box-shadow: none; }
     padding: 0 !important;
     border-radius: 0 !important;
     color: rgba(255,255,255,0.6) !important;
-    /* 右側の境界線 */
+    /* 右側の境界線（一重） */
     border-right: 1px solid rgba(255,255,255,0.2) !important;
+    -webkit-appearance: none;
 }
 
-/* 最後のボタンの右線は消す */
+/* 最後のボタンの右線は不要 */
 .tab-bar button:last-child {
     border-right: none !important;
 }
 
-/* アクティブ（選択中）の状態 */
+/* 【重要】アクティブ（選択中）の仕様：文字色を黄色に */
 .tab-bar button.active {
-    color: #ffffff !important;
+    color: #ffcc00 !important; 
     background-color: rgba(255,255,255,0.1) !important;
 }
 
-/* アクティブ時の黄色い上線（直線） */
+/* 【重要】アクティブ時の上部バー：黄色い直線 */
 .tab-bar button.active::after {
     content: '' !important;
     position: absolute !important;
@@ -145,26 +147,24 @@ button:active { transform: translateY(2px); box-shadow: none; }
     left: 0 !important;
     right: 0 !important;
     height: 3px !important;
-    background-color: #ffd700 !important;
+    background-color: #ffcc00 !important;
+    z-index: 2;
 }
 
-/* アイコンとテキストのサイズ・余白を適正化 */
-.tab-bar button i, 
-.tab-bar button svg,
-.tab-bar button span:first-child {
+/* アイコンとスパンのレイアウト調整 */
+.tab-bar button span.icon,
+.tab-bar button i {
     font-size: 20px !important;
     margin-bottom: 2px !important;
-    line-height: 1 !important;
     display: block !important;
 }
 
-.tab-bar button span:not(:first-child) {
+.tab-bar button span:not(.icon) {
     font-size: 10px !important;
     line-height: 1 !important;
     display: block !important;
 }
-/* --- タブバー修正ここまで --- */
-
+/* --- 修正ここまで --- */
 
 /* 履歴スリムカード */
 .live-item-detail {
