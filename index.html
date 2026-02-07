@@ -594,28 +594,28 @@
 </div>
 
 
-<div id="tab-settings" class="tab-content">
-    <div class="app-version-info">Ver 6.0.0</div>
+<div id="page-settings" class="tab-content">
+    <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 6.0.0</div>
 
-    <div class="settings-card">
-        <h3 style="font-size: 14px; color: #666; margin-bottom: 15px;">データのバックアップ・復元</h3>
+    <div class="card">
+        <span class="section-title">データのバックアップ・復元</span>
         <div style="display: flex; gap: 10px;">
-            <button class="btn-primary" onclick="exportData()" style="flex: 1;">書出し</button>
-            <button class="btn-secondary" onclick="importData()" style="flex: 1;">読込み</button>
+            <button class="primary-btn" onclick="exportData()" style="flex: 1;">書出し</button>
+            <button class="accent-btn" onclick="document.getElementById('import-file').click()" style="flex: 1;">読込み</button>
+            <input type="file" id="import-file" style="display:none" onchange="importData(event)">
         </div>
     </div>
 
-    <div class="settings-card">
-        <h3 style="font-size: 14px; color: #666; margin-bottom: 15px;">登録アーティストの管理</h3>
+    <div class="card">
+        <span class="section-title">登録アーティストの管理</span>
+        <input type="text" id="artist-search-input" placeholder="アーティスト名で検索..." oninput="renderArtistManager()" style="margin-bottom: 10px;">
         
-        <div class="search-box">
-            <input type="text" id="artist-search" placeholder="名前で検索" oninput="filterArtistList()">
-        </div>
-
-        <div class="artist-list-container" id="manage-artist-list">
+        <div id="artist-manager-list" style="max-height: 300px; overflow-y: auto; border-top: 1px solid #eee;">
             </div>
     </div>
 </div>
+
+
     </main>
 
     <div id="modal-overlay" class="modal-overlay hidden" onclick="closeModal()">
@@ -1224,21 +1224,48 @@ function renderJapanMap(visited) {
     <div id="detail-stats-pref-ranking-manual" class="stats-detail-list hidden" style="margin-top:10px;"></div>`;
 }
 
+
+// 管理画面のリストを描画する関数
 function renderArtistManager() {
-    const q = document.getElementById('artist-search-input').value.toLowerCase();
-    // ここで class="artist-admin-row" という「箱」に入れてボタンを囲むように書き換えます
-    document.getElementById('artist-manager-list').innerHTML = db.artists
+    const searchInput = document.getElementById('artist-search-input');
+    const q = searchInput ? searchInput.value.toLowerCase() : "";
+    const listContainer = document.getElementById('artist-manager-list');
+    
+    if (!listContainer) return;
+
+    listContainer.innerHTML = db.artists
         .filter(a => a.toLowerCase().includes(q))
         .sort()
         .map(a => `
-            <div class="artist-admin-row">
-                <span>${a}</span>
-                <div class="btn-group">
-                    <button onclick="editArtistName('${a}')" class="btn-mini btn-edit">編集</button>
-                    <button onclick="deleteArtist('${a}')" class="btn-mini btn-delete">削除</button>
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid #f2f2f7;">
+                <span style="font-weight: 500;">${a}</span>
+                <div style="display: flex; gap: 8px;">
+                    <button onclick="editArtistName('${a}')" style="background: #f0f0f5; border: none; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; color: #555;">編集</button>
+                    <button onclick="deleteArtist('${a}')" style="background: #fff; border: 1px solid #ff3b30; padding: 5px 10px; border-radius: 5px; font-size: 0.8rem; color: #ff3b30;">削除</button>
                 </div>
-            </div>`).join('');
+            </div>`).join('') || '<div style="padding:20px; text-align:center; color:#8e8e93;">該当するアーティストがいません</div>';
 }
+
+// showPage関数内のID指定を修正（page-settingsに合わせて）
+function showPage(id) {
+    document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+    
+    const targetPage = document.getElementById('page-' + id);
+    if (targetPage) {
+        targetPage.classList.add('active');
+    }
+    
+    const targetTab = document.getElementById('tab-' + id);
+    if (targetTab) {
+        targetTab.classList.add('active');
+    }
+
+    if(id==='history') renderHistory();
+    if(id==='stats') renderStats();
+    if(id==='settings') renderArtistManager(); // これで正しく呼ばれます
+}
+
 
         function filterArtists() { renderArtistManager(); }
 
