@@ -572,10 +572,12 @@ button:active { transform: translateY(2px); box-shadow: none; }
         }
 
         .section-title {
-            font-size: 0.85rem;
-            color: #8e8e93;
-            margin-bottom: 12px;
-            font-weight: bold;
+            font-size: 0.9rem !important;
+            color: var(--primary-color) !important; /* 濃い緑に修正 */
+            border-left: 4px solid var(--primary-color) !important; /* 左の縦棒を追加 */
+            padding: 0 0 0 10px !important; /* 縦棒との間の余白 */
+            margin-bottom: 12px !important;
+            font-weight: bold !important;
             display: block;
         }
 
