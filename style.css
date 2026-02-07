@@ -85,23 +85,25 @@ button {
 button:active { transform: translateY(2px); box-shadow: none; }
 
 /* タブバー */
-/* タブバーの修正：隙間を埋める */
+/* タブバーの修正：お椀型を消して直線のデザインに戻す */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
     bottom: 0;
     left: 0;
     right: 0;
-    /* 高さを少し広げつつ、セーフエリア分の余白を確保 */
-    height: calc(85px + env(safe-area-inset-bottom)); 
-    padding-bottom: env(safe-area-inset-bottom);
+    /* 高さを以前の 65px 前後に戻しつつ、背景色だけ下に伸ばす */
+    height: 65px; 
     background-color: var(--primary-color);
     z-index: 9999;
     border-top: 1px solid rgba(255,255,255,0.3);
-    box-sizing: border-box; /* パディングを含めた高さ計算にする */
+    
+    /* 下の隙間を背景色で塗りつぶすための設定 */
+    box-shadow: 0 0 0 100px var(--primary-color); /* 下方向に背景色を無限に伸ばす */
+    clip-path: inset(-100px 0px 0px 0px); /* 上方向の影だけ見えないようにカット */
 }
 
-/* ボタンの位置が下に行き過ぎないように調整 */
+/* タブボタン：位置を以前の状態に固定 */
 .tab-bar button {
     flex: 1;
     background: none;
@@ -111,8 +113,22 @@ button:active { transform: translateY(2px); box-shadow: none; }
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 85px; /* ボタン自体の高さは維持 */
+    height: 65px; /* タブバーと同じ高さに固定 */
+    padding: 0;
+    margin: 0;
     position: relative;
+    border-radius: 0; /* 角丸によるアーチ効果を無効化 */
+}
+
+/* アクティブなタブのバー（上にある黄色い線） */
+.tab-bar button.active::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background-color: #ffd700;
 }
 
 
