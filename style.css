@@ -86,7 +86,8 @@ button {
 button:active { transform: translateY(2px); box-shadow: none; }
 
 
-/* --- 2. タブバー：全タブ黄色バー・一重境界線・隙間なし --- */
+
+/* --- タブバー：全タブ黄色バー・一重境界線・隙間なし（最終修正版） --- */
 .tab-bar {
     display: flex !important;
     position: fixed !important;
@@ -123,9 +124,10 @@ button:active { transform: translateY(2px); box-shadow: none; }
     box-shadow: none !important;
     transform: none !important;
     border-radius: 0 !important;
+    overflow: visible !important; /* バーを確実に出すために必要 */
 }
 
-/* 境界線：高さを24pxに抑え、二重にならないようbeforeで1本のみ描画 */
+/* 境界線：一重（疑似要素 ::before を使用） */
 .tab-bar button:not(:last-child)::before {
     content: "" !important;
     position: absolute !important;
@@ -134,15 +136,16 @@ button:active { transform: translateY(2px); box-shadow: none; }
     width: 1px !important;
     height: 24px !important;
     background-color: rgba(255, 255, 255, 0.2) !important;
+    z-index: 1 !important;
 }
 
-/* 【全タブ共通】アクティブ時の「黄色バー」と「文字色」を強制適用 */
+/* 【全タブ共通】アクティブ時の「黄色文字」 */
 .tab-bar button.active {
     color: #ffcc00 !important;
     background-color: rgba(255,255,255,0.05) !important;
 }
 
-/* 黄色い上部バー：全てのactiveクラスに強制表示 */
+/* 【全タブ共通】黄色い上部バー（疑似要素 ::after を使用） */
 .tab-bar button.active::after {
     content: '' !important;
     position: absolute !important;
@@ -151,27 +154,31 @@ button:active { transform: translateY(2px); box-shadow: none; }
     right: 0 !important;
     height: 3px !important;
     background-color: #ffcc00 !important;
-    z-index: 100 !important;
+    z-index: 100 !important; /* 境界線より手前に出す */
     display: block !important;
 }
 
-/* アイコンとスパンのスタイル固定 */
+/* アイコンとテキストのスタイル固定（黄色を強制継承） */
+.tab-bar button i, 
+.tab-bar button svg,
+.tab-bar button .icon,
+.tab-bar button span {
+    color: inherit !important; /* 親(button.active)の黄色を確実に引き継ぐ */
+}
+
 .tab-bar button i, 
 .tab-bar button svg,
 .tab-bar button .icon {
     font-size: 20px !important;
     margin-bottom: 2px !important;
     display: block !important;
-    color: inherit !important; /* active時の黄色を継承 */
 }
 
 .tab-bar button span:not(.icon) {
     font-size: 10px !important;
     font-weight: bold !important;
     line-height: 1 !important;
-    color: inherit !important;
 }
-
 
 /* 履歴スリムカード */
 .live-item-detail {
