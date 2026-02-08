@@ -3,8 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LIVE LOG</title>
+    <title>LIVE DIARY</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-D4ER0YJSB7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-D4ER0YJSB7');
+</script>
     <link rel="stylesheet" href="./style.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 　　　<style>
@@ -21,7 +30,7 @@
     <div class="confetti" style="left:55%; animation-delay: 0.5s; background:#ff9500;"></div>
     <div class="confetti" style="left:85%; animation-delay: 2.2s; background:#ffffff;"></div>
     
-    <div class="header-title">LIVEDIARY</div>
+    <div class="header-title">LIVE DIARY</div>
 </header>
 
 <main id="app">
@@ -97,15 +106,35 @@
 <div id="page-settings" class="tab-content">
     <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 1.0.0</div>
 
-<div class="settings-card">
+<div class="settings-card" style="margin-top: 10px !important;">
+
     <span class="section-title">データのバックアップ・リストア</span>
     <div class="backup-controls">
         <button onclick="exportData()">バックアップ</button>
-        <button onclick="importData()">リストア</button>
+
+<button onclick="document.getElementById('import-file').click()">リストア</button>
+<input type="file" id="import-file" style="display:none;" onchange="importData(event)" accept=".json">
+
     </div>
 </div>
 
-    <div class="card">
+  <div class="support-container" >
+
+    <div class="support-content">
+        <h3 class="support-title">🍊LIVE DIARYを応援する</h3>
+        <p class="support-description">
+            LIVE DIARYは、個人開発の無料アプリです。<br>
+            もしこのアプリを気に入っていただけましたら、温かいメッセージや<br>
+            OFUSE（ファンレター・投げ銭）をいただけると、今後の開発の大きな励みになります。
+        </p>
+        <a href="https://ofuse.me/livediary" target="_blank" rel="noopener noreferrer" class="ofuse-btn-b">
+            🍊 開発者を応援する（OFUSE）
+        </a>
+    </div>
+</div>
+
+
+    <div class="card" style="margin-top: 10px; !important">
         <span class="section-title">登録アーティストの管理</span>
         <input type="text" id="artist-search-input" placeholder="アーティスト名で検索..." oninput="renderArtistManager()" style="margin-bottom: 10px;">
         
@@ -113,7 +142,6 @@
             </div>
     </div>
 </div>
-
 
     </main>
 
@@ -140,10 +168,38 @@
     </select>
                     <textarea id="edit-memo" rows="3" placeholder="メモ"></textarea>
                     <textarea id="edit-setlist" rows="5" placeholder="セトリ（改行区切り）"></textarea>
-                    <div style="display:flex; gap:10px; margin-top:20px;">
-                        <button onclick="saveEdit()" class="primary-btn" style="flex:2;">保存</button>
-                        <button onclick="deleteLive()" style="flex:1; background:white; color:red; border:1px solid red; border-radius:10px;">削除</button>
-                    </div>
+                    
+<div style="display: flex; gap: 10px; margin-top: 20px; align-items: center; width: 100%; box-sizing: border-box;">
+    
+    <button onclick="saveEdit()" class="primary-btn" style="
+        flex: 2; 
+        height: 42px !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        box-sizing: border-box !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">保存</button>
+    
+    <button onclick="deleteLive()" style="
+        flex: 1; 
+        height: 42px !important; 
+        margin: 0 !important; 
+        padding: 0 !important; 
+        box-sizing: border-box !important;
+        background: white; 
+        color: red; 
+        border: 1px solid red; 
+        border-radius: 10px; 
+        cursor: pointer; 
+        font-weight: bold;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    ">削除</button>
+
+</div>
                 </div>
             </div>
         </div>
@@ -326,7 +382,19 @@ function updateVenueSuggestions() {
                             <div style="font-weight:bold;">${l.name||'(無題)'}</div>
                             <div class="history-venue" style="font-size:0.85rem; color:#666; margin-top:4px;">📍 ${l.venue || '会場未登録'}</div>
                         </div>`).join('')}
-                    </div>`;
+                        
+                        <div style="padding:15px; text-align:center; background-color:#f9fbf9;">
+                        <a href="https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686
+/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(art)}%2F" 
+                           target="_blank" rel="noopener noreferrer" 
+                           style="color:var(--primary-color); text-decoration:none; font-size:0.85rem; font-weight:bold; border:1px solid var(--primary-color); padding:8px 16px; border-radius:20px; display:inline-block; background:#fff;">
+                           💿 ${art} の作品を楽天で探す
+                        </a>
+                        <div style="font-size:10px; color:#999; margin-top:8px;">※外部サイトへ移動します</div>
+                    </div>
+                    </div>`; // 既存の閉じタグ
+                        
+
                 container.appendChild(card);
             });
         }
