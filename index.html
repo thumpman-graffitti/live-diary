@@ -510,8 +510,12 @@ function renderStats() {
         counts.venue[l.venue] = (counts.venue[l.venue] || 0) + 1;
         counts.pref[l.pref] = (counts.pref[l.pref] || 0) + 1;
         if (l.setlist && Array.isArray(l.setlist)) {
-            l.setlist.forEach(s => counts.song[s] = (counts.song[s] || 0) + 1);
-        }
+    l.setlist.forEach(s => {
+        // 「曲名|アーティスト名」をキーにして、別々の曲として扱う
+        const songKey = `${s}|${l.artist}`;
+        counts.song[songKey] = (counts.song[songKey] || 0) + 1;
+    });
+}
     });
 
     // [グラフ描画]
@@ -664,19 +668,63 @@ function renderRanking(id, title, dataObj, unit, isArtistRank = false) {
         const displayStyle = isHidden ? 'none' : 'flex';
         const hiddenClass = isHidden ? 'rank-item-hidden' : '';
         
-        // 詳細表示用のユニークIDを作成
         const detailId = `detail-${id}-${i}`;
+        
+        // --- 修正の要：変数の定義 ---
+        const targetKey = entry[0]; // 元のデータ（曲名|アーティスト名 など）
+        let displayTitle = targetKey;
+        let artistNameForSearch = "";
+
+        // 曲ランキングの場合はキーを分解する
+        if (id === 'stats-song-ranking' && targetKey.includes('|')) {
+            const parts = targetKey.split('|');
+            displayTitle = parts[0];       // 表示用の曲名
+            artistNameForSearch = parts[1]; // 検索用のアーティスト名
+        }
+
+        const targetName = displayTitle; // 表示用の名前を確定
+
+        // 検索ワードの組み立て
+        let searchQuery = targetName;
+        if (id === 'stats-song-ranking') {
+            const filterArtist = document.getElementById('stats-filter-artist').value;
+            if (filterArtist !== 'all') {
+                searchQuery = targetName + " " + filterArtist;
+            } else if (artistNameForSearch) {
+                searchQuery = targetName + " " + artistNameForSearch;
+            }
+        }
+        const encodedSearch = encodeURIComponent(searchQuery);
+
+        // 各アプリへの専用リンク
+        const appleMusicUrl = `music://music.apple.com/search?term=${encodedSearch}`;
+        const spotifyUrl = `spotify:search:${encodedSearch}`;
+
+        let musicLinksHtml = '';
+        if (id === 'stats-artist-ranking' || id === 'stats-song-ranking') {
+            musicLinksHtml = `
+                <div class="music-links" style="display: flex; gap: 8px; margin: 0 10px; flex-shrink:0;">
+                    <a href="${appleMusicUrl}" target="_blank" rel="noopener noreferrer" 
+                       style="text-decoration:none; width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:#fa243c; border-radius:6px; font-size:13px; color:white;">🍎</a>
+                    <a href="${spotifyUrl}" target="_blank" rel="noopener noreferrer" 
+                       style="text-decoration:none; width:26px; height:26px; display:flex; align-items:center; justify-content:center; background:#1DB954; border-radius:50%; font-size:11px; color:white; font-weight:bold;">S</a>
+                </div>`;
+        }
 
         html += `
             <div class="stats-list-item-container ${hiddenClass}" data-group="${id}" style="display:${displayStyle}; flex-direction:column; width:100%;">
-                <div class="stats-list-item" style="align-items:center; width:100%; border-bottom:1px solid #f2f2f7;">
-                    <div class="rank-num" style="min-width:45px; flex-shrink:0;">${rankText}</div>
+                <div class="stats-list-item" style="display: flex; align-items:center; width:100%; border-bottom:1px solid #f2f2f7; padding: 10px 0;">
+                    <div class="rank-num" style="min-width:40px; flex-shrink:0; font-size:0.85rem; color:#8e8e93;">${rankText}</div>
+                    
                     <div style="flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; cursor:pointer; font-weight:500;" 
-                         onclick="${isArtistRank ? `switchStatsTarget('${entry[0]}')` : `toggleStatsDetail('${detailId}', '${id}', '${entry[0].replace(/'/g, "\\'")}')`}">
-                        ${entry[0]}
+                         onclick="${isArtistRank ? `switchStatsTarget('${targetName.replace(/'/g, "\\'")}')` : `toggleStatsDetail('${detailId}', '${id}', '${targetKey.replace(/'/g, "\\'")}')`}">
+                        ${targetName}
                     </div>
-                    <div style="font-weight:bold; color:var(--primary-color); margin-left:10px; flex-shrink:0;">
-                        ${entry[1]}<small style="font-size:0.6rem;">${unit}</small>
+
+                    ${musicLinksHtml}
+
+                    <div style="font-weight:bold; color:var(--primary-color); flex-shrink:0; min-width:40px; text-align:right;">
+                        ${entry[1]}<small style="font-size:0.6rem; margin-left:1px;">${unit}</small>
                     </div>
                 </div>
                 <div id="${detailId}" class="stats-detail-list hidden"></div>
@@ -704,13 +752,29 @@ function toggleStatsDetail(detailId, type, value) {
     const filterArtist = document.getElementById('stats-filter-artist').value;
     const isFiltered = filterArtist !== 'all';
 
+    // ★重要：曲ランキングの場合は「曲名|アーティスト名」を分解する
+    let targetSongName = value;
+    let targetArtistName = null;
+    if (type === 'stats-song-ranking' && value.includes('|')) {
+        const parts = value.split('|');
+        targetSongName = parts[0];
+        targetArtistName = parts[1];
+    }
+
     // 該当するライブを抽出
     let filteredLives = db.lives.filter(l => {
         const matchesArtist = isFiltered ? l.artist === filterArtist : true;
         let matchesValue = false;
-        if (type === 'stats-song-ranking') matchesValue = l.setlist && l.setlist.includes(value);
+        
+        if (type === 'stats-song-ranking') {
+            // 曲名が一致し、かつ（アーティスト名が判別できれば）アーティストも一致するもの
+            const songMatch = l.setlist && l.setlist.includes(targetSongName);
+            const artistMatch = targetArtistName ? (l.artist === targetArtistName) : true;
+            matchesValue = songMatch && artistMatch;
+        }
         if (type === 'stats-venue-ranking') matchesValue = l.venue === value;
         if (type === 'stats-pref-ranking') matchesValue = l.pref === value;
+        
         return matchesArtist && matchesValue;
     });
 
@@ -719,26 +783,31 @@ function toggleStatsDetail(detailId, type, value) {
 
     // HTML生成
     let html = '';
-    filteredLives.forEach(l => {
-        const artistSpan = isFiltered ? '' : `<span class="stats-detail-artist">${l.artist}</span><br>`;
-        
-        let subInfo = '';
-        if (type === 'stats-song-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
-        if (type === 'stats-venue-ranking') subInfo = ` (${l.pref || '-'})`;
-        if (type === 'stats-pref-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
+    if (filteredLives.length === 0) {
+        html = '<div class="stats-detail-item" style="color:#8e8e93; font-size:0.8rem;">履歴が見つかりませんでした</div>';
+    } else {
+        filteredLives.forEach(l => {
+            const artistSpan = isFiltered ? '' : `<span class="stats-detail-artist">${l.artist}</span><br>`;
+            
+            let subInfo = '';
+            if (type === 'stats-song-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
+            if (type === 'stats-venue-ranking') subInfo = ` (${l.pref || '-'})`;
+            if (type === 'stats-pref-ranking') subInfo = ` @ ${l.venue || '会場未設定'}`;
 
-        html += `
-            <div class="stats-detail-item">
-                <span class="stats-detail-date">${l.date}</span>
-                ${artistSpan}
-                <span style="color:#444;">${l.name || '(無題)'}</span>
-                <span style="color:#8e8e93; font-size:0.75rem;">${subInfo}</span>
-            </div>`;
-    });
+            html += `
+                <div class="stats-detail-item">
+                    <span class="stats-detail-date">${l.date}</span>
+                    ${artistSpan}
+                    <span style="color:#444;">${l.name || '(無題)'}</span>
+                    <span style="color:#8e8e93; font-size:0.75rem;">${subInfo}</span>
+                </div>`;
+        });
+    }
 
     detailDiv.innerHTML = html;
     detailDiv.classList.remove('hidden');
 }
+
 
 
 function toggleRankingNew(id) {
