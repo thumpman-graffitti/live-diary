@@ -133,13 +133,13 @@
     </div>
 </div>
 
-  <div class="support-container" >
+  <div class="support-container" style="margin: -5px 15px 5px 15px !important; padding: 25px 20px !important; border: 1px solid #ffebcd !important; border-radius: 15px !important; background: #fffaf0 !important; box-sizing: border-box !important; text-align: center !important;">
 
-    <div class="support-content">
-        <h3 class="support-title">LIVE DIARY🍊を応援する</h3>
+    <div class="support-content" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important;">
+     <h3 class="support-title">LIVE DIARY🍊を応援する</h3>
         <p class="support-description">
             LIVE DIARYは、個人開発の無料アプリです。<br>
-            もしこのアプリを気に入っていただけましたら、温かいメッセージや<br>
+            もしこのアプリを気に入っていただけましたら、<br>
             OFUSE（ファンレター・投げ銭）をいただけると、今後の開発の大きな励みになります。
         </p>
         <a href="https://ofuse.me/livediary" target="_blank" rel="noopener noreferrer" class="ofuse-btn-b">
@@ -399,8 +399,7 @@ function updateVenueSuggestions() {
                         </div>`).join('')}
                         
                         <div style="padding:15px; text-align:center; background-color:#f9fbf9;">
-                        <a href="https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686
-/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(art)}%2F" 
+                        <a href="https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(art)}%2F" 
                            target="_blank" rel="noopener noreferrer" 
                            style="color:var(--primary-color); text-decoration:none; font-size:0.85rem; font-weight:bold; border:1px solid var(--primary-color); padding:8px 16px; border-radius:20px; display:inline-block; background:#fff;">
                            💿 ${art} の作品を楽天で探す
@@ -530,188 +529,74 @@ function renderStats() {
         options: { cutout: '80%', plugins: { legend: { display: false } } } 
     });
 
-    // [各ランキングの描画]
-    const searchLinkContainer = document.getElementById('stats-artist-search-link');
-
+    // [ランキング描画]
     if(isAll) {
         renderRanking('stats-artist-ranking', '🏆 アーティスト', counts.artist, '回', true);
-        
-       
-        // --- 💿 アーティスト検索リンク（赤ボタン・URL修正版） ---
-        const sortedArts = Object.entries(counts.artist).sort((a, b) => b[1] - a[1]);
-        if (sortedArts.length > 0 && searchLinkContainer) {
-            const topArtist = sortedArts[0][0];
-            // 検索URLを構築（楽天アフィリエイトのリンク形式にアーティスト名を結合）
-            const searchUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(topArtist)}%2F`;
-
-            searchLinkContainer.innerHTML = `
-                <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: -25px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
-                    <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">
-                        1位の作品をチェック！ 💿
-                    </p>
-                    <a href="${searchUrl}" 
-                       target="_blank" rel="noopener noreferrer" 
-                       style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
-                        💿 ${topArtist} の作品を探す
-                    </a>
-                    <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
-                </div>
-            `;
-        }
     } else {
-        document.getElementById('stats-artist-ranking').innerHTML = '';
-        if(searchLinkContainer) searchLinkContainer.innerHTML = '';
+        const artistRankEl = document.getElementById('stats-artist-ranking');
+        if(artistRankEl) artistRankEl.innerHTML = '';
     }
 
-
-    // 各種ランキングと地図の描画
-    renderYearlyRanking('stats-yearly-ranking', yearlyCounts);
-    
-    // --- 🔭 防振双眼鏡検索リンク（ココから挿入） ---
-    if (isAll) {
-        const binocularKeyword = encodeURIComponent("防振双眼鏡");
-        const binocularUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${binocularKeyword}%2F`;
-        
-        let binocularDiv = document.getElementById('stats-binocular-search-link');
-        if (!binocularDiv) {
-            binocularDiv = document.createElement('div');
-            binocularDiv.id = 'stats-binocular-search-link';
-            // 年別ランキングの後に挿入
-            document.getElementById('stats-yearly-ranking').after(binocularDiv);
-        }
-
-        binocularDiv.innerHTML = `
-            <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: 5px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
-                <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">
-                    広い会場でも推しをロックオン！ 🔭
-                </p>
-                <a href="${binocularUrl}" 
-                   target="_blank" rel="noopener noreferrer" 
-                   style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
-                    🔭 防振双眼鏡を探す
-                </a>
-                <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
-            </div>
-        `;
-    } else {
-        const binocularDiv = document.getElementById('stats-binocular-search-link');
-        if (binocularDiv) binocularDiv.innerHTML = '';
-    }
-    // --- 🔭 防振双眼鏡検索リンク（ここまで） ---
-    
     renderRanking('stats-song-ranking', '🎵 曲', counts.song, '回');
-    
-
-    // --- 🎧 オーディオ機器検索リンク（ココから挿入） ---
-    if (isAll) {
-              // 読みやすい書き方（自動で「最新 イヤホン」をエンコードします）
-        const keyword = encodeURIComponent("最新 イヤホン");
-        const audioSearchUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${keyword}%2F`;
-        let audioLinkDiv = document.getElementById('stats-audio-search-link');
-        if (!audioLinkDiv) {
-            audioLinkDiv = document.createElement('div');
-            audioLinkDiv.id = 'stats-audio-search-link';
-            document.getElementById('stats-song-ranking').after(audioLinkDiv);
-        }
-        audioLinkDiv.innerHTML = `
-            <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: 5px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
-                <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">
-                    最高の音で推しの曲を聴こう 🎧
-                </p>
-                <a href="${audioSearchUrl}" 
-                   target="_blank" rel="noopener noreferrer" 
-                   style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
-                    🎧 最新のイヤホンを探す
-                </a>
-                <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
-            </div>
-        `;
-    } else {
-        const audioLinkDiv = document.getElementById('stats-audio-search-link');
-        if (audioLinkDiv) audioLinkDiv.innerHTML = '';
-    }
-    // --- 🎧 オーディオ機器検索リンク（ここまで） ---
-
+    renderYearlyRanking('stats-yearly-ranking', yearlyCounts);
     renderRanking('stats-venue-ranking', '🏟 会場', counts.venue, '回');
     
-
-    // --- 🔋 モバイルバッテリー検索リンク（ココから挿入） ---
-    if (isAll) {
-        // 安心感を重視し「モバイルバッテリー Anker エレコム」などのキーワードで構築
-        const batteryKeyword = encodeURIComponent("モバイルバッテリー Anker エレコム");
-        const batteryUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${batteryKeyword}%2F`;
-        
-        let batteryDiv = document.getElementById('stats-battery-search-link');
-        if (!batteryDiv) {
-            batteryDiv = document.createElement('div');
-            batteryDiv.id = 'stats-battery-search-link';
-            // 会場ランキングの後に挿入
-            document.getElementById('stats-venue-ranking').after(batteryDiv);
-        }
-
-        batteryDiv.innerHTML = `
-            <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: 5px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
-                <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">
-                    遠征中の電池切れを防ぐ ⚡️
-                </p>
-                <a href="${batteryUrl}" 
-                   target="_blank" rel="noopener noreferrer" 
-                   style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
-                    🔋 モバイルバッテリーを探す
-                </a>
-                <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
-            </div>
-        `;
-    } else {
-        const batteryDiv = document.getElementById('stats-battery-search-link');
-        if (batteryDiv) batteryDiv.innerHTML = '';
-    }
-    // --- 🔋 モバイルバッテリー検索リンク（ここまで） ---
-
-    
+    // 地図描画
     const visited = [...new Set(targetLives.map(l => l.pref).filter(p => p && p !== '海外' && p !== ''))];
     renderJapanMap(visited);
     document.getElementById('visited-pref-count').innerText = visited.length;
     document.getElementById('map-target-name').innerText = isAll ? '全国' : filterArtist;
 
     renderRanking('stats-pref-ranking', '📍 都道府県', counts.pref, '回');
-    
-    
-        // [既存] 都道府県ランキングの描画
-    renderRanking('stats-pref-ranking', '📍 都道府県', counts.pref, '回');
 
-    // --- 🎞️ 銀テープケース検索リンク（都道府県ランキングの下へ移動） ---
-    if (isAll) {
-        const silverTapeKeyword = encodeURIComponent("銀テープ ケース");
-        const silverTapeUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${silverTapeKeyword}%2F`;
-        
-        let silverTapeDiv = document.getElementById('stats-silvtape-search-link');
-        if (!silverTapeDiv) {
-            silverTapeDiv = document.createElement('div');
-            silverTapeDiv.id = 'stats-silvtape-search-link';
-            // 都道府県ランキングのカードの後ろに挿入
-            document.getElementById('stats-pref-ranking').after(silverTapeDiv);
-        }
+    // === 🛒 楽天アフィリエイト・常時表示エリア（ここから） ===
+    
+    // 1. アーティスト作品リンク（注釈を追加）
+    const searchLinkContainer = document.getElementById('stats-artist-search-link');
+    const targetArtName = isAll ? (sortedArtEntries[0]?.[0] || '') : filterArtist;
 
-        silverTapeDiv.innerHTML = `
-            <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: 5px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
-                <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">
-                    大切な銀テープを綺麗に保管 ✨
-                </p>
-                <a href="${silverTapeUrl}" 
-                   target="_blank" rel="noopener noreferrer" 
-                   style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
-                    🎞️ 銀テープケースを探す
-                </a>
+    if (targetArtName && searchLinkContainer) {
+        const artUrl = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(targetArtName)}%2F`;
+        searchLinkContainer.innerHTML = `
+            <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: -25px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
+                <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">作品をチェック！ 💿</p>
+                <a href="${artUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">💿 ${targetArtName} の作品を探す</a>
                 <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
-            </div>
-        `;
-    } else {
-        const silverTapeDiv = document.getElementById('stats-silvtape-search-link');
-        if (silverTapeDiv) silverTapeDiv.innerHTML = '';
+            </div>`;
     }
-}
 
+    // 2. 他のリンクを正しい位置に差し込む関数
+    const insertConvenienceLink = (id, afterId, keyword, label, icon, msg) => {
+        let div = document.getElementById(id);
+        if (!div) {
+            div = document.createElement('div');
+            div.id = id;
+            const targetEl = document.getElementById(afterId);
+            if (targetEl) targetEl.after(div);
+        }
+        if (div) {
+            const url = `https://hb.afl.rakuten.co.jp/hgc/50ccba3d.194cbdf3.50ccba3e.b1170686/?pc=https%3A%2F%2Fsearch.rakuten.co.jp%2Fsearch%2Fmall%2F${encodeURIComponent(keyword)}%2F`;
+                        
+            // --- デグレ防止：注釈入りの統一フォーマット ---
+            div.innerHTML = `
+                <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: 5px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
+                    <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">${msg}</p>
+                    <a href="${url}" target="_blank" rel="noopener noreferrer" 
+                       style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">
+                       ${icon} ${label}
+                    </a>
+                    <div style="font-size: 9px; color: #999; margin-top: 6px;">※外部サイトへ移動します</div>
+                </div>`;
+        }
+    };
+
+    insertConvenienceLink('link-audio', 'stats-song-ranking', '最新 イヤホン', '最新のイヤホンを探す', '🎧', '最高の音で推しの曲を聴こう 🎧');
+    insertConvenienceLink('link-binocular', 'stats-yearly-ranking', '防振双眼鏡', '防振双眼鏡を探す', '🔭', '広い会場でも推しをロックオン！ 🔭');
+    insertConvenienceLink('link-battery', 'stats-venue-ranking', 'モバイルバッテリー Anker エレコム', 'モバイルバッテリーを探す', '🔋', '遠征中の電池切れを防ぐ ⚡️');
+    insertConvenienceLink('link-silvtape', 'stats-pref-ranking', '銀テープ ケース', '銀テープケースを探す', '🎞️', '大切な銀テープを綺麗に保管 ✨');
+    
+    // === 🛒 常時表示エリア（ここまで） ===
+}
 
 
 // 年別専用の描画関数
@@ -984,27 +869,6 @@ function renderArtistManager() {
                 </div>
             </div>`).join('') || '<div style="padding:20px; text-align:center; color:#8e8e93;">該当なし</div>';
 }
-
-// showPage関数内のID指定を修正（page-settingsに合わせて）
-function showPage(id) {
-    document.querySelectorAll('.tab-content').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
-    
-    const targetPage = document.getElementById('page-' + id);
-    if (targetPage) {
-        targetPage.classList.add('active');
-    }
-    
-    const targetTab = document.getElementById('tab-' + id);
-    if (targetTab) {
-        targetTab.classList.add('active');
-    }
-
-    if(id==='history') renderHistory();
-    if(id==='stats') renderStats();
-    if(id==='settings') renderArtistManager(); // これで正しく呼ばれます
-}
-
 
         function filterArtists() { renderArtistManager(); }
 
