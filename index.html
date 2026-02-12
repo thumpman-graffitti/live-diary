@@ -42,7 +42,7 @@
             </div>
         </div>
             <div class="card">
-                <span class="section-title">新しいライブの記録</span>
+                <span class="section-title">新しいライブの登録</span>
                 <select id="live-artist-select"><option value="">アーティストを選択</option></select>
                 <input type="date" id="live-date"> 
                 <input type="text" id="live-name" placeholder="公演タイトル（任意）">
@@ -116,46 +116,81 @@
         </div>
 
     <div id="stats-pref-ranking"></div>
-
 </div>
+
+
 <div id="page-settings" class="tab-content">
-    <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 1.0.0</div>
+    <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 1.0.5</div>
 
-<div class="settings-card" style="margin-top: 10px !important;">
-
-    <span class="section-title">データのバックアップ・リストア</span>
-    <div class="backup-controls">
-        <button onclick="exportData()">バックアップ</button>
-
-<button onclick="document.getElementById('import-file').click()">リストア</button>
-<input type="file" id="import-file" style="display:none;" onchange="importData(event)" accept=".json">
-
+    <div class="settings-card" style="margin-top: 10px !important;">
+        <span class="section-title">データのバックアップ・リストア</span>
+        <div class="backup-controls">
+            <button onclick="exportData()">バックアップ</button>
+            <button onclick="document.getElementById('import-file').click()">リストア</button>
+            <input type="file" id="import-file" style="display:none;" onchange="importData(event)" accept=".json">
+        </div>
     </div>
+
+    <div class="card" style="margin-top: 10px; padding: 5px 0;">
+        <ul style="list-style: none; padding: 0; margin: 0;">
+            <li style="border-bottom: 1px solid #f2f2f7;">
+                <a href="https://note.com/thump_man/n/ncfa806383410" target="_blank" rel="noopener noreferrer" 
+                   style="text-decoration: none; color: #333; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px;">
+                    <span style="font-size: 0.9rem; font-weight: bold;">🍊 使い方 (note)</span>
+                    <span style="color: #c7c7cc; font-size: 1.1rem;">›</span>
+                </a>
+            </li>
+            
+            
+        <li style="border-bottom: 1px solid #f2f2f7;">
+            <div onclick="openTermsModal('terms')" 
+               style="cursor: pointer; text-decoration: none; color: #333; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px;">
+                <span style="font-size: 0.9rem;">利用規約</span>
+                <span style="color: #c7c7cc; font-size: 1.1rem;">›</span>
+            </div>
+        </li>
+        <li>
+            <div onclick="openTermsModal('privacy')" 
+               style="cursor: pointer; text-decoration: none; color: #333; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px;">
+                <span style="font-size: 0.9rem;">プライバシーポリシー</span>
+                <span style="color: #c7c7cc; font-size: 1.1rem;">›</span>
+            </div>
+        </li>
+    </ul>
 </div>
 
-  <div class="support-container" style="margin: -5px 15px 5px 15px !important; padding: 25px 20px !important; border: 1px solid #ffebcd !important; border-radius: 15px !important; background: #fffaf0 !important; box-sizing: border-box !important; text-align: center !important;">
-
-    <div class="support-content" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important;">
-     <h3 class="support-title">LIVE DIARY🍊を応援する</h3>
-        <p class="support-description">
-            LIVE DIARYは、個人開発の無料アプリです。<br>
-            もしこのアプリを気に入っていただけましたら、<br>
-            OFUSE（ファンレター・投げ銭）をいただけると、今後の開発の大きな励みになります。
-        </p>
-        <a href="https://ofuse.me/livediary" target="_blank" rel="noopener noreferrer" class="ofuse-btn-b">
-            🍊 開発者を応援する（OFUSE）
-        </a>
+    <div class="support-container" style="margin: 15px !important; padding: 25px 20px !important; border: 1px solid #ffebcd !important; border-radius: 15px !important; background: #fffaf0 !important; box-sizing: border-box !important; text-align: center !important;">
+        <div class="support-content" style="background: transparent !important; border: none !important; padding: 0 !important; margin: 0 !important; box-shadow: none !important;">
+            <h3 class="support-title">LIVE DIARY🍊を応援する</h3>
+            <p class="support-description">
+                LIVE DIARYは、個人開発の無料アプリです。<br>
+                もしこのアプリを気に入っていただけましたら、<br>
+                OFUSE（ファンレター・投げ銭）をいただけると、今後の開発の大きな励みになります。
+            </p>
+            <a href="https://ofuse.me/livediary" target="_blank" rel="noopener noreferrer" class="ofuse-btn-b">
+                🍊 開発者を応援する（OFUSE）
+            </a>
+        </div>
     </div>
-</div>
 
-
-    <div class="card" style="margin-top: 10px; !important">
+    <div class="card" style="margin-top: 10px !important;">
         <span class="section-title">登録アーティストの管理</span>
         <input type="text" id="artist-search-input" placeholder="アーティスト名で検索..." oninput="renderArtistManager()" style="margin-bottom: 10px;">
-        
-        <div id="artist-manager-list" style="max-height: 300px; overflow-y: auto; border-top: 1px solid #eee;">
-            </div>
+        <div id="artist-manager-list" style="max-height: 300px; overflow-y: auto; border-top: 1px solid #eee;"></div>
     </div>
+    
+    <div class="card" style="margin: 10px 10px 30px 10px; padding: 5px 0;">
+    <ul style="list-style: none; padding: 0; margin: 0;">
+        <li>
+            <a href="https://docs.google.com/forms/d/e/1FAIpQLSddVxn1OTi7jOeCj566G9bmfaqsM56YxEWFIKtaxvakb2gugw/viewform?usp=header" target="_blank" rel="noopener noreferrer" 
+               onclick="return confirm('お問い合わせフォームへ移動します。\n※個人開発のため、原則として個別の返信は行っておりません。よろしいですか？')"
+               style="text-decoration: none; color: #333; display: flex; justify-content: space-between; align-items: center; padding: 12px 15px;">
+                <span style="font-size: 0.9rem;">✉️ お問い合わせ</span>
+                <span style="color: #c7c7cc; font-size: 1.1rem;">›</span>
+            </a>
+        </li>
+    </ul>
+</div>
 </div>
 
     </main>
@@ -221,6 +256,10 @@
     </div>
 
 
+
+
+
+
 <div id="share-modal" class="modal-overlay hidden" onclick="closeShareModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <div class="modal-header">
@@ -275,18 +314,38 @@
 </div>
 
 
-
-
-
-
 <div id="report-preview-overlay" class="modal-overlay hidden" onclick="this.classList.add('hidden')">
     <div id="report-card-container" onclick="event.stopPropagation()"></div>
     
-    <div class="report-action-buttons" onclick="event.stopPropagation()">
-        <button onclick="saveReportImage()" class="primary-btn" style="margin-top:20px; width:200px; box-shadow: 0 4px 15px rgba(0,0,0,0.3);">画像の保存／シェア</button>
-        <button onclick="document.getElementById('report-preview-overlay').classList.add('hidden')" style="background:none; border:none; color:white; margin-top:15px; text-decoration:underline; font-size:0.9rem; opacity:0.8;">閉じる</button>
+    <div class="report-action-buttons" onclick="event.stopPropagation()" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+        
+        <button onclick="saveReportImage()" class="primary-btn" style="margin-top:20px; width:220px !important;">画像の保存</button>
+        
+        <button onclick="shareOnX()" style="
+            width: 220px !important; 
+            height: 48px !important; /* 保存ボタンの高さに合わせる */
+            background: linear-gradient(180deg, #333 0%, #000 100%) !important; /* グラデーションで視認性UP */
+            color: #ffffff !important; 
+            border: 1px solid #555 !important; /* 暗い背景でもわかる枠線 */
+            border-radius: 25px !important; /* 保存ボタンと同じ角丸設定 */
+            display: flex !important; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5); 
+            font-weight: bold !important;
+            font-size: 16px !important;
+            cursor: pointer !important;
+            transition: transform 0.1s;
+            -webkit-appearance: none;
+        ">
+            <i class="fab fa-x-twitter"></i> Xへ投稿
+        </button>
+
+        <button onclick="document.getElementById('report-preview-overlay').classList.add('hidden')" style="background:none; border:none; color:#ccc; margin-top:10px; text-decoration:underline; font-size:0.9rem; cursor:pointer;">閉じる</button>
     </div>
 </div>
+
 
     <nav class="tab-bar">
         <button onclick="showPage('home')" id="tab-home" class="active"><span class="icon">♢</span><span>ホーム</span></button>
@@ -881,8 +940,8 @@ function renderJapanMap(visited) {
         {p:'岡山県', x:ox+s*2, y:oy+s*8},
         {p:'広島県', x:ox+s*1, y:oy+s*8},
         {p:'山口県', x:ox+s*0, y:oy+s*7, w:s, h:s*2},
-        {p:'香川県', x:ox+s*1, y:oy+s*10}, {p:'徳島県', x:ox+s*2, y:oy+s*10},
-        {p:'愛媛県', x:ox+s*1, y:oy+s*11}, {p:'高知県', x:ox+s*2, y:oy+s*11},
+        {p:'香川県', x:ox+s*2, y:oy+s*10}, {p:'徳島県', x:ox+s*2, y:oy+s*11},
+        {p:'愛媛県', x:ox+s*1, y:oy+s*10}, {p:'高知県', x:ox+s*1, y:oy+s*11},
         {p:'福岡県', x:ox-s*2, y:oy+s*8}, {p:'佐賀県', x:ox-s*3, y:oy+s*8}, {p:'大分県', x:ox-s*2, y:oy+s*9},
         {p:'長崎県', x:ox-s*3, y:oy+s*9}, {p:'熊本県', x:ox-s*3, y:oy+s*10}, {p:'宮崎県', x:ox-s*2, y:oy+s*10},
         {p:'鹿児島県', x:ox-s*3, y:oy+s*11, w:s*2, h:s},
@@ -1113,12 +1172,23 @@ function generateReport() {
     // カード全体の文字色クラスを切り替え
     container.className = isLight ? 'report-theme-light' : 'report-theme-dark';
     
-    // グラデーション背景を適用（推し色 → 少し濃い色への斜めグラデ）
-    container.style.background = `linear-gradient(135deg, ${selectedThemeColor} 0%, ${adjustColor(selectedThemeColor, -30)} 100%)`;
+    // 🌟【ここを書き換え！】グラデーション設定をより堅牢にする
+    // カード全体の文字色クラスを切り替え
+    container.className = isLight ? 'report-theme-light' : 'report-theme-dark';
+    
+    // 🌟 滑らかなグラデーションのためのノイズ画像データ
+    const noiseUrl = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyAMAAAA9YU9LAAAABGdBTUEAALGPC/xhBQAAABRQTFRFMS0xISEhISEhISEhISEhISEhISEhIdmS3wAAAAZ0Uk5TAB8fPz8/P1YmXm0AAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAuSURBVDjLY2CAA0YmIDLBBEMmJpYIKgaKIDKBBEMmBmoaiIEYKKIYiIEYKCIYCAD6uAEXm9OnfQAAAABJRU5ErkJggg==";
+
+    // 🌟 背景設定：ノイズとグラデーションを重ねて適用
+    container.style.background = `url("${noiseUrl}"), linear-gradient(135deg, ${selectedThemeColor} 0%, ${adjustColor(selectedThemeColor, -30)} 100%)`;
+    container.style.backgroundBlendMode = "overlay"; // ノイズを馴染ませる
+    container.style.backgroundSize = "64px 64px, 100% 100%"; // ノイズの細かさを指定
+    container.style.backgroundRepeat = "repeat, no-repeat";
+    container.style.backgroundAttachment = "scroll";
 
     container.innerHTML = `
         <div class="report-header">
-            <div class="report-title">LIVE PERFORMANCE RECORD</div>
+            <div class="report-title">LIVE DIARY REPORT</div>
             <div class="report-period">${periodDisplay} / ${selectedArtist === 'all' ? 'ALL ARTISTS' : selectedArtist}</div>
         </div>
         
@@ -1149,9 +1219,14 @@ function generateReport() {
         </div>
     `).join('')}
 </div>
+    <div class="report-footer" style="text-align: right; margin-top: 15px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.2); line-height: 1.4;">
+        <div style="font-size: 0.8rem; font-weight: bold; margin-bottom: 2px;">Generated by LIVE DIARY 🍊</div>
+        <div style="font-size: 0.55rem; opacity: 0.8; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: 0.2px;">
+            https://livediary-app.com/
+        </div>
+    </div>
+`;
 
-        <div class="report-footer">Generated by LIVE DIARY 🍊</div>
-    `;
 
 // generateReport 関数の最後（モーダルを表示する直前）にこれを追加
 const reportCard = document.getElementById('report-card-container');
@@ -1189,57 +1264,110 @@ function adjustColor(color, percent) {
 }
 
 
-// --- 画像保存ロジック（html2canvasを使用） ---
-// 画像保存・共有ロジックの修正版
+// 【修正版】高画質化対応済みの画像保存ロジック
 async function saveReportImage() {
     const card = document.getElementById('report-card-container');
-    
-    // 1. キャプチャ用にスケーリングを一時解除
     const originalTransform = card.style.transform;
-    card.style.transform = 'scale(1)';
+    const originalBg = card.style.background;
+    const bestEntries = card.querySelectorAll('.best-entry');
+
+    // 1. 準備：html2canvasに「余計なこと」をさせない設定
+    card.style.transform = 'none';
+    card.style.background = 'transparent'; // 背景を透明にして、html2canvasには文字だけ撮らせる
+
+    // 🌟 劣化の原因「ぼかし」を一時的に無効化し、色味を維持する
+    const originalStyles = [];
+    bestEntries.forEach((entry, i) => {
+        originalStyles[i] = {
+            backdrop: entry.style.backdropFilter,
+            webkitBackdrop: entry.style.webkitBackdropFilter,
+            bg: entry.style.background
+        };
+        entry.style.backdropFilter = 'none';
+        entry.style.webkitBackdropFilter = 'none';
+        // 半透明の白で代用（描画エラーを防ぐ）
+        entry.style.background = 'rgba(255, 255, 255, 0.1)'; 
+    });
 
     try {
-        const canvas = await html2canvas(card, {
-            backgroundColor: null,
-            scale: 2,
+        // 2. 文字と枠だけの透明な画像を生成（ここはhtml2canvasが得意な領域）
+        const contentCanvas = await html2canvas(card, {
+            scale: 3,
             useCORS: true,
+            backgroundColor: null,
             logging: false
         });
 
-        // スケーリングを元に戻す
-        card.style.transform = originalTransform;
+        // 3. 🌟【ここが心臓部】背景だけをブラウザの最高画質エンジンで自作する
+        const finalCanvas = document.createElement('canvas');
+        finalCanvas.width = contentCanvas.width;
+        finalCanvas.height = contentCanvas.height;
+        const ctx = finalCanvas.getContext('2d');
 
-        // 2. Blob（データのかたまり）に変換
-        canvas.toBlob(async (blob) => {
+        // Canvasのネイティブ機能でグラデーションを描画（これが物理的に最も滑らかです）
+        const grad = ctx.createLinearGradient(0, 0, finalCanvas.width, finalCanvas.height);
+        grad.addColorStop(0, selectedThemeColor);
+        grad.addColorStop(1, adjustColor(selectedThemeColor, -30));
+        
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, finalCanvas.width, finalCanvas.height);
+
+        // 4. 合体：最高画質の背景の上に、文字を重ねる
+        ctx.drawImage(contentCanvas, 0, 0);
+
+        // 5. 後始末：ユーザーの画面を元のデザインに戻す
+        card.style.background = originalBg;
+        card.style.transform = originalTransform;
+        bestEntries.forEach((entry, i) => {
+            entry.style.backdropFilter = originalStyles[i].backdrop;
+            entry.style.webkitBackdropFilter = originalStyles[i].webkitBackdrop;
+            entry.style.background = originalStyles[i].bg;
+        });
+
+        // 6. 保存・共有処理（最高画質のまま出力）
+        finalCanvas.toBlob(async (blob) => {
+            if (!blob) { alert("画像の生成に失敗しました。"); return; }
             const file = new File([blob], "LIVE_REPORT.png", { type: "image/png" });
 
-            // 3. Web Share API を使用して共有メニューを呼び出す（iPhone/Android用）
             if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
                 try {
-                    await navigator.share({
-                        files: [file],
-                        title: 'LIVE REPORT',
-                    });
+                    await navigator.share({ files: [file], title: 'LIVE REPORT' });
                 } catch (err) {
-                    // ユーザーがキャンセルした場合は何もしない
                     if (err.name !== 'AbortError') console.error("共有失敗:", err);
                 }
             } else {
-                // 4. PCや未対応ブラウザ用のフォールバック（従来のダウンロード）
                 const link = document.createElement('a');
                 const dateStr = new Date().toISOString().slice(0,10).replace(/-/g, '');
                 link.download = `LIVE_REPORT_${dateStr}.png`;
-                link.href = canvas.toDataURL("image/png");
+                link.href = finalCanvas.toDataURL("image/png", 1.0);
                 link.click();
-                alert("共有機能が未対応のため、ダウンロードフォルダに保存しました。");
+                alert("共有機能が未対応のため、保存しました。");
             }
-        }, 'image/png');
+        }, 'image/png', 1.0);
 
     } catch (e) {
-        console.error("生成エラー:", e);
+        // エラー時も必ずスタイルを戻す
+        card.style.background = originalBg;
         card.style.transform = originalTransform;
+        console.error("生成エラー:", e);
         alert("画像の生成に失敗しました。");
     }
+}
+
+// 🌟追加：X投稿用関数
+function shareOnX() {
+    // 統計画面の合計表示から数値を取得
+    const statsTotal = document.getElementById('total-count-display').innerText;
+    const text = `LIVE DIARY 🍊 でライブ参戦レポートを生成しました！\n合計参戦数は ${statsTotal} 公演！\n\n#LIVEDIARY #推し活\n`;
+    
+    // アプリのURL
+    const appUrl = "https://livediary-app.com/"; 
+    
+    // XのシェアインテントURLを作成
+    const xUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(appUrl)}`;
+    
+    // 新しいウィンドウで開く
+    window.open(xUrl, '_blank');
 }
 
 
@@ -1274,6 +1402,70 @@ async function saveReportImage() {
     r.readAsText(f); 
 }
 
+// 規約モーダルを開く
+// 規約モーダルを開く
+function openTermsModal(type) {
+    const titleEl = document.getElementById('terms-modal-title');
+    const bodyEl = document.getElementById('terms-modal-body');
+
+    if (type === 'terms') {
+        titleEl.innerText = "利用規約";
+        bodyEl.innerHTML = `
+            <p><strong>第1条（目的）</strong><br>本規約は、LIVE DIARY 🍊（以下「本アプリ」といいます）の利用条件を定めるものです。本アプリを利用するすべてのユーザー（以下「利用者」といいます）は、本規約に同意したものとみなされます。</p>
+            <p><strong>第2条（非公式性）</strong><br>本アプリは、個人が制作した非公式のファンツールであり、特定のアーティスト、所属事務所、レコード会社、及び公式ファンクラブ等とは一切関係ありません。</p>
+            <p><strong>第3条（データの管理と責任）</strong><br>1. 本アプリに入力されたデータは、利用者の端末内（LocalStorage）に保存されます。開発者がサーバー等でデータを取得・管理することはありません。<br>2. 利用者は、自らの責任においてデータの管理およびバックアップを行うものとします。ブラウザのキャッシュ消去、端末の紛失、機種変更等によるデータ消失について、開発者は一切の責任を負いません。</p>
+            <p><strong>第4条（禁止事項）</strong><br>利用者は、以下の行為を行ってはならないものとします。<br>
+            1. 本アプリのプログラム（HTML/CSS/JS）の全部または一部を、改変の有無を問わず、第三者に再配布、転載、または販売する行為。<br>
+            2. 本アプリを公式アプリであるかのように誤認させる行為。<br>
+            3. 開発者または第三者の著作権、名誉、信用を毀損する行為。<br>
+            4. 本アプリのプログラムを逆コンパイル、リバースエンジニアリング、または解析する行為。<br>
+            5. 法令または公序良俗に反する行為。</p>
+            <p><strong>第5条（著作権および知的財産権）</strong><br>1. 本アプリ内に表示されるアーティスト名、楽曲名等に関する知的財産権は、各権利者に帰属します。<br>2. 本アプリのプログラム、独自のデザイン、及びデータベース構造の著作権は、開発者に帰属します。</p>
+            <p><strong>第6条（免責事項）</strong><br>1. 本アプリの利用により生じた直接的または間接的な損害について、開発者は一切の責任を負いません。<br>2. 本アプリ内の外部リンク先（楽天、Apple Music、Spotify等）で提供されるサービスや商品に関するトラブルについて、開発者は一切関与いたしません。<br>3. 本アプリは、予告なくサービスの提供を中断、変更、または終了することがあります。<br>4. 開発者は、本アプリに関する問い合わせに対し、回答または対応する義務を負わないものとします。</p>
+            <p><strong>第7条（規約の変更）</strong><br>開発者は、必要と判断した場合には、利用者に通知することなく本規約を変更することができるものとします。</p>
+            <hr style="border: none; border-top: 1px solid #f2f2f7; margin: 20px 0;">
+            <p style="color: #8e8e93; text-align: right; font-size: 0.8rem;">2026年2月10日 制定</p>
+        `;
+    } else if (type === 'privacy') {
+        titleEl.innerText = "プライバシーポリシー";
+        bodyEl.innerHTML = `
+            <p><strong>個人情報の収集について</strong><br>本アプリは、氏名やメールアドレス等の個人情報を収集・送信することはありません。入力されたライブデータはすべてお客様の端末内にのみ保存されます。</p>
+            <p><strong>アクセス解析ツールについて</strong><br>本アプリでは、利用状況を把握するためにGoogleアナリティクスを使用しています。これはクッキー（Cookie）を通じて匿名でデータを収集するものであり、個人を特定するものではありません。</p>
+            <p><strong>広告・アフィリエイトについて</strong><br>本アプリでは、楽天アフィリエイト等のアフィリエイトプログラムを利用しています。リンク先での購入に関するプライバシー保護については、各提携先のポリシーをご確認ください。</p>
+            <p><strong>法令の遵守</strong><br>開発者は、日本国の法令を遵守し、ユーザーのプライバシー保護に努めます。</p>
+            <hr style="border: none; border-top: 1px solid #f2f2f7; margin: 20px 0;">
+            <p style="color: #8e8e93; text-align: right; font-size: 0.8rem;">2026年2月10日 制定</p>
+        `;
+    }
+
+    // 背面のスクロールを禁止にする（推奨追加）
+    document.body.style.overflow = 'hidden';
+    document.getElementById('terms-modal').classList.remove('hidden');
+}
+
+// 規約モーダルを閉じる
+function closeTermsModal() {
+    // 背面のスクロール禁止を解除する（推奨追加）
+    document.body.style.overflow = '';
+    document.getElementById('terms-modal').classList.add('hidden');
+}
+
+
     </script>
+    
+    <div id="terms-modal" class="modal-overlay hidden" onclick="closeTermsModal()">
+    <div class="modal-content" onclick="event.stopPropagation()" style="max-height: 80vh; display: flex; flex-direction: column; width: 90%; max-width: 400px; margin: auto; border-radius: 15px; overflow: hidden;">
+        
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; border-bottom: 1px solid #f2f2f7; background: #fff;">
+            <div style="width: 24px;"></div> <h3 id="terms-modal-title" style="margin:0; font-size:1rem; text-align: center; flex-grow: 1; font-weight: bold;">規約</h3>
+            <button onclick="closeTermsModal()" class="close-btn" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; padding: 0; width: 24px; color: #8e8e93;">✕</button>
+        </div>
+
+        <div class="modal-body" id="terms-modal-body" style="overflow-y: auto; text-align: left; font-size: 0.85rem; line-height: 1.7; color: #444; padding: 20px 20px 40px 20px; background: #fff;">
+            </div>
+    </div>
+</div>
+
+    
 </body>
 </html>
