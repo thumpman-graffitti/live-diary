@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LIVE DIARY</title>
+    <title>LIVE DIARY 🍊 - ライブ参戦履歴・セットリスト管理アプリ</title>
+    <meta name="description" content="「あのライブのセトリ、なんだっけ？」をゼロに。LIVE DIARYは、あなたの推し活をスマートに残すライブ記録アプリです。参戦履歴を登録するだけで、あなただけの音楽史を可視化。思い出を「レポート」にしてシェアしませんか？スマホ一つで、一生モノの音楽体験を。">
+    <meta name="keywords" content="ライブ記録,ライブ参戦履歴,LIVE記録,ライヴ管理,セトリ管理,セットリスト,セトリ,推し活,ライブ日記,フェス,コンサート,遠征記録">
+    <meta property="og:title" content="LIVE DIARY 🍊 - マイ音楽史を記録する">
+    <meta property="og:description" content="参戦履歴の管理から、映えるレポート生成まで。スマホで完結するライブ記録アプリ。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://livediary-app.com/"> <meta name="twitter:card" content="summary_large_image">
+      
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-D4ER0YJSB7"></script>
@@ -120,7 +127,7 @@
 
 
 <div id="page-settings" class="tab-content">
-    <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 1.0.0</div>
+    <div class="app-version-info" style="text-align: center; font-size: 12px; color: #8e8e93; margin-bottom: 10px;">Ver 1.0.1</div>
 
     <div class="settings-card" style="margin-top: 10px !important;">
         <span class="section-title">データのバックアップ・リストア</span>
@@ -643,7 +650,7 @@ function renderStats() {
         searchLinkContainer.innerHTML = `
             <div class="card" style="padding: 12px 10px; text-align: center; border: 1px dashed #ccc; background: #fffaf0; margin: -25px 0 15px 0; box-shadow: none; width: 100%; box-sizing: border-box;">
                 <p style="font-size: 0.8rem; color: #444; margin: 0 0 8px 0; font-weight: bold; line-height: 1.4;">作品をチェック！ 💿</p>
-                <a href="${artUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">💿 ${targetArtName} の作品を探す</a>
+                <a href="${artUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #bf0000; color: #fff; text-decoration: none; padding: 8px 20px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">💿 ${targetArtName} の作品を楽天で探す</a>
                 <div style="font-size: 9px; color: #999; margin-top: 6px;">広告:外部サイトへ移動します</div>
             </div>`;
     }
@@ -673,10 +680,10 @@ function renderStats() {
         }
     };
 
-    insertConvenienceLink('link-audio', 'stats-song-ranking', '最新 イヤホン', '最新のイヤホンを探す', '🎧', '最高の音で推しの曲を聴こう 🎧');
-    insertConvenienceLink('link-binocular', 'stats-yearly-ranking', '防振双眼鏡', '防振双眼鏡を探す', '🔭', '広い会場でも推しをロックオン！ 🔭');
-    insertConvenienceLink('link-battery', 'stats-venue-ranking', 'モバイルバッテリー Anker エレコム', 'モバイルバッテリーを探す', '🔋', '遠征中の電池切れを防ぐ ⚡️');
-    insertConvenienceLink('link-silvtape', 'stats-pref-ranking', '銀テープ ケース', '銀テープケースを探す', '🎞️', '大切な銀テープを綺麗に保管 ✨');
+    insertConvenienceLink('link-audio', 'stats-song-ranking', '最新 イヤホン', '最新のイヤホンを楽天で探す', '🎧', '最高の音で推しの曲を聴こう 🎧');
+    insertConvenienceLink('link-binocular', 'stats-yearly-ranking', '防振双眼鏡', '防振双眼鏡を楽天で探す', '🔭', '広い会場でも推しをロックオン！ 🔭');
+    insertConvenienceLink('link-battery', 'stats-venue-ranking', 'モバイルバッテリー Anker エレコム', 'モバイルバッテリーを楽天で探す', '🔋', '遠征中の電池切れを防ぐ ⚡️');
+    insertConvenienceLink('link-silvtape', 'stats-pref-ranking', '銀テープ ケース', '銀テープケースを楽天で探す', '🎞️', '大切な銀テープを綺麗に保管 ✨');
     
     // === 🛒 常時表示エリア（ここまで） ===
 }
@@ -1451,7 +1458,7 @@ function openTermsModal(type) {
         bodyEl.innerHTML = `
             <p><strong>個人情報の収集について</strong><br>本アプリは、氏名やメールアドレス等の個人情報を収集・送信することはありません。入力されたライブデータはすべてお客様の端末内にのみ保存されます。</p>
             <p><strong>アクセス解析ツールについて</strong><br>本アプリでは、利用状況を把握するためにGoogleアナリティクスを使用しています。これはクッキー（Cookie）を通じて匿名でデータを収集するものであり、個人を特定するものではありません。</p>
-            <p><strong>広告・アフィリエイトについて</strong><br>本アプリでは、楽天アフィリエイト等のアフィリエイトプログラムを利用しています。リンク先での購入に関するプライバシー保護については、各提携先のポリシーをご確認ください。</p>
+            <p><strong>広告・アフィリエイトについて</strong><br>本アプリでは、楽天アフィリエイトのプログラムを利用しています。リンク先での購入に関するプライバシー保護については、各提携先のポリシーをご確認ください。</p>
             <p><strong>法令の遵守</strong><br>開発者は、日本国の法令を遵守し、ユーザーのプライバシー保護に努めます。</p>
             <hr style="border: none; border-top: 1px solid #f2f2f7; margin: 20px 0;">
             <p style="color: #8e8e93; text-align: right; font-size: 0.8rem;">2026年2月10日 制定</p>
